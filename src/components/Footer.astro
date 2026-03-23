@@ -1,0 +1,134 @@
+---
+import { Image } from "astro:assets";
+import Logo from "../assets/logo.png";
+import BWave from "../assets/b-wave.png";
+---
+
+
+
+
+
+
+<footer>
+    <Image src={BWave} alt="wave" class="w-full h-28 md:h-48"/>
+    <div class="footer-container">
+        <div class="container">
+            <div class="grid grid-col-1 md:grid-cols-2 gap-8">
+                <div>
+                    <a href="/">
+                        <Image src={Logo} alt="Helthe Juice"/>
+                    </a>
+                    <p class="text-gray-300 mt-4">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis culpa expedita eaque maiores dicta qui vitae, quasi vel porro temporibus, consectetur quibusdam, aperiam aut voluptate.</p>
+                </div>
+                <div>
+                    <h2 class="heading-tertiary text-white">Follow us on socials</h2>
+                    <ul class="social-list">
+                        <li class="social-item">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                        </li>
+                        <li class="social-item">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </a>
+                        </li>
+                        <li class="social-item">
+                            <a href="#" class="social-link">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+
+        <p class="copy text-center py-4 mt-8 text-gray-400">&copy; {new Date().getFullYear()} EcoGlass GH Ltd built with <i class="fa-solid fa-heart text-red-600"></i> by <a href="https://carbellsarfo.netlify.app/" class="text-red-700" target="_blank">Carbell Sarfo</a></p>
+    </div>
+</footer>
+
+
+
+
+
+
+
+<style>
+    footer {
+        margin-top: -10rem;
+        
+        .footer-container {
+            background-color: #335D0D;
+        }
+    }
+
+
+
+
+    
+.social-list {
+    display: flex;
+    margin-top: 2rem;
+
+    .social-item {
+
+        &:not(:last-child) {
+            margin-right: 1rem;
+        }
+    }
+
+    .social-link {
+        display: flex;
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--clr-white);
+        color: var(--clr-white);
+        transition: .3s;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+
+        &:hover,
+        &:focus {
+            color: #0D0D0D;
+            background-color: var(--clr-yellow);
+            transform: scale(.92);
+        }
+        &:hover::before {
+            top: 0;
+            left: 0;
+        }
+        &:hover .fa-brands {
+            transform: scale(1.3) rotateY(360deg);
+        }
+
+
+        .fa-brands {
+            transition: .3s;
+        }
+
+        &::before {
+            content: "";
+            width: 100%;
+            height: 100%;
+            background-color: var(--clr-yellow);
+            position: absolute;
+            top: 100%;
+            z-index: -1;
+            transition: .3s;
+        }
+    }
+}
+
+
+
+.copy {
+    text-align: center;
+    font-size: .9rem;
+    padding-bottom: 1rem;
+    color: #929292;
+}
+</style>

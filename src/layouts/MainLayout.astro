@@ -1,0 +1,70 @@
+---
+
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+import Navigation from "../components/Navigation.astro";
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+}
+
+const {
+	title = "Helthe Juice",
+	description = "Helthe Juice",
+	image = "/images/logo.png"
+} = Astro.props
+---
+
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta http-equiv="content-language" content="en" />
+		<meta property="og:site_name" content="Helthe Juice" />
+		<meta name="generator" content={Astro.generator} />
+		<!-- Sitemap -->
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={image} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+
+
+		<!-- Fonts -->
+		 <link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+		<!-- Fontawesome cdn  -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+	</head>
+
+
+
+	<body>
+		<!-- navigation -->
+		<Navigation />
+
+		<!-- So the main content goes here -->
+			<slot />
+	
+
+		<!-- Footer -->
+		<Footer />
+
+
+		<script src="../js/main.js"></script>
+	</body>
+</html>
+

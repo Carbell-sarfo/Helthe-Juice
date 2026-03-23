@@ -1,11 +1,39 @@
 ---
 import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<MainLayout title='Helthe Juice | Home'>
+	
+
+
+	<!-- Section Hero -->
+	 <section class="section-hero" id="section-hero">
+		<div class="container">
+
+		</div>
+	 </section>
+
+
+	<!-- Section FAQ -->
+	 <section class="section-faq py-40 bg-amber-100">
+
+	 </section>
+</MainLayout>
+
+
+
+
+
+<style lang="scss">
+
+	.section-hero {
+		background-image: url(../assets/hero-bg.png);
+		width: 100%;
+		height: 90vh;
+		background-position: center;
+	}
+</style>

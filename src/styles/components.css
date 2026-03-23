@@ -1,0 +1,27 @@
+/* ========================================================================= */
+/*                        Buttons                                          */
+/* ========================================================================= */
+.btn {
+    display: inline-block;
+    padding: .8rem 1.8rem;
+    transition: .3s;
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: .5rem;
+    overflow: hidden;
+    font-size: .9rem;
+}
+
+/* BTN yellow */
+.btn-yellow {
+    background: linear-gradient(to bottom, #FFE711, #FEA502);
+    color: #000;
+    transition: .4s;
+    border: 2px solid transparent;
+}
+.btn-yellow:hover,
+.btn-yellow:focus {
+    background: #000;
+    border: 2px solid var(--clr-yellow);
+    color: var(--clr-yellow);
+}

@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "Helthe-Juice",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -12,6 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.0.6"
+    "@tailwindcss/vite": "^4.2.2",
+    "astro": "^6.0.6",
+    "sass": "^1.98.0",
+    "tailwindcss": "^4.2.2"
   }
 }
