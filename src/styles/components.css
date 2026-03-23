@@ -7,7 +7,7 @@
     transition: .3s;
     position: relative;
     border: 2px solid transparent;
-    border-radius: .5rem;
+    border-radius: 2rem;
     overflow: hidden;
     font-size: .9rem;
 }

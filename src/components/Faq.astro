@@ -1,0 +1,94 @@
+---
+
+---
+
+
+<div class="section-faq">
+    <div class="container wrapper">
+        <div class="text-center">
+            <h2 class="heading-secondary">FAQs</h2>
+        </div>
+        <div class="max-w-4xl mx-auto faq-container">
+            <div data-ui-tablist class="ui-accordion" data-ui-transition="collapse">
+                <!-- faq-1 -->
+                <div class="ui-accordion-item">
+                    <button data-ui-tablist-tab class="ui-accordion-header">Do I need to book an appointment for a headshot session?
+                    </button>
+                    <div data-ui-tablist-tabpanel>
+                        <div class="ui-accordion-body"> Yes, we recommend scheduling an appointment to ensure our studio is fully prepared for your session and to give you the best experience possible. </div>
+                    </div>
+                </div>
+
+                <!-- faq-2 -->
+                <div class="ui-accordion-item">
+                    <button data-ui-tablist-tab class="ui-accordion-header">Can I bring multiple outfits for the headshot shoot?</button>
+                    <div data-ui-tablist-tabpanel hidden>
+                        <div class="ui-accordion-body">Absolutely! Bringing a few outfit options helps us capture a variety of looks so you can choose the one that best represents your brand.</div>
+                    </div>
+                </div>
+
+                <!-- faq-3 -->
+                <div class="ui-accordion-item">
+                    <button data-ui-tablist-tab class="ui-accordion-header">Do you offer podcast recording outside the studio?</button>
+                    <div data-ui-tablist-tabpanel hidden>
+                        <div class="ui-accordion-body">Yes, while our studio is equipped for professional podcast production, we also provide on-location podcast recording services for added convenience.</div>
+                    </div>
+                </div>
+
+                <!-- faq-4 -->
+                <div class="ui-accordion-item">
+                    <button data-ui-tablist-tab class="ui-accordion-header">How long does a typical session take for headshots or podcast recording?</button>
+                    <div data-ui-tablist-tabpanel hidden>
+                        <div class="ui-accordion-body">A standard headshot session usually takes about 30 to 45 minutes, including outfit changes and setup adjustments. A podcast recording session generally lasts 60 to 90 minutes, depending on the length of the episode and any necessary edits or re-recordings.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<style lang="scss">
+
+.section-faq {
+    padding: 8rem 0 15rem;
+    background-color: var(--clr-orange);
+    color: var(--clr-white);
+    border-bottom: 1px solid #647065;
+}
+.faq-container {
+    background-color: #2F2C2C;
+    padding: 2rem 1rem;
+    border-radius: 1rem;
+}
+
+.ui-accordion-header {
+    background-color: #3f3c3c;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: .5rem;
+    width: 100%;
+}
+.ui-accordion-body {
+    // background-color: green;
+    margin-bottom: 2rem;
+}
+
+
+.ui-accordion-header {
+    border-bottom: 1px solid #4a4a4a;
+    // margin-bottom: 2rem;
+
+    &:hover {
+        color: var(--clr-orange);
+    }
+}
+.ui-accordion-header:where(.ui-active) {
+    color: yellow;
+}
+</style>
