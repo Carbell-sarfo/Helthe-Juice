@@ -1,3 +1,5 @@
+/* Components.css */
+
 /* ========================================================================= */
 /*                        Buttons                                          */
 /* ========================================================================= */
@@ -14,7 +16,7 @@
 
 /* BTN yellow */
 .btn-yellow {
-    background: linear-gradient(to bottom, #FFE711, #FEA502);
+    background: linear-gradient(to right, #FFE711, #FEA502);
     color: #000;
     transition: .4s;
     border: 2px solid transparent;
@@ -24,4 +26,18 @@
     background: #000;
     border: 2px solid var(--clr-yellow);
     color: var(--clr-yellow);
+}
+
+
+.btn-blue {
+    background: linear-gradient(to right, #006BDF, #003A79);
+    color: #fff;
+    transition: .4s;
+    border: 2px solid transparent;
+}
+.btn-blue:hover,
+.btn-blue:focus {
+    background: #fff;
+    border: 2px solid #003A79;
+    color: #003A79;
 }

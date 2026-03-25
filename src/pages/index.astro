@@ -2,6 +2,19 @@
 import Faq from '../components/Faq.astro';
 import Welcome from '../components/Welcome.astro';
 import MainLayout from '../layouts/MainLayout.astro';
+import Hwave from "../assets/h-wave.png"
+import { Image } from 'astro:assets';
+import NanaWelcome from "../assets/nana-owusua-helthe.png"
+import EventImage from "../assets/event-catering.png"
+
+
+// products
+import Cucpinmint from "../assets/products/cucumber-pineapple-mint.jpg"
+import Cucpinspin from "../assets/products/cucumber-pineapple-spinach.png"
+import OrangeCarrot from "../assets/products/orange-carrot.png"
+import Watermelon from "../assets/products/watermelon.png"
+import MangoMelon from "../assets/products/watermelon-mango.png"
+import BeetMelon from "../assets/products/watermelon-beetroot.png"
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
@@ -13,15 +26,136 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 	<!-- Section Hero -->
 	 <section class="section-hero" id="section-hero">
-		<div class="container">
-
+		<Image src={Hwave} alt="helthe juice wave asset" class="w-full h-28 md:h-48 absolute left-0 bottom-0">
+		<div class="hero-container">
+			<div class="container">
+				
+			</div>
 		</div>
 	 </section>
+
+
+	 <!-- Section Hero welcome -->
+	  <section class="section-welcome">
+		<div class="container">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+					<div>
+						<h2 class="heading-tertiary mb-8">Welcome To Helthe Juice</h2>
+						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nobis enim voluptate maxime dolores voluptatum, quis quaerat expedita impedit incidunt provident dolorem id omnis iste nisi quae dolorum harum neque recusandae?</p>
+					</div>
+					<div>
+						<Image src={NanaWelcome} alt="Nana Owusua the founder of Helthe Juice smiling" class="w-full" />
+					</div>
+			</div>
+		</div>
+	  </section>
+
+
+
+
+
+
+	  <!-- Section Choose your flavor -->
+	   <section class="section-flavor">
+		<div class="container">
+			<div class="text-center">
+				<h2 class="heading-secondary">Choose Your Flavor</h2>
+			</div>
+
+			<!-- juices -->
+			 <div class="juices grid grid-cols-1 md:grid-cols-3 gap-12">
+				<!-- Cucumber Pineapple Mint -->
+				<div class="juice">
+					<Image src={Cucpinmint} alt="Helthe Juice Cucumber Pineapple Mint" />
+					<h2 class="juice-title">PineCucumber</h2>
+					<p class="juice-description">Cucumber + Pineapple + Mint</p>
+				</div>
+				<!-- WaterMelon -->
+				<div class="juice">
+					<Image src={Watermelon} alt="Helthe Juice Watermelon" />
+					<h2 class="juice-title">Watermelon</h2>
+					<p class="juice-description">Watermelon</p>
+				</div>
+				<!-- BeetMelon -->
+				<div class="juice">
+					<Image src={BeetMelon} alt="Helthe Juice Beetroot & Melon" />
+					<h2 class="juice-title">BeetMelon</h2>
+					<p class="juice-description">Beetroot + Melon</p>
+				</div>
+				<!-- Orange Carrot -->
+				<div class="juice">
+					<Image src={OrangeCarrot} alt="Helthe Juice Orange Carrot" />
+					<h2 class="juice-title">OrangeCarrot</h2>
+					<p class="juice-description">Orange + Carrot</p>
+				</div>
+				<!-- Cucumber Pineapple Spinach -->
+				<div class="juice">
+					<Image src={Cucpinspin} alt="Helthe Juice Cucumber Pineapple Spinach" />
+					<h2 class="juice-title">PineCucumber</h2>
+					<p class="juice-description">Cucumber + Pineapple + Spinach</p>
+				</div>
+				<!-- MangoMelon -->
+				<div class="juice">
+					<Image src={MangoMelon} alt="Helthe Juice Mango and Melon" />
+					<h2 class="juice-title">MangoMelon</h2>
+					<p class="juice-description">Mango + Melon</p>
+				</div>
+
+			 </div>
+			 <div class="text-center mt-20">
+				<a href="/menu" class="btn btn-yellow">Place your Order</a>
+			 </div>
+		</div>
+	   </section>
+
+
+
+
+	   <section class="section-event pt-40 pb-20 bg-[var(--clr-yellow)] mt-[-6rem]">
+		<div class="container">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+				<div>
+					<Image src={EventImage} alt="Helthe Juice serving at an event" />
+				</div>
+				<div>
+					<h2 class="heading-tertiary blue-text">Sip Your Way to Wellness</h2>
+					<p class="my-4">Fuel your day with 14 handcrafted smoothies made from fresh fruits, natural ingredients, and nourishing blends. Whether you need a workout boost, a tropical escape, or a wholesome breakfast, our flavorful smoothies are designed to energize your body. Explore the menu and find your favorite!</p>
+					<a href="#" class="btn btn-blue">Order Now</a>
+				</div>
+			</div>
+		</div>
+	   </section>
+
+
+	   <section class="section-photo">
+		<div class="container">
+			<div class="photo-box">
+				<h2 class="heading-secondary">Ready to down the helthe path?</h2>
+				<a href="#" class="btn btn-blue">Order Now</a>
+		</div>
+	   </section>
+
+
+
+
+
 
 
 	<!-- Section FAQ -->
 	 <Faq />
 </MainLayout>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -34,5 +168,75 @@ import MainLayout from '../layouts/MainLayout.astro';
 		width: 100%;
 		height: 90vh;
 		background-position: center;
+		position: relative;
+		background-size: cover;
+
+		.hero-wave {
+			// position: absolute;
+			// bottom: 0;
+		}
+	}
+
+
+
+
+
+
+	// Section Welcome
+	.section-welcome {
+		background-color: var(--clr-yellow);
+		padding: 5rem 0 12rem;
+	}
+
+
+
+	.section-flavor {
+
+
+		.juice {
+			text-align: center;
+
+			img {
+				width: 100%;
+				margin-bottom: .5rem;
+			}
+
+			.juice-title {
+				font-weight: bold;
+				font-size: 1.2rem;
+			}
+			.juice-description {
+				font-size: .8rem;
+				font-style: italic;
+				color: #7E7979;
+			}
+		}
+	}
+
+
+	// Section Flavor
+	.section-flavor {
+		background-color: var(--clr-dark);
+		color: var(--clr-white);
+		padding: 8rem 0;
+		margin-top: -5rem;
+		clip-path: polygon(0 5rem, 100% 0, 100% calc(100% - 5rem), 0 100%);
+	}
+
+
+	.section-photo {
+		background-image: url(../assets/photo-separator.png);
+		padding: 15rem 0;
+		background-position: center;
+		background-size: cover;
+		background-attachment: fixed;
+
+		.photo-box {
+			backdrop-filter: blur(10px);
+			text-align: center;
+			background-color: rgba(255, 166, 0, 0.56);
+			border-radius: 2rem;
+			padding: 2rem;
+		}
 	}
 </style>

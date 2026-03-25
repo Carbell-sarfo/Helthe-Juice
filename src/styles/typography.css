@@ -1,3 +1,6 @@
+/* Typography.css */
+
+
 .heading-secondary {
     font-family: "Century Gothic", sans-serif;
     font-weight: bolder;
@@ -19,4 +22,15 @@
     font-family: "Century Gothic", sans-serif;
     font-weight: bold;
     font-size: clamp(3rem, 3vw + 1rem, 5rem);
+}
+
+
+
+
+
+
+
+/* colors */
+.blue-text {
+    color: var(--clr-blue);
 }

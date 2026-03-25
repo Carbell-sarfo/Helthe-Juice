@@ -1,0 +1,558 @@
+---
+// src/components/BlendBuilder.astro
+// Fixes:
+// - Astro Image component for all photos
+// - Correct CSS vars (--clr-dark, --clr-yellow etc)
+// - Sticky "Your Selection" bar with "Proceed to Order" button
+// - "Go to Blend Builder" button after Step 1
+// - All TypeScript errors fixed
+
+import { Image } from "astro:assets";
+import { CATEGORIES } from "../data/menu.ts";
+
+import imgCucMint    from "../assets/products/cucumber-pineapple-mint.jpg";
+import imgOrange     from "../assets/products/orange-carrot.png";
+import imgWatMango   from "../assets/products/watermelon-mango.png";
+import imgWatermelon from "../assets/products/watermelon.png";
+import imgBeetroot   from "../assets/products/watermelon-beetroot.png";
+
+const imageMap: Record<string, ImageMetadata> = {
+  "cucumber-pineapple-mint.jpg":    imgCucMint,
+  "orange-carrot.jpg":              imgOrange,
+  "watermelon-mango.jpg":           imgWatMango,
+  "watermelon.jpg":                 imgWatermelon,
+  "watermelon-beetroot.jpg":        imgBeetroot,
+};
+---
+
+<div class="blend-builder" id="blend-builder">
+
+  <!-- Header -->
+  <div class="builder-header container">
+    <span class="step-badge">Step 2</span>
+    <h2 class="heading-tertiary mt-2 mb-2">Choose Your Flavours</h2>
+    <p class="text-sm text-gray-500 mb-4 max-w-xl">
+      Select your blends below. Your limit depends on the package chosen above.
+    </p>
+
+    <!-- Context bar — updates when package selected -->
+    <div class="context-bar" id="builderContext">
+      <span id="contextText">← Select a package above to see how many flavours you can choose</span>
+    </div>
+  </div>
+
+  <!-- ── STICKY SELECTION BAR ── -->
+  <!-- Sits at top of viewport, shows selected chips + proceed button -->
+  <div class="sticky-bar" id="stickyBar" aria-hidden="true">
+    <div class="container sticky-bar-inner">
+      <div class="sticky-left">
+        <span class="sticky-label">Your Selection</span>
+        <div class="sticky-chips" id="stickyChips">
+          <span class="chips-empty">Nothing selected yet</span>
+        </div>
+      </div>
+      <div class="sticky-right">
+        <span class="sticky-count" id="stickyCount"></span>
+        <a href="#order-form" class="btn btn-yellow sticky-proceed" id="stickyProceed" style="display:none">
+          Proceed to Order →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category tabs -->
+  <div class="container mt-6">
+    <div class="builder-tabs" id="builderTabs">
+      <button class="btab active" data-cat="all">All</button>
+      {CATEGORIES.map((cat) => (
+        <button class="btab" data-cat={cat.id}>{cat.name}</button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Flavour grid per category -->
+  <div class="container builder-grid" id="builderGrid">
+    {CATEGORIES.map((cat) => (
+      <div class="bcat" data-cat={cat.id}>
+
+        <!-- Photo header -->
+        <div class="bcat-header">
+          <Image
+            src={imageMap[cat.imageSrc]}
+            alt={cat.name}
+            class="bcat-img"
+            width={800}
+            height={180}
+          />
+          <div class="bcat-overlay">
+            <span class="bcat-name">{cat.name}</span>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="bcat-flavours">
+          {cat.flavours.map((f) => (
+            <button
+              class={`fbtn${f.custom ? " fbtn--custom" : ""}`}
+              data-flavour-id={f.id}
+              data-flavour-name={f.name}
+              data-custom={String(f.custom)}
+              data-seasonal={String(f.seasonal)}
+              type="button"
+              aria-pressed="false"
+            >
+              {f.name}
+              {f.seasonal && <span class="fbtn-tag fbtn-tag--s">Seasonal</span>}
+              {f.custom   && <span class="fbtn-tag fbtn-tag--c">+GHS</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Custom note -->
+  <div class="container">
+    <div class="custom-note" id="customNote" style="display:none">
+      <strong>Custom blend selected.</strong> An additional charge applies — we'll confirm the price with you on WhatsApp.
+    </div>
+  </div>
+
+  <!-- Proceed CTA at bottom of builder -->
+  <div class="container py-8 text-center" id="builderBottomCta" style="display:none">
+    <a href="#order-form" class="btn btn-yellow text-base px-8 py-4">
+      Continue to Your Details →
+    </a>
+  </div>
+
+</div>
+
+<script>
+  interface FlavourSelection {
+    id: string;
+    name: string;
+    custom: boolean;
+  }
+
+  let maxFlavours: number | null = null;
+  let selectedFlavours: FlavourSelection[] = [];
+
+  // DOM refs
+  const contextText   = document.getElementById("contextText")    as HTMLElement;
+  const stickyBar     = document.getElementById("stickyBar")      as HTMLElement;
+  const stickyChips   = document.getElementById("stickyChips")    as HTMLElement;
+  const stickyCount   = document.getElementById("stickyCount")    as HTMLElement;
+  const stickyProceed = document.getElementById("stickyProceed")  as HTMLElement;
+  const customNote    = document.getElementById("customNote")     as HTMLElement;
+  const bottomCta     = document.getElementById("builderBottomCta") as HTMLElement;
+
+  const flavourBtns = document.querySelectorAll<HTMLButtonElement>(".fbtn");
+  const builderTabs = document.querySelectorAll<HTMLButtonElement>(".btab");
+  const builderCats = document.querySelectorAll<HTMLElement>(".bcat");
+
+  // ── Listen for package selected ─────────────────────
+  document.addEventListener("helthe:packageSelected", (e: Event) => {
+    const { maxFlavours: max, label } = (e as CustomEvent<{ maxFlavours: number | null; label: string }>).detail;
+    maxFlavours = max;
+    contextText.textContent = max === null
+      ? `${label} selected — contact us for flavour details`
+      : `${label} — pick up to ${max} flavour${max > 1 ? "s" : ""}`;
+    clearAll();
+  });
+
+  // ── Flavour button click ─────────────────────────────
+  flavourBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id     = btn.dataset.flavourId   ?? "";
+      const name   = btn.dataset.flavourName ?? "";
+      const custom = btn.dataset.custom === "true";
+
+      const already = selectedFlavours.some((f) => f.id === id);
+
+      if (already) {
+        selectedFlavours = selectedFlavours.filter((f) => f.id !== id);
+        btn.classList.remove("selected");
+        btn.setAttribute("aria-pressed", "false");
+      } else {
+        if (maxFlavours !== null && selectedFlavours.length >= maxFlavours) {
+          shakeContext(); return;
+        }
+        selectedFlavours.push({ id, name, custom });
+        btn.classList.add("selected");
+        btn.setAttribute("aria-pressed", "true");
+      }
+
+      renderSelection();
+      dispatch();
+    });
+  });
+
+  // ── Category tabs ────────────────────────────────────
+  builderTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const cat = tab.dataset.cat ?? "all";
+      builderTabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      builderCats.forEach((c) => {
+        c.style.display = (cat === "all" || c.dataset.cat === cat) ? "" : "none";
+      });
+    });
+  });
+
+  // ── Render sticky bar + chips ────────────────────────
+  function renderSelection(): void {
+    if (selectedFlavours.length === 0) {
+      stickyChips.innerHTML = `<span class="chips-empty">Nothing selected yet</span>`;
+      stickyCount.textContent = "";
+      stickyProceed.style.display = "none";
+      bottomCta.style.display = "none";
+      customNote.style.display = "none";
+      return;
+    }
+
+    // Render chips with remove buttons
+    stickyChips.innerHTML = selectedFlavours.map((f) => `
+      <span class="s-chip${f.custom ? " s-chip--custom" : ""}">
+        ${f.name}
+        <button class="chip-x" data-id="${f.id}" type="button" aria-label="Remove ${f.name}">✕</button>
+      </span>
+    `).join("");
+
+    stickyChips.querySelectorAll<HTMLButtonElement>(".chip-x").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id ?? "";
+        selectedFlavours = selectedFlavours.filter((f) => f.id !== id);
+        const fbtn = document.querySelector<HTMLButtonElement>(`.fbtn[data-flavour-id="${id}"]`);
+        if (fbtn) { fbtn.classList.remove("selected"); fbtn.setAttribute("aria-pressed","false"); }
+        renderSelection();
+        dispatch();
+      });
+    });
+
+    const limit = maxFlavours !== null ? ` / ${maxFlavours}` : "";
+    stickyCount.textContent = `${selectedFlavours.length}${limit} selected`;
+    stickyProceed.style.display = "";
+    bottomCta.style.display = "";
+
+    const hasCustom = selectedFlavours.some((f) => f.custom);
+    customNote.style.display = hasCustom ? "block" : "none";
+  }
+
+  // ── Sticky bar visibility on scroll ─────────────────
+  const builder = document.getElementById("blend-builder");
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      stickyBar.classList.toggle("sticky-bar--visible", !entry.isIntersecting);
+      stickyBar.setAttribute("aria-hidden", String(entry.isIntersecting));
+    },
+    { threshold: 0, rootMargin: "-80px 0px 0px 0px" }
+  );
+  if (builder) observer.observe(builder);
+
+  // ── Dispatch to OrderForm ────────────────────────────
+  function dispatch(): void {
+    document.dispatchEvent(new CustomEvent("helthe:flavoursUpdated", {
+      detail: { flavours: selectedFlavours },
+    }));
+  }
+
+  function clearAll(): void {
+    selectedFlavours = [];
+    flavourBtns.forEach((btn) => {
+      btn.classList.remove("selected");
+      btn.setAttribute("aria-pressed","false");
+    });
+    renderSelection();
+  }
+
+  function shakeContext(): void {
+    const ctx = document.getElementById("builderContext");
+    if (!ctx) return;
+    ctx.classList.add("shake");
+    setTimeout(() => ctx.classList.remove("shake"), 500);
+  }
+
+  // Export clearAll so OrderForm reset can call it
+  (window as Window & { heltheClearBlender?: () => void }).heltheClearBlender = clearAll;
+</script>
+
+<style lang="scss">
+  .blend-builder {
+    background-color: var(--clr-gray-light);
+    padding: 4rem 0 2rem;
+  }
+
+  .step-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--clr-yellow);
+    color: var(--clr-black);
+    padding: 0.25rem 0.9rem;
+    border-radius: 2rem;
+    font-weight: 700;
+  }
+
+  // ── Context bar ──
+  .context-bar {
+    background: var(--clr-dark);
+    color: rgba(255,255,255,0.7);
+    padding: 0.75rem 1.1rem;
+    border-radius: 0.6rem;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    transition: background 0.2s;
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-6px); }
+    40%,80%  { transform: translateX(6px); }
+  }
+
+  .context-bar.shake {
+    animation: shake 0.4s ease;
+    background: #c0392b;
+  }
+
+  // ── Sticky bar ──
+  .sticky-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--clr-dark);
+    padding: 0.75rem 0;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    pointer-events: none;
+
+    &--visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  .sticky-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .sticky-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sticky-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .sticky-chips {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .chips-empty {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.35);
+    font-style: italic;
+  }
+
+  .s-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.7rem;
+    background: rgba(255,255,255,0.12);
+    color: var(--clr-white);
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,0.2);
+
+    &--custom {
+      background: rgba(254,218,28,0.15);
+      color: var(--clr-yellow);
+      border-color: rgba(254,218,28,0.3);
+    }
+  }
+
+  .chip-x {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.6rem;
+    color: inherit;
+    padding: 0;
+    opacity: 0.6;
+    line-height: 1;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 1; }
+  }
+
+  .sticky-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .sticky-count {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+  }
+
+  .sticky-proceed {
+    font-size: 0.7rem !important;
+    padding: 0.5rem 1.2rem !important;
+    white-space: nowrap;
+  }
+
+  // ── Tabs ──
+  .builder-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .btab {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    background: var(--clr-white);
+    border: 2px solid #e0e0e0;
+    color: #666;
+    cursor: pointer;
+    font-family: inherit;
+    border-radius: 2rem;
+    transition: all 0.2s;
+    font-weight: 700;
+
+    &:hover { border-color: var(--clr-dark); color: var(--clr-dark); }
+    &.active { background: var(--clr-dark); border-color: var(--clr-dark); color: var(--clr-white); }
+  }
+
+  // ── Category sections ──
+  .builder-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .bcat-header {
+    position: relative;
+    height: 90px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+
+    :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+    }
+  }
+
+  .bcat-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.15) 100%);
+    display: flex;
+    align-items: center;
+    padding: 0 1.25rem;
+  }
+
+  .bcat-name {
+    font-family: "Century Gothic", sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--clr-white);
+  }
+
+  // ── Flavour buttons ──
+  .bcat-flavours {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .fbtn {
+    font-size: 0.8rem;
+    padding: 0.55rem 1rem;
+    background: var(--clr-white);
+    border: 2px solid #e0e0e0;
+    color: #333;
+    cursor: pointer;
+    font-family: inherit;
+    border-radius: 0.5rem;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    &:hover {
+      border-color: var(--clr-dark);
+      color: var(--clr-dark);
+      background: #f5f5f5;
+    }
+
+    &.selected {
+      background: var(--clr-dark);
+      border-color: var(--clr-dark);
+      color: var(--clr-white);
+    }
+
+    &--custom { border-style: dashed; }
+    &--custom.selected { background: #6b4500; border-style: solid; border-color: #6b4500; }
+  }
+
+  .fbtn-tag {
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.4rem;
+    border-radius: 1rem;
+    font-weight: 700;
+
+    &--s { opacity: 0.6; }
+    &--c { background: rgba(254,218,28,0.2); color: #7a5500; }
+  }
+
+  .fbtn.selected .fbtn-tag--c { background: rgba(255,255,255,0.2); color: var(--clr-yellow); }
+
+  // ── Custom note ──
+  .custom-note {
+    background: rgba(254,218,28,0.1);
+    border: 1px solid rgba(254,218,28,0.35);
+    border-radius: 0.5rem;
+    padding: 0.85rem 1.1rem;
+    font-size: 0.82rem;
+    color: #6b4500;
+    line-height: 1.7;
+    margin-top: 1rem;
+
+    strong { color: #4a2e00; }
+  }
+</style>
