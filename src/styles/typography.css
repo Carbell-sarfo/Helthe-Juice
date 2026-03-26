@@ -34,3 +34,6 @@
 .blue-text {
     color: var(--clr-blue);
 }
+.white-text {
+    color: #fff;
+}

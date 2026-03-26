@@ -13,7 +13,125 @@ import MainLayout from "../layouts/MainLayout.astro";
 <MainLayout title="Contact Helthe Juice">
     <section class="section-contact" id="section-contact">
         <div class="container">
-            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h2 class="heading-tertiary mb-4">Contact Us</h2>
+                    <p class="mb-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+
+                    <ul class="contact-list">
+                        <li class="contact-item">
+                            <i class="fa-solid fa-phone"></i>
+                            <div>
+                                <p>Call us</p>
+                                <h3>+233 54 700 0817</h3>
+                            </div>
+                        </li>
+                        <li class="contact-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div>
+                                <p>Send us an email</p>
+                                <h3>helthegh@gmail.com</h3>
+                            </div>
+                        </li>
+                        <li class="contact-item">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <div>
+                                <p>Send us a message</p>
+                                <h3>+233 54 700 0817</h3>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <form action="#" class="contact-form">
+                        <h3 class="heading-tertiary mb-8">Send us a message</h3>
+                        <div class="input-field">
+                            <label for="fname">Your Name</label>
+                            <input type="text" name="fname" id="fname" placeholder="Nana Agyemang" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="wnum">WhatsApp Contact</label>
+                            <input type="text" name="wnum" id="wnum" placeholder="+123 456 789 0" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="message">Message</label>
+                            <textarea name="message" id="message" cols="30" rows="10" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-yellow">Send</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
 </MainLayout>
+
+
+
+
+
+
+<style lang="scss">
+
+.section-contact {
+    padding: 10rem 0 15rem;
+
+
+
+
+    .contact-list {
+        // display: flex;
+    }
+    .contact-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+
+        &:not(:last-child) {
+            margin-bottom: 1rem;
+        }
+
+        p {
+        font-size: .8rem;
+        color: var(--clr-dark)
+        }
+    }
+    i {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--clr-dark);
+        color: #fff;
+        margin-right: 1rem;
+        border: 2px solid var(--clr-gray-light);
+    }
+
+
+
+    .contact-form {
+        background-color: var(--clr-gray-light);
+        padding: 2rem;
+        border-radius: 1rem;
+
+        .input-field {
+            margin-bottom: 1rem;
+        }
+        label {
+            font-size: .8rem;
+        }
+        input, textarea {
+            resize: none;
+            background-image: linear-gradient(to right bottom, #fff, var(--clr-gray-light));
+            width: 100%;
+            border-radius: .4rem;
+            border: 1px solid var(--clr-gray-dark);
+            font-family: inherit;
+            padding: .5rem 1rem;
+            font-size: .8rem;
+        }
+    }
+    
+}
+</style>
