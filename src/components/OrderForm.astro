@@ -1,0 +1,559 @@
+---
+// src/components/OrderForm.astro
+// Pure vanilla JS — no TypeScript, no interfaces, no type assertions.
+// This matches the approach of the first version that worked.
+
+import { PACKAGES, WHATSAPP_NUMBER, SHEET_URL } from "../data/menu.ts";
+---
+
+<section class="order-section" id="order-form">
+
+  <div class="order-hero">
+    <div class="container text-center">
+      <h2 class="heading-secondary text-white">Place Your Order</h2>
+      <p class="text-white/60 text-base max-w-xl mx-auto -mt-4">
+        Choose your package, fill in your details, and we'll open WhatsApp with everything ready.
+      </p>
+    </div>
+  </div>
+
+  <div class="container order-body">
+    <div class="order-layout">
+
+      <!-- Left: How it works -->
+      <aside class="order-aside">
+        <h3 class="heading-tertiary mb-6">How It Works</h3>
+        <div class="steps">
+          {[
+            { n:"01", t:"Choose Package",    d:"Select your size and quantity below." },
+            { n:"02", t:"Pick Flavours",     d:"Use the blend builder. Come back here when done." },
+            { n:"03", t:"Your Details",      d:"Fill in your contacts and delivery location." },
+            { n:"04", t:"Send via WhatsApp", d:"Opens pre-filled — just hit send. Pay by Friday." },
+          ].map((s) => (
+            <div class="step-row">
+              <span class="step-n">{s.n}</span>
+              <div>
+                <p class="step-t">{s.t}</p>
+                <p class="step-d">{s.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="delivery-card">
+          <p class="delivery-title">🚚 Delivery</p>
+          <p>Pay by <strong>Friday</strong> — fresh juice delivered from <strong>Wednesday</strong> the following week.</p>
+          <p class="mt-2">Large orders (up to 1,000 bottles) need a 2-week lead time.</p>
+        </div>
+      </aside>
+
+      <!-- Right: Form -->
+      <div class="form-card" id="formCard">
+
+        <!-- Step 1: Package -->
+        <div class="form-block">
+          <div class="form-block-head">
+            <span class="step-pill">Step 1</span>
+            <h3 class="form-block-title">Choose Your Package</h3>
+          </div>
+
+          <div class="pkg-grid" id="pkgGrid">
+            {PACKAGES.map((pkg) => (
+              <button
+                class={`pkg-card${pkg.featured ? " pkg-card--featured" : ""}`}
+                data-pkg-id={pkg.id}
+                data-pkg-label={pkg.label}
+                data-pkg-price={String(pkg.price)}
+                data-pkg-max={pkg.maxFlavours !== null ? String(pkg.maxFlavours) : ""}
+                type="button"
+              >
+                {pkg.badge && <span class="pkg-badge">{pkg.badge}</span>}
+                <div class="pkg-img-wrap">
+                  <img src={pkg.image} alt={pkg.label} class="pkg-img" loading="lazy" />
+                </div>
+                <div class="pkg-info">
+                  <p class="pkg-size">{pkg.size}</p>
+                  <p class="pkg-desc">{pkg.description}</p>
+                  <p class="pkg-price">GHS {pkg.price}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <!-- Qty row -->
+          <div class="qty-row" id="qtyRow" style="display:none">
+            <span class="qty-label">Number of Sets</span>
+            <div class="qty-controls">
+              <button class="qty-btn" id="qtyMinus" type="button">−</button>
+              <span class="qty-val" id="qtyVal">1</span>
+              <button class="qty-btn" id="qtyPlus" type="button">+</button>
+            </div>
+            <div class="qty-subtotal">
+              <span class="qty-subtotal-label">Subtotal</span>
+              <span class="qty-subtotal-val" id="qtySubtotal">GHS 0</span>
+            </div>
+          </div>
+
+          <!-- Go to blend builder -->
+          <div class="go-blend" id="goBlend" style="display:none">
+            <p class="go-blend-text">Great! Now pick your flavours in the blend builder below.</p>
+            <a href="#blend-builder" class="btn btn-yellow inline-block">Go to Blend Builder ↓</a>
+          </div>
+        </div>
+
+        <!-- Step 2: Flavours summary -->
+        <div class="form-block">
+          <div class="form-block-head">
+            <span class="step-pill">Step 2</span>
+            <h3 class="form-block-title">Your Flavours</h3>
+          </div>
+          <div class="flavours-preview" id="flavoursPreview">
+            <span class="preview-empty">Use the blend builder below ↓ — then come back here</span>
+          </div>
+        </div>
+
+        <!-- Step 3: Details -->
+        <div class="form-block">
+          <div class="form-block-head">
+            <span class="step-pill">Step 3</span>
+            <h3 class="form-block-title">Your Details</h3>
+          </div>
+          <div class="fields">
+
+            <p class="field-section-label">Primary Contact</p>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label" for="firstName">First Name *</label>
+                <input type="text" id="firstName" class="field-input" placeholder="Ama" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="lastName">Last Name *</label>
+                <input type="text" id="lastName" class="field-input" placeholder="Mensah" />
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="phone">Phone / WhatsApp *</label>
+              <input type="tel" id="phone" class="field-input" placeholder="+233 XX XXX XXXX" />
+            </div>
+
+            <p class="field-section-label mt-4">Secondary Contact (for delivery)</p>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label" for="secName">Name</label>
+                <input type="text" id="secName" class="field-input" placeholder="Alternative contact name" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="secPhone">Phone</label>
+                <input type="tel" id="secPhone" class="field-input" placeholder="+233 XX XXX XXXX" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="location">Delivery Location *</label>
+              <input type="text" id="location" class="field-input" placeholder="Your area / neighbourhood in Ghana" />
+            </div>
+            <div class="field">
+              <label class="field-label" for="notes">Additional Notes</label>
+              <textarea id="notes" class="field-textarea" placeholder="Special requests, event details..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary + Submit -->
+        <div class="order-summary" id="orderSummary">
+          <p class="summary-label">Order Summary</p>
+          <div class="summary-box" id="summaryBox">
+            <span class="summary-empty">Your order will appear here</span>
+          </div>
+          <div class="summary-total-row">
+            <span class="summary-total-label">Total</span>
+            <span class="summary-total-val" id="summaryTotal">GHS 0</span>
+          </div>
+          <p class="summary-custom-note" id="summaryCustomNote" style="display:none">
+            * Custom blend — final price confirmed on WhatsApp
+          </p>
+          <button class="btn btn-yellow submit-btn" id="submitBtn" type="button">
+            Send Order via WhatsApp →
+          </button>
+          <p class="submit-note">Opens WhatsApp with your order pre-filled. We confirm within 24 hours.</p>
+        </div>
+
+        <!-- Success state -->
+        <div class="order-success" id="orderSuccess" style="display:none">
+          <p class="success-emoji">🥤</p>
+          <h3 class="heading-tertiary mt-3 mb-3">Order Sent!</h3>
+          <p class="text-gray-500 text-sm leading-relaxed max-w-sm mx-auto mb-6">
+            WhatsApp has opened with your order pre-filled. Send the message — we will confirm and arrange payment within 24 hours.
+          </p>
+          <button class="btn btn-yellow" id="resetBtn" type="button">Place Another Order</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ WHATSAPP_NUMBER, SHEET_URL }}>
+  // Pure vanilla JS — no TypeScript, no interfaces, no type assertions.
+
+  var selectedPkg = null;
+  var qty = 1;
+  var flavours = [];
+
+  // ── Package selection ──
+  var pkgGrid = document.getElementById('pkgGrid');
+
+  pkgGrid.addEventListener('click', function(e) {
+    var card = e.target;
+
+    // Walk up from click target until we find the pkg-card button
+    while (card && !card.classList.contains('pkg-card')) {
+      card = card.parentElement;
+    }
+    if (!card) return;
+
+    // Deselect all, select clicked
+    document.querySelectorAll('.pkg-card').forEach(function(c) {
+      c.classList.remove('selected');
+    });
+    card.classList.add('selected');
+
+    var maxRaw = card.getAttribute('data-pkg-max');
+    selectedPkg = {
+      id:          card.getAttribute('data-pkg-id'),
+      label:       card.getAttribute('data-pkg-label'),
+      price:       parseInt(card.getAttribute('data-pkg-price'), 10),
+      maxFlavours: maxRaw === '' ? null : parseInt(maxRaw, 10),
+    };
+
+    qty = 1;
+    document.getElementById('qtyRow').style.display = '';
+    document.getElementById('goBlend').style.display = '';
+    updateQty();
+    updateSummary();
+
+    document.dispatchEvent(new CustomEvent('helthe:packageSelected', {
+      detail: { maxFlavours: selectedPkg.maxFlavours, label: selectedPkg.label }
+    }));
+  });
+
+  // ── Quantity ──
+  document.getElementById('qtyMinus').addEventListener('click', function() {
+    if (qty > 1) { qty--; updateQty(); updateSummary(); }
+  });
+  document.getElementById('qtyPlus').addEventListener('click', function() {
+    qty++;
+    updateQty();
+    updateSummary();
+  });
+
+  function updateQty() {
+    document.getElementById('qtyVal').textContent = qty;
+    if (selectedPkg) {
+      document.getElementById('qtySubtotal').textContent = 'GHS ' + (selectedPkg.price * qty).toLocaleString();
+    }
+  }
+
+  // ── Receive flavours from BlendBuilder ──
+  document.addEventListener('helthe:flavoursUpdated', function(e) {
+    flavours = e.detail.flavours;
+    renderFlavoursPreview();
+    updateSummary();
+  });
+
+  function renderFlavoursPreview() {
+    var el = document.getElementById('flavoursPreview');
+    if (flavours.length === 0) {
+      el.innerHTML = '<span class="preview-empty">Use the blend builder below ↓ — then come back here</span>';
+      return;
+    }
+    el.innerHTML = flavours.map(function(f) {
+      return '<span class="fp-chip' + (f.custom ? ' fp-chip--custom' : '') + '">' + f.name + (f.custom ? ' <small>(+GHS)</small>' : '') + '</span>';
+    }).join('');
+  }
+
+  // ── Summary ──
+  function updateSummary() {
+    var box   = document.getElementById('summaryBox');
+    var total = document.getElementById('summaryTotal');
+    var customNote = document.getElementById('summaryCustomNote');
+
+    if (!selectedPkg) {
+      box.innerHTML = '<span class="summary-empty">Your order will appear here</span>';
+      total.textContent = 'GHS 0';
+      customNote.style.display = 'none';
+      return;
+    }
+
+    var subtotal  = selectedPkg.price * qty;
+    var hasCustom = flavours.some(function(f) { return f.custom; });
+    var fText     = flavours.length > 0
+      ? flavours.map(function(f) { return f.name; }).join(', ')
+      : 'No flavours selected yet';
+
+    box.innerHTML =
+      '<div class="s-line"><span>' + selectedPkg.label + ' × ' + qty + '</span><strong>GHS ' + subtotal.toLocaleString() + '</strong></div>' +
+      '<div class="s-line s-line--sub">Flavours: ' + fText + '</div>' +
+      (hasCustom ? '<div class="s-line s-line--cust">Custom surcharge *<span>TBC</span></div>' : '');
+
+    total.textContent = 'GHS ' + subtotal.toLocaleString() + (hasCustom ? ' + TBC' : '');
+    customNote.style.display = hasCustom ? 'block' : 'none';
+  }
+
+  // ── Submit ──
+  document.getElementById('submitBtn').addEventListener('click', function() {
+    var firstName = document.getElementById('firstName').value.trim();
+    var lastName  = document.getElementById('lastName').value.trim();
+    var phone     = document.getElementById('phone').value.trim();
+    var secName   = document.getElementById('secName').value.trim();
+    var secPhone  = document.getElementById('secPhone').value.trim();
+    var location  = document.getElementById('location').value.trim();
+    var notes     = document.getElementById('notes').value.trim();
+
+    var errors = [];
+    if (!selectedPkg)                                          errors.push('Please select a package.');
+    if (flavours.length === 0 && selectedPkg && selectedPkg.maxFlavours !== null) errors.push('Please select at least one flavour.');
+    if (!firstName)                                            errors.push('Please enter your first name.');
+    if (!phone)                                                errors.push('Please enter your phone number.');
+    if (!location)                                             errors.push('Please enter your delivery location.');
+
+    if (errors.length > 0) { alert(errors.join('\n')); return; }
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Opening WhatsApp...';
+
+    var subtotal = selectedPkg.price * qty;
+    var fText = flavours.length > 0
+      ? flavours.map(function(f) { return f.name + (f.custom ? ' (+GHS)' : ''); }).join(', ')
+      : 'To be confirmed';
+    var dateStr = new Date().toLocaleDateString('en-GB');
+
+    var lines = [
+      '🥤 *New Helthe Juice Order*',
+      '',
+      '*Name:* ' + firstName + ' ' + lastName,
+      '*Phone:* ' + phone,
+    ];
+    if (secName)  lines.push('*Secondary Contact:* ' + secName);
+    if (secPhone) lines.push('*Secondary Phone:* ' + secPhone);
+    lines.push(
+      '*Package:* ' + selectedPkg.label + ' × ' + qty,
+      '*Flavours:* ' + fText,
+      '*Delivery:* ' + location
+    );
+    if (notes) lines.push('*Notes:* ' + notes);
+    lines.push('', '*Subtotal:* GHS ' + subtotal.toLocaleString(), '*Date:* ' + dateStr);
+
+    var msg = lines.join('\n');
+
+    // Log to Sheets (silent)
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        timestamp:  new Date().toISOString(),
+        firstName:  firstName,
+        lastName:   lastName,
+        phone:      phone,
+        secName:    secName,
+        secPhone:   secPhone,
+        location:   location,
+        notes:      notes,
+        orderType:  selectedPkg.label + ' × ' + qty,
+        flavours:   fText,
+        totalPrice: subtotal,
+        source:     'Website',
+        status:     'New',
+        payment:    'Pending',
+      }),
+    }).catch(function() {});
+
+    window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+
+    document.getElementById('orderSummary').style.display = 'none';
+    document.getElementById('orderSuccess').style.display = 'block';
+  });
+
+  // ── Reset ──
+  document.getElementById('resetBtn').addEventListener('click', function() {
+    selectedPkg = null;
+    qty = 1;
+    flavours = [];
+
+    document.querySelectorAll('.pkg-card').forEach(function(c) { c.classList.remove('selected'); });
+    document.getElementById('qtyRow').style.display  = 'none';
+    document.getElementById('goBlend').style.display = 'none';
+
+    ['firstName','lastName','phone','secName','secPhone','location'].forEach(function(id) {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('notes').value = '';
+
+    renderFlavoursPreview();
+    updateSummary();
+
+    if (typeof window.heltheClearBlender === 'function') {
+      window.heltheClearBlender();
+    }
+
+    document.dispatchEvent(new CustomEvent('helthe:packageSelected', {
+      detail: { maxFlavours: null, label: '' }
+    }));
+
+    document.getElementById('orderSuccess').style.display = 'none';
+    document.getElementById('orderSummary').style.display = '';
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = false;
+    btn.textContent = 'Send Order via WhatsApp →';
+  });
+</script>
+
+<style lang="scss">
+  .order-section { background-color: var(--clr-gray-light); }
+
+  .order-hero {
+    background-color: var(--clr-dark);
+    padding: 8rem 0 6rem;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3rem), 0 100%);
+  }
+
+  .order-body { padding: 4rem 0 5rem; }
+
+  .order-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3.5rem;
+    align-items: flex-start;
+    @media (max-width: 900px) { grid-template-columns: 1fr; }
+  }
+
+  .order-aside {}
+
+  .steps { display: flex; flex-direction: column; margin-bottom: 2rem; }
+
+  .step-row {
+    display: flex; gap: 1rem; padding: 1.1rem 0;
+    border-bottom: 1px solid #e8e8e8; align-items: flex-start;
+    &:last-child { border-bottom: none; }
+  }
+
+  .step-n { font-family: "Century Gothic", sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--clr-yellow); line-height: 1; min-width: 2rem; flex-shrink: 0; }
+  .step-t { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--clr-dark); margin-bottom: 0.2rem; }
+  .step-d { font-size: 0.8rem; color: #777; line-height: 1.5; }
+
+  .delivery-card {
+    background: var(--clr-dark); border-radius: 0.75rem; padding: 1.25rem 1.1rem;
+    font-size: 0.82rem; color: rgba(255,255,255,0.6); line-height: 1.7;
+    .delivery-title { font-size: 0.75rem; font-weight: 700; color: var(--clr-yellow); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    strong { color: var(--clr-white); }
+  }
+
+  .form-card { background: var(--clr-white); border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 32px rgba(0,0,0,0.06); }
+
+  .form-block { padding: 2rem 2rem 1.5rem; border-bottom: 1px solid #f0f0f0; }
+
+  .form-block-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
+
+  .step-pill { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--clr-dark); color: var(--clr-white); padding: 0.25rem 0.75rem; border-radius: 2rem; font-weight: 700; flex-shrink: 0; }
+
+  .form-block-title { font-family: "Century Gothic", sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--clr-dark); }
+
+  // ── Package grid ──
+  .pkg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    @media (max-width: 600px) { grid-template-columns: 1fr; }
+  }
+
+  // Disable pointer events on children so button always receives the click
+  .pkg-card * { pointer-events: none; }
+
+  .pkg-card {
+    border: 2px solid #e8e8e8; border-radius: 0.75rem; overflow: hidden;
+    background: #fafafa; cursor: pointer; font-family: inherit; text-align: left;
+    transition: all 0.2s; position: relative; padding: 0;
+    &:hover { border-color: var(--clr-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+    &.selected { border-color: var(--clr-yellow); box-shadow: 0 0 0 3px rgba(254,218,28,0.3); background: var(--clr-white); }
+    &--featured { border-color: rgba(254,218,28,0.4); }
+  }
+
+  .pkg-badge { position: absolute; top: 0.5rem; right: 0.5rem; z-index: 2; font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; background: var(--clr-yellow); color: var(--clr-black); padding: 0.2rem 0.55rem; border-radius: 1rem; font-weight: 700; }
+
+  .pkg-img-wrap {
+    height: 110px; overflow: hidden;
+    img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 0.3s; }
+  }
+  .pkg-card:hover .pkg-img-wrap img,
+  .pkg-card.selected .pkg-img-wrap img { transform: scale(1.06); }
+
+  .pkg-info { padding: 0.75rem 0.9rem; }
+  .pkg-size  { font-family: "Century Gothic", sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--clr-dark); line-height: 1; margin-bottom: 0.2rem; }
+  .pkg-desc  { font-size: 0.7rem; color: #999; line-height: 1.4; margin-bottom: 0.4rem; }
+  .pkg-price { font-size: 0.9rem; font-weight: 700; color: var(--color-green); }
+
+  // ── Qty ──
+  .qty-row { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8f8f8; border-radius: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .qty-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #888; font-weight: 700; }
+  .qty-controls { display: flex; align-items: center; border: 2px solid #e0e0e0; border-radius: 0.5rem; overflow: hidden; background: var(--clr-white); }
+  .qty-btn {
+    width: 2.5rem; height: 2.5rem; background: #f5f5f5; border: none; font-size: 1.1rem;
+    cursor: pointer; font-family: inherit; color: #333; transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    &:hover { background: var(--clr-dark); color: var(--clr-white); }
+  }
+  .qty-val { width: 3rem; text-align: center; font-size: 1rem; font-weight: 700; color: var(--clr-dark); border-left: 2px solid #e0e0e0; border-right: 2px solid #e0e0e0; line-height: 2.5rem; }
+  .qty-subtotal { margin-left: auto; text-align: right; }
+  .qty-subtotal-label { display: block; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; }
+  .qty-subtotal-val { font-family: "Century Gothic", sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--color-green); }
+
+  // ── Go blend ──
+  .go-blend { background: rgba(254,218,28,0.1); border: 1px solid rgba(254,218,28,0.35); border-radius: 0.6rem; padding: 1rem 1.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .go-blend-text { font-size: 0.82rem; color: #6b4500; flex: 1; }
+
+  // ── Flavours preview ──
+  .flavours-preview { min-height: 2.5rem; padding: 0.75rem 0.9rem; background: #f8f8f8; border-radius: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: flex-start; }
+  .preview-empty { font-size: 0.8rem; color: #bbb; font-style: italic; }
+  .fp-chip { font-size: 0.75rem; padding: 0.3rem 0.75rem; background: #e8f5e9; color: #2e7d32; border-radius: 2rem; font-weight: 600; border: 1px solid #a5d6a7; }
+  .fp-chip--custom { background: rgba(254,218,28,0.12); color: #7a5500; border-color: rgba(254,218,28,0.35); }
+
+  // ── Fields ──
+  .fields { display: flex; flex-direction: column; gap: 1rem; }
+  .field-section-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--clr-dark); margin-bottom: -0.25rem; }
+  .field-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+    @media (max-width: 500px) { grid-template-columns: 1fr; }
+  }
+  .field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .field-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: #888; font-weight: 700; }
+  .field-input,
+  .field-textarea {
+    padding: 0.75rem 0.9rem; border: 2px solid #e8e8e8; border-radius: 0.5rem;
+    background: #fafafa; font-family: inherit; font-size: 0.875rem; color: #222;
+    outline: none; transition: border-color 0.2s, background 0.2s;
+    &::placeholder { color: #ccc; }
+    &:focus { border-color: var(--clr-dark); background: var(--clr-white); }
+  }
+  .field-textarea { resize: vertical; min-height: 5rem; }
+
+  // ── Summary ──
+  .order-summary { padding: 2rem; background: #fafafa; }
+  .summary-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #aaa; font-weight: 700; margin-bottom: 0.9rem; }
+  .summary-box { background: var(--clr-white); border: 2px solid #eee; border-radius: 0.6rem; padding: 1rem; margin-bottom: 1rem; min-height: 3rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .summary-empty { font-size: 0.8rem; color: #ccc; font-style: italic; }
+  .s-line { display: flex; justify-content: space-between; font-size: 0.875rem; color: #333; }
+  .s-line--sub  { font-size: 0.75rem; color: #888; flex-direction: column; }
+  .s-line--cust { font-size: 0.75rem; color: #8a6000; }
+  .summary-total-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-top: 2px solid #eee; margin-bottom: 0.5rem; }
+  .summary-total-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #aaa; font-weight: 700; }
+  .summary-total-val { font-family: "Century Gothic", sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--color-green); }
+  .summary-custom-note { font-size: 0.7rem; color: #8a6000; font-style: italic; margin-bottom: 1rem; }
+  .submit-btn { width: 100%; font-size: 0.8rem !important; padding: 1rem !important; border-radius: 0.6rem !important; letter-spacing: 0.1em; font-weight: 700; margin-top: 0.5rem; }
+  .submit-note { font-size: 0.75rem; color: #aaa; text-align: center; margin-top: 0.6rem; line-height: 1.5; }
+
+  // ── Success ──
+  .order-success { padding: 4rem 2rem; text-align: center; }
+  .success-emoji { font-size: 3.5rem; }
+</style>

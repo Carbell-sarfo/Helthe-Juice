@@ -1,0 +1,288 @@
+---
+// src/components/BlendBuilder.astro
+// Pure vanilla JS — no TypeScript.
+// Sticky selection bar shows selected flavours.
+
+import { CATEGORIES } from "../data/menu.ts";
+---
+
+<div class="blend-builder" id="blend-builder">
+
+  <div class="container builder-top">
+    <span class="step-badge">Step 2</span>
+    <h2 class="heading-tertiary mt-2 mb-2">Choose Your Flavours</h2>
+    <p class="text-sm mb-4 max-w-xl" style="color:#666">
+      Select your blends below. Your limit depends on the package chosen above.
+    </p>
+    <div class="context-bar" id="builderContext">
+      <span id="contextText">← Select a package above first to see how many flavours you can choose</span>
+    </div>
+  </div>
+
+  <!-- Sticky selection bar — shows while scrolling past the builder -->
+  <div class="sticky-bar" id="stickyBar">
+    <div class="container sticky-bar-inner">
+      <div class="sticky-left">
+        <span class="sticky-label">Your Selection</span>
+        <div class="sticky-chips" id="stickyChips">
+          <span class="chips-empty">Nothing selected yet</span>
+        </div>
+      </div>
+      <div class="sticky-right">
+        <span class="sticky-count" id="stickyCount"></span>
+        <a href="#order-form" class="btn btn-yellow sticky-proceed" id="stickyProceed" style="display:none">
+          Proceed to Order →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category tabs -->
+  <div class="container mt-6">
+    <div class="builder-tabs" id="builderTabs">
+      <button class="btab active" data-cat="all">All</button>
+      {CATEGORIES.map((cat) => (
+        <button class="btab" data-cat={cat.id}>{cat.name}</button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Flavour grid -->
+  <div class="container builder-grid" id="builderGrid">
+    {CATEGORIES.map((cat) => (
+      <div class="bcat" data-cat={cat.id}>
+        <div class="bcat-header">
+          <img src={cat.image} alt={cat.name} class="bcat-img" loading="lazy" />
+          <div class="bcat-overlay">
+            <span class="bcat-name">{cat.name}</span>
+          </div>
+        </div>
+        <div class="bcat-flavours">
+          {cat.flavours.map((f) => (
+            <button
+              class={'fbtn' + (f.custom ? ' fbtn--custom' : '')}
+              data-flavour-id={f.id}
+              data-flavour-name={f.name}
+              data-custom={String(f.custom)}
+              type="button"
+            >
+              {f.name}
+              {f.seasonal && <span class="fbtn-tag fbtn-tag--s">Seasonal</span>}
+              {f.custom   && <span class="fbtn-tag fbtn-tag--c">+GHS</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="container">
+    <div class="custom-note" id="customNote" style="display:none">
+      <strong>Custom blend selected.</strong> An additional charge applies — we will confirm the final price with you on WhatsApp.
+    </div>
+  </div>
+
+  <div class="container py-8 text-center" id="builderBottomCta" style="display:none">
+    <a href="#order-form" class="btn btn-yellow" style="font-size:1rem;padding:0.9rem 2.5rem">
+      Continue to Your Details →
+    </a>
+  </div>
+
+</div>
+
+<script is:inline>
+  // Pure vanilla JS
+
+  var maxFlavours = null;
+  var selectedFlavours = [];
+
+  var contextText   = document.getElementById('contextText');
+  var stickyBar     = document.getElementById('stickyBar');
+  var stickyChips   = document.getElementById('stickyChips');
+  var stickyCount   = document.getElementById('stickyCount');
+  var stickyProceed = document.getElementById('stickyProceed');
+  var customNote    = document.getElementById('customNote');
+  var bottomCta     = document.getElementById('builderBottomCta');
+
+  // Listen for package selected
+  document.addEventListener('helthe:packageSelected', function(e) {
+    var max   = e.detail.maxFlavours;
+    var label = e.detail.label;
+    maxFlavours = max;
+    if (max === null) {
+      contextText.textContent = label + ' selected — contact us for flavour details';
+    } else {
+      contextText.textContent = label + ' — pick up to ' + max + ' flavour' + (max > 1 ? 's' : '');
+    }
+    clearAll();
+  });
+
+  // Flavour button clicks
+  document.querySelectorAll('.fbtn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id     = btn.getAttribute('data-flavour-id');
+      var name   = btn.getAttribute('data-flavour-name');
+      var custom = btn.getAttribute('data-custom') === 'true';
+
+      var already = selectedFlavours.some(function(f) { return f.id === id; });
+
+      if (already) {
+        selectedFlavours = selectedFlavours.filter(function(f) { return f.id !== id; });
+        btn.classList.remove('selected');
+      } else {
+        if (maxFlavours !== null && selectedFlavours.length >= maxFlavours) {
+          shakeContext();
+          return;
+        }
+        selectedFlavours.push({ id: id, name: name, custom: custom });
+        btn.classList.add('selected');
+      }
+
+      renderSelection();
+      dispatch();
+    });
+  });
+
+  // Category tabs
+  document.querySelectorAll('.btab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var cat = tab.getAttribute('data-cat');
+      document.querySelectorAll('.btab').forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelectorAll('.bcat').forEach(function(c) {
+        c.style.display = (cat === 'all' || c.getAttribute('data-cat') === cat) ? '' : 'none';
+      });
+    });
+  });
+
+  // Render sticky chips
+  function renderSelection() {
+    if (selectedFlavours.length === 0) {
+      stickyChips.innerHTML = '<span class="chips-empty">Nothing selected yet</span>';
+      stickyCount.textContent = '';
+      stickyProceed.style.display = 'none';
+      bottomCta.style.display = 'none';
+      customNote.style.display = 'none';
+      return;
+    }
+
+    stickyChips.innerHTML = selectedFlavours.map(function(f) {
+      return '<span class="s-chip' + (f.custom ? ' s-chip--custom' : '') + '">' +
+        f.name +
+        '<button class="chip-x" data-id="' + f.id + '" type="button">✕</button>' +
+        '</span>';
+    }).join('');
+
+    document.querySelectorAll('.chip-x').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.getAttribute('data-id');
+        selectedFlavours = selectedFlavours.filter(function(f) { return f.id !== id; });
+        var fbtn = document.querySelector('.fbtn[data-flavour-id="' + id + '"]');
+        if (fbtn) fbtn.classList.remove('selected');
+        renderSelection();
+        dispatch();
+      });
+    });
+
+    var limit = maxFlavours !== null ? ' / ' + maxFlavours : '';
+    stickyCount.textContent = selectedFlavours.length + limit + ' selected';
+    stickyProceed.style.display = '';
+    bottomCta.style.display = '';
+
+    var hasCustom = selectedFlavours.some(function(f) { return f.custom; });
+    customNote.style.display = hasCustom ? 'block' : 'none';
+  }
+
+  // Sticky bar visibility
+  var builder = document.getElementById('blend-builder');
+  if (builder && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      var visible = entries[0].isIntersecting;
+      if (visible) {
+        stickyBar.classList.remove('sticky-bar--visible');
+      } else {
+        stickyBar.classList.add('sticky-bar--visible');
+      }
+    }, { threshold: 0, rootMargin: '-80px 0px 0px 0px' });
+    observer.observe(builder);
+  }
+
+  function dispatch() {
+    document.dispatchEvent(new CustomEvent('helthe:flavoursUpdated', {
+      detail: { flavours: selectedFlavours }
+    }));
+  }
+
+  function clearAll() {
+    selectedFlavours = [];
+    document.querySelectorAll('.fbtn').forEach(function(btn) { btn.classList.remove('selected'); });
+    renderSelection();
+  }
+
+  function shakeContext() {
+    var ctx = document.getElementById('builderContext');
+    if (!ctx) return;
+    ctx.classList.add('shake');
+    setTimeout(function() { ctx.classList.remove('shake'); }, 500);
+  }
+
+  window.heltheClearBlender = clearAll;
+</script>
+
+<style lang="scss">
+  .blend-builder { background-color: var(--clr-gray-light); padding: 4rem 0 2rem; }
+
+  .step-badge { display: inline-block; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--clr-yellow); color: var(--clr-black); padding: 0.25rem 0.9rem; border-radius: 2rem; font-weight: 700; }
+
+  .context-bar { background: var(--clr-dark); color: rgba(255,255,255,0.7); padding: 0.75rem 1.1rem; border-radius: 0.6rem; font-size: 0.85rem; margin-bottom: 1.5rem; transition: background 0.2s; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-6px); }
+    40%,80%  { transform: translateX(6px); }
+  }
+  .context-bar.shake { animation: shake 0.4s ease; background: #c0392b; }
+
+  .sticky-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--clr-dark); padding: 0.75rem 0;
+    transform: translateY(-100%); opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    pointer-events: none;
+    &--visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  }
+
+  .sticky-bar-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .sticky-left { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; flex: 1; min-width: 0; }
+  .sticky-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.4); font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .sticky-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+  .chips-empty { font-size: 0.8rem; color: rgba(255,255,255,0.35); font-style: italic; }
+
+  .s-chip { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; padding: 0.25rem 0.7rem; background: rgba(255,255,255,0.12); color: var(--clr-white); border-radius: 2rem; border: 1px solid rgba(255,255,255,0.2); }
+  .s-chip--custom { background: rgba(254,218,28,0.15); color: var(--clr-yellow); border-color: rgba(254,218,28,0.3); }
+  .chip-x { background: none; border: none; cursor: pointer; font-size: 0.6rem; color: inherit; padding: 0; opacity: 0.6; line-height: 1; &:hover { opacity: 1; } }
+
+  .sticky-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+  .sticky-count { font-size: 0.75rem; color: rgba(255,255,255,0.5); white-space: nowrap; }
+  .sticky-proceed { font-size: 0.7rem !important; padding: 0.5rem 1.2rem !important; white-space: nowrap; }
+
+  .builder-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .btab { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1rem; background: var(--clr-white); border: 2px solid #e0e0e0; color: #666; cursor: pointer; font-family: inherit; border-radius: 2rem; transition: all 0.2s; font-weight: 700; &:hover { border-color: var(--clr-dark); color: var(--clr-dark); } &.active { background: var(--clr-dark); border-color: var(--clr-dark); color: var(--clr-white); } }
+
+  .builder-grid { display: flex; flex-direction: column; gap: 2rem; padding-bottom: 2rem; }
+
+  .bcat-header { position: relative; height: 90px; border-radius: 0.75rem; overflow: hidden; margin-bottom: 1rem; img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; } }
+  .bcat-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.15) 100%); display: flex; align-items: center; padding: 0 1.25rem; }
+  .bcat-name { font-family: "Century Gothic", sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--clr-white); }
+
+  .bcat-flavours { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+  .fbtn { font-size: 0.8rem; padding: 0.55rem 1rem; background: var(--clr-white); border: 2px solid #e0e0e0; color: #333; cursor: pointer; font-family: inherit; border-radius: 0.5rem; transition: all 0.18s; display: inline-flex; align-items: center; gap: 0.4rem; &:hover { border-color: var(--clr-dark); color: var(--clr-dark); background: #f5f5f5; } &.selected { background: var(--clr-dark); border-color: var(--clr-dark); color: var(--clr-white); } &--custom { border-style: dashed; } &--custom.selected { background: #6b4500; border-style: solid; border-color: #6b4500; } }
+
+  .fbtn-tag { font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 1rem; font-weight: 700; }
+  .fbtn-tag--s { opacity: 0.6; }
+  .fbtn-tag--c { background: rgba(254,218,28,0.2); color: #7a5500; }
+  .fbtn.selected .fbtn-tag--c { background: rgba(255,255,255,0.2); color: var(--clr-yellow); }
+
+  .custom-note { background: rgba(254,218,28,0.1); border: 1px solid rgba(254,218,28,0.35); border-radius: 0.5rem; padding: 0.85rem 1.1rem; font-size: 0.82rem; color: #6b4500; line-height: 1.7; margin-top: 1rem; strong { color: #4a2e00; } }
+</style>

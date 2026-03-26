@@ -1,55 +1,9 @@
 ---
-// src/pages/order.astro
-// Component order matters:
-// 1. OrderForm (Step 1 — package picker + Step 3 — details)
-// 2. BlendBuilder (Step 2 — flavour picker, in between)
-// They communicate via document events — order in DOM does not affect that.
-// "Go to Blend Builder ↑" button in Step 1 scrolls to #blend-builder
-// "Proceed to Order →" in sticky bar and bottom CTA scroll to #order-form
-
 import MainLayout from "../layouts/MainLayout.astro";
-import BlendBuilder from "../components/BlendBuilder.astro";
 import OrderForm from "../components/OrderForm.astro";
+import BlendBuilder from "../components/BlendBuilder.astro";
 ---
-
 <MainLayout title="Order — Helthe Juice">
-
-  <!-- Page hero -->
-  <div class="page-hero">
-    <div class="container text-center">
-      <h1 class="header-title text-white mb-4">Build Your Order</h1>
-      <p class="text-white/60 text-base max-w-lg mx-auto leading-relaxed">
-        Fresh. Natural. Made after you order.
-        Choose your package, pick your flavours, and we'll take it from there.
-      </p>
-    </div>
-  </div>
-
-  <!--
-    FLOW:
-    Step 1 → inside OrderForm (package + qty)
-      ↓ "Go to Blend Builder" button
-    Step 2 → BlendBuilder (flavour picker)
-      ↓ sticky bar "Proceed to Order" / bottom CTA button
-    Step 3 → back inside OrderForm (details + submit)
-
-    Both components sit on the same page and talk via custom events on document.
-    BlendBuilder listens for "helthe:packageSelected" from OrderForm.
-    OrderForm listens for "helthe:flavoursUpdated" from BlendBuilder.
-  -->
-
-  <!-- Step 1 + Step 3 live here -->
   <OrderForm />
-
-  <!-- Step 2 sits between them visually -->
   <BlendBuilder />
-
 </MainLayout>
-
-<style lang="scss">
-  .page-hero {
-    background-color: var(--clr-dark);
-    padding: 10rem 0 5rem;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3rem), 0 100%);
-  }
-</style>
