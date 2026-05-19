@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/logo-white.png";
 import BWave from "../assets/b-wave.png";
 ---
 
@@ -16,11 +16,11 @@ import BWave from "../assets/b-wave.png";
             <div class="grid grid-col-1 md:grid-cols-2 gap-8">
                 <div>
                     <a href="/">
-                        <Image src={Logo} alt="Helthe Juice"/>
+                        <Image src={Logo} alt="Helthe Juice" class="logo w-[60px]"/>
                     </a>
                     <p class="text-gray-300 mt-4">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis culpa expedita eaque maiores dicta qui vitae, quasi vel porro temporibus, consectetur quibusdam, aperiam aut voluptate.</p>
                 </div>
-                <div>
+                <div class="md:justify-self-end">
                     <h2 class="heading-tertiary text-white">Follow us on socials</h2>
                     <ul class="social-list">
                         <li class="social-item">
@@ -48,7 +48,7 @@ import BWave from "../assets/b-wave.png";
             </div>
     </div>
 
-        <p class="copy text-center py-4 mt-8 text-gray-400">&copy; {new Date().getFullYear()} EcoGlass GH Ltd built with <i class="fa-solid fa-heart text-red-600"></i> by <a href="https://carbellsarfo.netlify.app/" class="text-red-700" target="_blank">Carbell Sarfo</a></p>
+        <p class="copy text-center py-4 mt-8 text-gray-400">&copy; {new Date().getFullYear()} Helthe Juice GH Ltd built with <i class="fa-solid fa-heart text-red-600"></i> by <a href="https://carbellsarfo.netlify.app/" class="text-red-700" target="_blank">Carbell Sarfo</a></p>
     </div>
 </footer>
 
@@ -67,6 +67,10 @@ import BWave from "../assets/b-wave.png";
         }
     }
 
+.logo {
+    width: 100px;
+    height: auto;
+}
 
 
 

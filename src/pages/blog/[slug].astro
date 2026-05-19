@@ -1,0 +1,32 @@
+---
+import { client, urlFor } from "../../lib/sanity";
+import { PortableText } from "@portabletext/react"; // or use a plain renderer
+import BlogLayout from "../../layouts/BlogLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await client.fetch(`*[_type == "post"]{ slug }`);
+  return posts.map((post) => ({
+    params: { slug: post.slug.current },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await client.fetch(
+  `*[_type == "post" && slug.current == $slug][0]`,
+  { slug }
+);
+---
+
+<BlogLayout title={post.title}>
+  <h1>{post.title}</h1>
+  <time>{new Date(post.publishedAt).toLocaleDateString()}</time>
+  {post.mainImage && (
+    <img src={urlFor(post.mainImage).width(800).url()} alt={post.title} />
+  )}
+  <!-- Render portable text blocks -->
+  {post.body.map((block) => (
+    block._type === "block" && block.style === "normal"
+      ? <p>{block.children.map((c) => c.text).join("")}</p>
+      : null
+  ))}
+</BlogLayout>
