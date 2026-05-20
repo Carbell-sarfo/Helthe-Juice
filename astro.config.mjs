@@ -7,7 +7,7 @@ import tailwindcss from '@tailwindcss/vite';  // Tailwind
 import sitemap from '@astrojs/sitemap'; // Sitemap for SEO
 import path from "path";
 
-import sanity from '@sanity/astro';
+// import sanity from '@sanity/astro';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,14 +16,15 @@ export default defineConfig({
   site: "https://helthejuice.netlify.app/",
   integrations: [
   sitemap(),
-  sanity({
-    projectId: "psq3k6n0",
-    dataset: "production",
-    studioBasePath: "/admin",
-    useCdn: true, // changed to true for static
-    apiVersion: "2025-06-03", // insert the current date to access the latest version of the API
-    // studioBasePath: '/admin' // disabled to avoid dynamic route issues during debug
-  })],
+  // sanity({
+  //   projectId: "psq3k6n0",
+  //   dataset: "production",
+  //   studioBasePath: "/admin",
+  //   useCdn: true, // changed to true for static
+  //   apiVersion: "2025-06-03", // insert the current date to access the latest version of the API
+  //   // studioBasePath: '/admin' // disabled to avoid dynamic route issues during debug
+  // })
+  ],
 
   vite: {
     plugins: [tailwindcss()],
