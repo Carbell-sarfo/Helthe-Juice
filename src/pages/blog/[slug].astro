@@ -1,32 +1,98 @@
 ---
-import { client, urlFor } from "../../lib/sanity";
-import { PortableText } from "@portabletext/react"; // or use a plain renderer
-import BlogLayout from "../../layouts/BlogLayout.astro";
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import CopyButton from "../../components/CopyButtons.astro";
+import { PortableText } from "astro-portabletext";
 
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+import imageUrlBuilder from "@sanity/image-url";
+import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
+import PortableTextImage from "../../components/PortableTextImage.astro";
+
+// Ensure proper Sanity image handling
+const urlFor = (source: SanityImageSource) =>
+  source?.asset?.url ? imageUrlBuilder(sanityClient).image(source).auto("format").fit("max").url() : null;
+
+// Fetch individual post by slug
+const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{ 
+  title, 
+  slug,          
+  mainImage{ alt, asset->{ url } }, 
+  body, 
+  publishedAt 
+}`;
+
+const post = await sanityClient.fetch<SanityDocument>(POST_QUERY, Astro.params) || {};
+
+// Format the publication date safely
+const formattedDate = post.publishedAt 
+  ? new Date(post.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) 
+  : "Unknown date";
+
+// Ensure post image URL is properly retrieved
+const postImageUrl = post.mainImage?.asset?.url || null;
+
+
+// Generate static paths for posts
 export async function getStaticPaths() {
-  const posts = await client.fetch(`*[_type == "post"]{ slug }`);
-  return posts.map((post) => ({
-    params: { slug: post.slug.current },
-  }));
+  const SLUGS_QUERY = `*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`;
+  const slugs = await sanityClient.fetch(SLUGS_QUERY);
+  return slugs.map(({ slug }) => ({ params: { slug } }));
 }
 
-const { slug } = Astro.params;
-const post = await client.fetch(
-  `*[_type == "post" && slug.current == $slug][0]`,
-  { slug }
-);
+
+// Define PortableText rendering components (including images)
+const components = {
+  type: {
+    image: PortableTextImage,
+  }
+}
 ---
 
-<BlogLayout title={post.title}>
-  <h1>{post.title}</h1>
-  <time>{new Date(post.publishedAt).toLocaleDateString()}</time>
-  {post.mainImage && (
-    <img src={urlFor(post.mainImage).width(800).url()} alt={post.title} />
-  )}
-  <!-- Render portable text blocks -->
-  {post.body.map((block) => (
-    block._type === "block" && block.style === "normal"
-      ? <p>{block.children.map((c) => c.text).join("")}</p>
-      : null
-  ))}
+<BlogLayout title={`EcoGlass | ${post.title}`}>
+  <div class="blog-container">
+    <!-- Post Title -->
+    <h1 class="blog-title">{post.title}</h1>
+
+    <!-- Date and Share section -->
+    <div class="grid grid-cols-2 mb-4">
+      <div>
+        <h6 class="date text-gray-400 font-medium text-sm">{formattedDate}</h6>
+      </div>
+      <div class="place-items-end">
+        <CopyButton url={`https://ecoglassgh.com/blog/${post.slug}`} />
+      </div>
+    </div>
+
+    <!-- Post Main Image -->
+    {postImageUrl && (
+      <img src={postImageUrl} alt={post.title} class="max-w-full rounded-xl text-center mb-12 mx-auto" width="550" height="310" />
+    )}
+
+    <!-- Blog Content -->
+    <div class="blog-content">
+      {Array.isArray(post.body) && <PortableText value={post.body} components={components} />}
+    </div>
+
+    <!-- Back to Blogs button -->
+    <a href="/blog/#section-blog" class="btn-sm btn-neutral mt-20">Back to Blogs</a>
+  </div>
 </BlogLayout>
+
+<style lang="scss">
+  .blog-container {
+    padding-top: 6rem;
+    padding-bottom: 12rem;
+  }
+
+  .blog-title {
+    font-size: clamp(2.5rem, 3vw, 3.5rem);
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .blog-content p {
+    margin-bottom: 1.5rem;
+  }
+</style>

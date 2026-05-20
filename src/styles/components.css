@@ -41,3 +41,66 @@
     border: 2px solid #003A79;
     color: #003A79;
 }
+
+
+
+
+
+
+.btn-sm {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 1.5rem;
+    border: 2px solid rgb(89, 89, 0);
+    cursor: pointer;
+    transition: .3s;
+}
+.btn-sm:hover, 
+.btn-sm:focus {
+    transform: scale(1.05);
+}
+.btn-sm:active {
+    transform: scale(.95);
+}
+
+
+
+/* ====== btn Neutral ========= */
+.btn-neutral {
+    background-color: var(--clr-gray-dark);
+    color: var(--clr-white);
+}
+.btn-neutral:hover,
+.btn-neutral:focus {
+    background-color: var(--clr-gray-dark);
+    color: var(--clr-white);
+}
+
+
+
+
+/* ========== Share Button ============ */
+.share {
+    color: #555;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    padding: 0.1rem 1rem;
+    border-radius: 1rem;
+    transition: 0.3s;
+    border: 1px solid transparent;
+    cursor: pointer;
+
+}
+.share:hover,
+.share:focus {
+  background-color: rgba(219, 162, 40, 0.36);
+  border: 1px solid #dba328;
+  color: var(--clr-yellow);
+}
+
+.share p {
+  margin: 0;
+  margin-right: 5px;
+}

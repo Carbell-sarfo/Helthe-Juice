@@ -1,32 +1,163 @@
 ---
-import { client, urlFor } from "../../lib/sanity";
 import MainLayout from "../../layouts/MainLayout.astro";
+// import Header from "../../components/shared/Header";
+import HeroImg from "../../assets/blog-bg.png";
 
-const posts = await client.fetch(`
-  *[_type == "post"] | order(publishedAt desc) {
-    title,
-    slug,
-    publishedAt,
-    excerpt,
-    mainImage
-  }
-`);
+// Sanity client + image url builder
+import { sanityClient } from "sanity:client";
+import imageUrlBuilder from "@sanity/image-url";
+
+import type { SanityDocument } from "@sanity/client";
+
+// Define function to generate image URLs
+const urlFor = (source: any) =>
+  source?.asset?.url
+    ? imageUrlBuilder(sanityClient)
+        .image(source.asset)
+        .auto("format")
+        .fit("max")
+        .url()
+    : null;
+
+// Fetch blog posts with images
+const POSTS_QUERY = `*[
+  _type == "post"
+  && defined(slug.current)
+] | order(publishedAt desc)[0...12]{
+  _id, 
+  title, 
+  slug, 
+  publishedAt,
+  mainImage{asset->{url}} // 👈 Ensure images are fetched
+}`;
+const posts: SanityDocument[] = await sanityClient.fetch(POSTS_QUERY);
 ---
 
-<MainLayout title="Blog">
-  <h1>NewsRoom</h1>
-  <ul>
-    {posts.map((post) => (
-      <li>
-        <a href={`/blog/${post.slug.current}`}>
-          {post.mainImage && (
-            <img src={urlFor(post.mainImage).width(400).url()} alt={post.title} />
-          )}
-          <h2>{post.title}</h2>
-          <p>{post.excerpt}</p>
-          <time>{new Date(post.publishedAt).toLocaleDateString()}</time>
-        </a>
-      </li>
-    ))}
-  </ul>
+<MainLayout
+  title="Blog"
+  description="Welcome to the blog page where you can find various articles and posts."
+>
+  <!-- <Header
+    backgroundImage={HeroImg.src}
+    isIndexPage={true}
+    title="NewsRoom"
+    subtitle="Latest Updates, News & Blogs"
+    className="text-white"
+  /> -->
+  <section class="section-hero">
+    <div class="hero-container">
+			<div class=" container">
+				<div class="hero-text">
+					<div class="container">
+						<h1>NewsRoom</h1>
+						<p class="mb-4 text-white">Latest Updates, News & Blogs
+						</p>
+			
+					</div>
+				</div>
+			</div>
+		</div>
+  </section>
+
+  <!-- Blog section from Sanity -->
+  <section class="section-blog pt-20 pb-60" id="section-blog">
+    <div class="sm-container">
+      <h2
+        class="heading-secondary"
+        data-aos="fade"
+        data-aos-delay="50"
+        data-aos-duration="500"
+      >
+        Latest News & Updates
+      </h2>
+
+      <ul class="flex flex-col gap-y-4">
+        <div class="grid gap-6 grid-cols-1">
+          {
+            posts.map((post) => (
+              <li class="">
+                <a
+                  href={`/blog/${post.slug.current}`}
+                  class="grid flex-col md:flex-row items-stretch rounded-lg shadow-sm border border-gray-200 bg-white hover:bg-gray-100 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                >
+                  {/* <!-- Blog Image --> */}
+                  {post.mainImage?.asset?.url ? (
+                    <img
+  src={post.mainImage.asset.url}
+  alt={post.title}
+  class="w-full md:w-56 md:h-40 object-cover rounded-l-lg flex-shrink-0"
+/>
+                  ) : (
+                    <img
+  src={post.mainImage.asset.url}
+  alt={post.title}
+  class="w-full md:w-56 md:h-40 object-cover rounded-l-lg flex-shrink-0"
+/>
+                  )}
+
+                  {/* <!-- Blog Details --> */}
+                  <div class="p-4 flex flex-col justify-between">
+                    <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+                      {post.title}
+                    </h2>
+                    <p class="mb-3 font-bold text-gray-600">
+                      {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </a>
+              </li>
+            ))
+          }
+        </div>
+      </ul>
+    </div>
+  </section>
 </MainLayout>
+
+
+
+
+
+
+
+<style lang="scss" >
+  .section-hero {
+		background-image: linear-gradient(to right, rgba(47, 44, 44, 0.736), rgba(47, 44, 44, 0.736)), url(../../assets/photo-separator.png);
+		width: 100%;
+		height: 80vh;
+		background-position: center;
+		position: relative;
+		background-size: cover;
+
+		.hero-wave {
+			// position: absolute;
+			// bottom: 0;
+		}
+
+		.hero-text {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+
+			h1 {
+				font-weight: bolder;
+				font-size: 6rem;
+				// font-family: "buttercake";
+				color: var(--clr-yellow);
+				text-shadow: 2px 1px 1px rgba(73, 73, 73, 0.315);
+			}
+		}
+	}
+</style>

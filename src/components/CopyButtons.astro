@@ -1,0 +1,35 @@
+<a href="javascript:void(0);" id="share-button" class="share">
+  <p id="share-text">Share</p>
+  <i class="fa-solid fa-share"></i>
+</a>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const shareButton = document.getElementById("share-button");
+  const textEl = document.getElementById("share-text");
+
+  if (!shareButton || !textEl) return; // Stops execution if elements are missing
+
+  const originalText = textEl.textContent;
+
+  shareButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        textEl.textContent = "Copied";
+        shareButton.classList.add("copied"); // Apply green color
+        setTimeout(() => {
+          textEl.textContent = originalText;
+          shareButton.classList.remove("copied");
+        }, 3000);
+      })
+      .catch(() => {
+        textEl.textContent = "Error";
+        setTimeout(() => {
+          textEl.textContent = originalText;
+        }, 3000);
+      });
+  });
+});
+</script>

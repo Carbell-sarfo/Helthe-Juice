@@ -12,12 +12,13 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.4.0",
     "@sanity/astro": "^3.4.0",
     "@sanity/client": "^7.22.0",
     "@sanity/image-url": "^2.1.1",
     "@tailwindcss/vite": "^4.2.2",
-    "@astrojs/sitemap": "^3.4.0",
     "astro": "^6.0.6",
+    "astro-portabletext": "^0.13.0",
     "jolty": "^0.6.2",
     "jolty-ui": "^0.3.1",
     "sass": "^1.98.0",
