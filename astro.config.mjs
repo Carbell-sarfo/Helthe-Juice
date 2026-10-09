@@ -18,10 +18,13 @@ export default defineConfig({
   integrations: [
   sitemap(),
   sanity({
-      projectId: 'your-project-id', // Replace with your actual Sanity project ID
-      dataset: 'production',
-      useCdn: false,
-    }),
+    projectId: "psq3k6n0",
+    dataset: "production",
+    studioBasePath: "/admin",
+    useCdn: true, // changed to true for static
+    apiVersion: "2025-06-03", // insert the current date to access the latest version of the API
+    // studioBasePath: '/admin' // disabled to avoid dynamic route issues during debug
+  })
   ],
 
   vite: {
