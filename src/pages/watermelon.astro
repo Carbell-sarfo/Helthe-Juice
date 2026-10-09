@@ -110,30 +110,40 @@ import LandingPage from '../layouts/LandingPage.astro';
 
 
 
-              <div>
-                <div class="flex justify-between items-center mb-1">
-                  <label for="location" class="block text-sm font-semibold text-gray-700">Delivery Location or Ghana Post GPS</label>
-                  <a 
-                    href="https://google.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1"
-                  >
-                    📍 Open Google Maps to drop a pin
-                  </a>
-                </div>
-                <input 
-                  type="text" 
-                  id="location" 
-                  name="location" 
-                  required 
-                  placeholder="Paste Google Maps link or Ghana Post GPS (e.g. GA-123-4567)" 
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" 
-                />
-                <p class="text-[11px] text-gray-400 mt-1">
-                  Providing an exact map pin link ensures our delivery riders get your watermelon box straight to your door without endless phone calls.
-                </p>
-              </div>
+              
+<div>
+  <div class="flex justify-between items-center mb-1">
+    <label
+      for="location"
+      class="block text-sm font-semibold text-gray-700"
+    >
+      Delivery Location or Ghana Post GPS
+    </label>
+
+    <a
+      href="https://www.google.com/maps/@?api=1&map_action=map&center=5.6037%2C-0.1870&zoom=12"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-xs text-emerald-600 hover:text-emerald-700 font-bold flex items-center gap-1 cursor-pointer"
+    >
+      📍 Open Google Maps
+    </a>
+  </div>
+
+  <input
+    type="text"
+    id="location"
+    name="location"
+    required
+    placeholder="Paste Google Maps link or Ghana Post GPS (e.g. GA-123-4567)"
+    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+  />
+
+  <p class="text-[11px] text-gray-400 mt-1">
+    Paste your Google Maps pin link or Ghana Post GPS address
+    so our delivery riders can find you easily.
+  </p>
+</div>
 
       
               <!-- CRM Additions: Allergies & Notes -->
