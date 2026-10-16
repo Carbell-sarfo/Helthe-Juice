@@ -1,4 +1,4 @@
----
+<!-- ---
 import MainLayout from "../layouts/MainLayout.astro";
 import OrderForm from "../components/OrderForm.astro";
 import BlendBuilder from "../components/BlendBuilder.astro";
@@ -6,4 +6,20 @@ import BlendBuilder from "../components/BlendBuilder.astro";
 <MainLayout title="Order — Helthe Juice">
   <OrderForm />
   <BlendBuilder />
+</MainLayout> -->
+
+
+
+
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import JuiceMixer from "../components/JuiceMixer.astro";
+import Faq from "../components/Faq.astro";
+---
+
+<MainLayout title="Order — Helthe Juice">
+  <JuiceMixer />
+
+  <!-- Section FAQ -->
+	 <Faq />
 </MainLayout>

@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import sanity from '@sanity/astro';
+// import sanity from '@sanity/astro';
 
 import tailwindcss from '@tailwindcss/vite';  // Tailwind
 import sitemap from '@astrojs/sitemap'; // Sitemap for SEO
@@ -12,12 +12,12 @@ export default defineConfig({
   site: "https://helthejuice.netlify.app/",
   integrations: [
     sitemap(),
-    sanity({
-      projectId: "psq3k6n0",
-      dataset: "production",
-      useCdn: true,
-      apiVersion: "2025-06-03",
-    })
+    // sanity({
+    //   projectId: "psq3k6n0",
+    //   dataset: "production",
+    //   useCdn: true,
+    //   apiVersion: "2025-06-03",
+    // })
   ],
 
   vite: {
