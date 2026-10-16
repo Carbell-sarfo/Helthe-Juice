@@ -8,7 +8,7 @@ import path from "path";
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  // adapter: netlify(), // Connects Netlify serverless adapter
+  adapter: netlify(), // Connects Netlify serverless adapter
   site: "https://helthejuice.netlify.app/",
   integrations: [
     sitemap(),
