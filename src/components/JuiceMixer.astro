@@ -347,7 +347,31 @@ const flavors = [
         };
 
         console.log('Order payload ready:', payload);
-        alert(`Thank you, ${payload.customerName}! Your order is ready for PayAngel processing.`);
+        const payBtn = document.getElementById('pay-angel-btn');
+if (payBtn) payBtn.innerText = 'Processing...';
+
+try {
+  const response = await fetch('/api/create-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const result = await response.json();
+
+  if (result.success) {
+    // In live mode, this redirects to PayAngel MoMo/Card checkout page
+    // In mock mode, it redirects to our test success page
+    window.location.href = result.redirectUrl;
+  } else {
+    alert('Something went wrong. Please try again.');
+    if (payBtn) payBtn.innerText = 'Pay with PayAngel (MoMo / Card)';
+  }
+} catch (err) {
+  console.error(err);
+  alert('Error connecting to payment server.');
+  if (payBtn) payBtn.innerText = 'Pay with PayAngel (MoMo / Card)';
+}
       });
     }
   });

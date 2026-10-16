@@ -1,0 +1,74 @@
+---
+// src/pages/order-success.astro
+import MainLayout from '../layouts/MainLayout.astro'; // Adjust path if needed
+
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const orderId = url.searchParams.get('orderId') || 'HJ-892104';
+const amount = url.searchParams.get('amount') || '225';
+---
+
+<MainLayout title="Order Confirmed | Helthe Juice">
+  <main class="min-h-screen bg-emerald-50/40 font-sans text-gray-800 flex items-center justify-center p-4 pb-52 pt-32">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 shadow-xl border border-emerald-100 relative overflow-hidden">
+      <!-- Top accent bar -->
+      <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600"></div>
+
+      <!-- Icon & Header -->
+      <div class="text-center mb-6 pt-2">
+        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <span class="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">
+          Order Received
+        </span>
+        <h1 class="text-2xl font-black text-gray-900 tracking-tight">You're on the Fresh Batch List!</h1>
+        <p class="text-xs text-gray-500 mt-1">We've reserved your juice box and logged your delivery details.</p>
+      </div>
+
+      <!-- Order Details -->
+      <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 space-y-3 mb-6">
+        <div class="flex justify-between items-center text-xs text-gray-500 pb-2 border-b border-gray-200/60">
+          <span>Order Reference</span>
+          <span class="font-mono font-bold text-gray-800 text-sm">{orderId}</span>
+        </div>
+
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-gray-500">Estimated Total</span>
+          <span class="font-bold text-emerald-600 text-base">GHS {amount}.00</span>
+        </div>
+
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-gray-500">Payment Status</span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200/60">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+            Awaiting PayAngel Prompt
+          </span>
+        </div>
+      </div>
+
+      <!-- mNotify Notice -->
+      <div class="bg-emerald-50/80 rounded-2xl p-4 border border-emerald-100/80 mb-6 flex items-start gap-3">
+        <div class="p-2 bg-emerald-500 text-white rounded-xl mt-0.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+          </svg>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-emerald-950">SMS & WhatsApp Confirmation</h4>
+          <p class="text-[11px] text-emerald-800/90 leading-relaxed mt-0.5">
+            An mNotify SMS notification with your delivery timeline and PayAngel payment link has been dispatched to your mobile line.
+          </p>
+        </div>
+      </div>
+
+      <!-- Button -->
+      <a href="/juices" class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white text-center font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-600/20 text-sm">
+        Return to Storefront
+      </a>
+    </div>
+  </main>
+</MainLayout>
