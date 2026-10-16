@@ -1,11 +1,416 @@
 ---
+export const prerender = false;
+
 import MainLayout from '../layouts/MainLayout.astro';
+import { Image } from 'astro:assets';
+
+// Import all product images directly from src/assets/products/
+import watermelonRed from '../assets/products/watermelon-red.png';
+import watermelonOrange from '../assets/products/watermelon-orange.png';
+import watermelonYellow from '../assets/products/watermelon-yellow.png';
+import watermelonBeetroot from '../assets/products/watermelon-beetroot.png';
+import watermelonMango from '../assets/products/watermelon-mango.png';
+import appleBeetrootCarrot from '../assets/products/apple-beetroot-carrot.png';
+import cucumberAppleKale from '../assets/products/cucumber-apple-kale.png';
+import pineapple from '../assets/products/pineapple.png';
+import pineappleCucumberSpinach from '../assets/products/pineapple-cucumber-spinach.png';
+import pineappleCarrot from '../assets/products/pineapple-carrot.png';
+import pineappleCucumberMint from '../assets/products/pineapple-cucumber-mint.png';
+import pineappleDandelion   from '../assets/products/pineapple-dandelion.png';
+import pineappleGinger from '../assets/products/pineapple-ginger.png';
+import pineappleMoringaGinger from '../assets/products/pineapple-moringa-ginger.png';
+import pineappleSpinachGinger from '../assets/products/pineapple-spinach-ginger.png';
+import pineapplePassionfruit from '../assets/products/pineapple-passionfruit.png';
+import orange from '../assets/products/orange.png';
+import orangeCarrot from '../assets/products/orange-carrot.png';
+
+
+// Juice catalog matching real Helthe Juice bottles
+const juices = [
+  {
+    id: 'watermelon-red',
+    name: 'Red Watermelon',
+    volume: '350ml',
+    price: 35,
+    fruits: ['watermelon'],
+    tagline: '100% Natural',
+    image: watermelonRed,
+  },
+  {
+    id: 'watermelon-yellow',
+    name: 'Yellow Watermelon',
+    volume: '350ml',
+    price: 35,
+    fruits: ['watermelon'],
+    tagline: 'No Preservatives',
+    image: watermelonYellow,
+  },
+  {
+    id: 'watermelon-orange',
+    name: 'Orange Watermelon',
+    volume: '350ml',
+    price: 35,
+    fruits: ['watermelon'],
+    tagline: 'No Preservatives',
+    image: watermelonOrange,
+  },
+  {
+    id: 'watermelon-beetroot',
+    name: 'Beetroot Watermelon',
+    volume: '350ml',
+    price: 35,
+    fruits: ['watermelon'],
+    tagline: 'No Preservatives',
+    image: watermelonBeetroot,
+  },
+  {
+    id: 'watermelon-mango',
+    name: 'Mango Watermelon',
+    volume: '350ml',
+    price: 35,
+    fruits: ['watermelon'],
+    tagline: 'No Preservatives',
+    image: watermelonMango,
+  },
+  {
+    id: 'apple-beetroot-carrot',
+    name: 'Apple Beetroot Carrot',
+    volume: '350ml',
+    price: 35,
+    fruits: ['apple', 'beetroot', 'carrot'],
+    tagline: 'No Preservatives',
+    image: appleBeetrootCarrot,
+  },
+  {
+    id: 'pineapple',
+    name: 'Pineapple',
+    volume: '350ml',
+    price: 35,
+    fruits: ['pineapple'],
+    tagline: 'No Preservatives',
+    image: pineapple,
+  },
+  {
+    id: 'pineapple-carrot',
+    name: 'Pineapple Carrot',
+    volume: '350ml',
+    price: 35,
+    fruits: ['pineapple', 'carrot'],
+    tagline: 'No Preservatives',
+    image: pineappleCarrot,
+  },
+  {
+    id: 'pineapple-spinach-ginger',
+    name: 'Pineapple Spinach Ginger',
+    volume: '350ml',
+    price: 35,
+    fruits: ['pineapple', 'spinach', 'ginger'],
+    tagline: 'No Preservatives',
+    image: pineappleSpinachGinger,
+  },
+  {
+    id: 'pineapple-cucumber-spinach',
+    name: 'Pineapple Cucumber Spinach',
+    volume: '350ml',
+    price: 35,
+    fruits: ['pineapple', 'cucumber', 'spinach'],
+    tagline: 'No Preservatives',
+    image: pineappleCucumberSpinach,
+  },
+  {
+    id: 'pineapple-passionfruit',
+    name: 'Pineapple Passionfruit',
+    volume: '350ml',
+    price: 35,
+    fruits: ['pineapple', 'passionfruit'],
+    tagline: 'No Preservatives',
+    image: pineapplePassionfruit,
+  },
+    {
+        id: 'pineapple-moringa-ginger',
+        name: 'Pineapple Moringa Ginger',
+        volume: '350ml',
+        price: 35,
+        fruits: ['pineapple', 'moringa', 'ginger'],
+        tagline: 'No Preservatives',
+        image: pineappleMoringaGinger,
+    },
+    {
+        id: 'pineapple-ginger',
+        name: 'Pineapple Ginger',
+        volume: '350ml',
+        price: 35,
+        fruits: ['pineapple', 'ginger'],
+        tagline: 'No Preservatives',
+        image: pineappleGinger,
+    },
+    {
+        id: 'pineapple-dandelion',
+        name: 'Pineapple Dandelion',
+        volume: '350ml',
+        price: 35,
+        fruits: ['pineapple', 'dandelion'],
+        tagline: 'No Preservatives',
+        image: pineappleDandelion,
+    },
+    {
+        id: 'pineapple-cucumber-mint',
+        name: 'Pineapple Cucumber Mint',
+        volume: '350ml',
+        price: 35,
+        fruits: ['pineapple', 'cucumber', 'mint'],
+        tagline: 'No Preservatives',
+        image: pineappleCucumberMint,
+    },
+    {
+        id: 'orange',
+        name: 'Orange',
+        volume: '350ml',
+        price: 35,
+        fruits: ['orange'],
+        tagline: 'No Preservatives',
+        image: orange,
+    },
+    {
+        id: 'orange-carrot',
+        name: 'Orange Carrot',
+        volume: '350ml',
+        price: 35,
+        fruits: ['orange', 'carrot'],
+        tagline: 'No Preservatives',
+        image: orangeCarrot,
+    },
+    {
+        id: 'cucumber-apple-kale',
+        name: 'Cucumber Apple Kale',
+        volume: '350ml',
+        price: 35,
+        fruits: ['cucumber', 'apple', 'kale'],
+        tagline: 'No Preservatives',
+        image: cucumberAppleKale,
+    },
+
+];
+
+// Unique fruit list for multi-fruit filtering
+const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
 ---
 
+<MainLayout title="Our Juices | Helthe Juice">
+  <div class="min-h-screen bg-gray-50/50 py-10 px-4 pb-52 pt-40 sm:px-6 font-sans">
+    <div class="max-w-5xl mx-auto space-y-8">
+      
+      <!-- Header -->
+      <div class="text-center space-y-1">
+        <h1 class="text-3xl font-black text-gray-950 tracking-tight">Helthe Juice Menu</h1>
+        <p class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">100% Natural • No Preservatives • 350ml Bottles</p>
+      </div>
+
+      <!-- Search & Multi-Fruit Combine Filter Bar -->
+      <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+          
+          <!-- Search Input -->
+          <div class="w-full md:w-72 relative">
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Search by juice name..." 
+              class="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
+            />
+            <span class="absolute left-3 top-3 text-gray-400 text-xs">🔍</span>
+          </div>
+
+          <!-- Multi-Fruit Filter Pills -->
+          <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto items-start sm:items-center">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Combine Fruits:</span>
+            <div class="flex flex-wrap gap-1.5 items-center">
+              <button 
+                id="clearFilters"
+                class="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-600 text-white transition-all shadow-sm"
+              >
+                All Juices
+              </button>
+              {allFruits.map(fruit => (
+                <button 
+                  class="fruit-filter-btn px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all border border-transparent" 
+                  data-fruit={fruit}
+                >
+                  {fruit}
+                </button>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
 
 
 
-<MainLayout>
 
-    
+
+      <!-- Juices Catalog Grid -->
+      <div id="juicesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        {juices.map(juice => (
+          <div 
+            class="juice-card bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
+            data-name={juice.name.toLowerCase()}
+            data-fruits={JSON.stringify(juice.fruits.map(f => f.toLowerCase()))}
+          >
+            <!-- Product Photo -->
+            <div class="relative aspect-[4/5] bg-amber-50/50 overflow-hidden flex items-center justify-center">
+              <Image 
+                src={juice.image} 
+                alt={juice.name} 
+                width={600}
+                height={800}
+                format="webp"
+                quality={85}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/90 backdrop-blur-md text-emerald-800 shadow-sm border border-emerald-100/50">
+                {juice.volume}
+              </span>
+            </div>
+
+            <!-- Juice Info -->
+            <div class="p-4 flex flex-col flex-grow justify-between space-y-3">
+              <div>
+                <h3 class="text-base font-extrabold text-gray-900 leading-tight">{juice.name}</h3>
+                
+                <!-- Fruits List -->
+                <div class="flex flex-wrap gap-1 mt-2">
+                  {juice.fruits.map(fruit => (
+                    <span class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded-md text-[10px] font-semibold">
+                      {fruit}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Price & Action -->
+              <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wider">Price</span>
+                  <span class="text-sm font-black text-gray-900">GHS {juice.price}.00</span>
+                </div>
+                <a 
+                  href={`/${juice.id}`}
+                  class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm"
+                >
+                  Order
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- No Blend Match State -->
+      <div id="noResults" class="hidden text-center py-12 bg-white rounded-2xl border border-gray-100 space-y-3">
+        <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-lg font-bold">🍹</div>
+        <h3 class="text-sm font-bold text-gray-900">No matching juice blend found</h3>
+        <p class="text-xs text-gray-500 max-w-xs mx-auto">We don't currently have a juice with all your selected fruit choices. Try unselecting a fruit!</p>
+        <button 
+          id="resetFiltersBtn"
+          class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold transition-all"
+        >
+          Reset All Filters
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <!-- Multi-Fruit Filtering Script -->
+  <script>
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    const filterButtons = document.querySelectorAll('.fruit-filter-btn');
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+    const juiceCards = document.querySelectorAll('.juice-card');
+    const noResults = document.getElementById('noResults');
+
+    let currentSearch = '';
+    let selectedFruits: string[] = [];
+
+    function filterJuices() {
+      let visibleCount = 0;
+
+      juiceCards.forEach(card => {
+        const name = card.getAttribute('data-name') || '';
+        const juiceFruits: string[] = JSON.parse(card.getAttribute('data-fruits') || '[]');
+
+        const matchesSearch = name.includes(currentSearch);
+        const matchesFruits = selectedFruits.length === 0 || selectedFruits.every(f => juiceFruits.includes(f));
+
+        if (matchesSearch && matchesFruits) {
+          (card as HTMLElement).style.display = 'flex';
+          visibleCount++;
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+
+    searchInput?.addEventListener('input', (e) => {
+      currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      filterJuices();
+    });
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fruit = (btn.getAttribute('data-fruit') || '').toLowerCase();
+        
+        if (selectedFruits.includes(fruit)) {
+          selectedFruits = selectedFruits.filter(f => f !== fruit);
+          btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-sm');
+          btn.classList.add('bg-gray-100', 'text-gray-600');
+        } else {
+          selectedFruits.push(fruit);
+          btn.classList.remove('bg-gray-100', 'text-gray-600');
+          btn.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+        }
+
+        if (selectedFruits.length === 0) {
+          clearFiltersBtn?.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+          clearFiltersBtn?.classList.remove('bg-gray-100', 'text-gray-600');
+        } else {
+          clearFiltersBtn?.classList.remove('bg-emerald-600', 'text-white', 'shadow-sm');
+          clearFiltersBtn?.classList.add('bg-gray-100', 'text-gray-600');
+        }
+
+        filterJuices();
+      });
+    });
+
+    function resetAll() {
+      selectedFruits = [];
+      if (searchInput) searchInput.value = '';
+      currentSearch = '';
+      
+      clearFiltersBtn?.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+      clearFiltersBtn?.classList.remove('bg-gray-100', 'text-gray-600');
+
+      filterButtons.forEach(b => {
+        b.classList.remove('bg-emerald-600', 'text-white', 'shadow-sm');
+        b.classList.add('bg-gray-100', 'text-gray-600');
+      });
+
+      filterJuices();
+    }
+
+    clearFiltersBtn?.addEventListener('click', resetAll);
+    resetFiltersBtn?.addEventListener('click', resetAll);
+  </script>
 </MainLayout>
