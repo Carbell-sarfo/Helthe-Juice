@@ -1,25 +1,431 @@
-<!-- ---
+---
+export const prerender = false;
+
 import MainLayout from "../layouts/MainLayout.astro";
-import OrderForm from "../components/OrderForm.astro";
-import BlendBuilder from "../components/BlendBuilder.astro";
+import { Image } from 'astro:assets';
+
+// Import full flavor images
+import watermelonRed from '../assets/products/watermelon-red.png';
+import watermelonOrange from '../assets/products/watermelon-orange.png';
+import watermelonYellow from '../assets/products/watermelon-yellow.png';
+import watermelonBeetroot from '../assets/products/watermelon-beetroot.png';
+import watermelonMango from '../assets/products/watermelon-mango.png';
+import appleBeetrootCarrot from '../assets/products/apple-beetroot-carrot.png';
+import cucumberAppleKale from '../assets/products/cucumber-apple-kale.png';
+import pineapple from '../assets/products/pineapple.png';
+import pineappleCucumberSpinach from '../assets/products/pineapple-cucumber-spinach.png';
+import pineappleCarrot from '../assets/products/pineapple-carrot.png';
+import pineappleCucumberMint from '../assets/products/pineapple-cucumber-mint.png';
+import pineappleDandelion   from '../assets/products/pineapple-dandelion.png';
+import pineappleGinger from '../assets/products/pineapple-ginger.png';
+import pineappleMoringaGinger from '../assets/products/pineapple-moringa-ginger.png';
+import pineappleSpinachGinger from '../assets/products/pineapple-spinach-ginger.png';
+import pineapplePassionfruit from '../assets/products/pineapple-passionfruit.png';
+import orange from '../assets/products/orange.png';
+import orangeCarrot from '../assets/products/orange-carrot.png';
+
+const juices = [
+  { id: 'watermelon-red', name: 'Red Watermelon', fruits: ['watermelon'], image: watermelonRed },
+  { id: 'watermelon-yellow', name: 'Yellow Watermelon', fruits: ['watermelon'], image: watermelonYellow },
+  { id: 'watermelon-orange', name: 'Orange Watermelon', fruits: ['watermelon'], image: watermelonOrange },
+  { id: 'watermelon-beetroot', name: 'Beetroot Watermelon', fruits: ['watermelon'], image: watermelonBeetroot },
+  { id: 'watermelon-mango', name: 'Mango Watermelon', fruits: ['watermelon'], image: watermelonMango },
+  { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot', fruits: ['apple', 'beetroot', 'carrot'], image: appleBeetrootCarrot },
+  { id: 'pineapple', name: 'Pineapple', fruits: ['pineapple'], image: pineapple },
+  { id: 'pineapple-carrot', name: 'Pineapple Carrot', fruits: ['pineapple', 'carrot'], image: pineappleCarrot },
+  { id: 'pineapple-spinach-ginger', name: 'Pineapple Spinach Ginger', fruits: ['pineapple', 'spinach', 'ginger'], image: pineappleSpinachGinger },
+  { id: 'pineapple-cucumber-spinach', name: 'Pineapple Cucumber Spinach', fruits: ['pineapple', 'cucumber', 'spinach'], image: pineappleCucumberSpinach },
+  { id: 'pineapple-passionfruit', name: 'Pineapple Passionfruit', fruits: ['pineapple', 'passionfruit'], image: pineapplePassionfruit },
+  { id: 'pineapple-moringa-ginger', name: 'Pineapple Moringa Ginger', fruits: ['pineapple', 'moringa', 'ginger'], image: pineappleMoringaGinger },
+  { id: 'pineapple-ginger', name: 'Pineapple Ginger', fruits: ['pineapple', 'ginger'], image: pineappleGinger },
+  { id: 'pineapple-dandelion', name: 'Pineapple Dandelion', fruits: ['pineapple', 'dandelion'], image: pineappleDandelion },
+  { id: 'pineapple-cucumber-mint', name: 'Pineapple Cucumber Mint', fruits: ['pineapple', 'cucumber', 'mint'], image: pineappleCucumberMint },
+  { id: 'orange', name: 'Orange', fruits: ['orange'], image: orange },
+  { id: 'orange-carrot', name: 'Orange Carrot', fruits: ['orange', 'carrot'], image: orangeCarrot },
+  { id: 'cucumber-apple-kale', name: 'Cucumber Apple Kale', fruits: ['cucumber', 'apple', 'kale'], image: cucumberAppleKale },
+];
+
+const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
 ---
-<MainLayout title="Order — Helthe Juice">
-  <OrderForm />
-  <BlendBuilder />
-</MainLayout> -->
 
+<MainLayout title="Build Your Juice Box — Helthe Juice">
+  <div class="min-h-screen bg-stone-50 py-10 px-4 sm:px-6 pt-32 pb-40 font-sans">
+    <div class="max-w-2xl mx-auto space-y-8">
+      
+      <!-- Box Builder Card Container -->
+      <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-10 space-y-8">
+        
+        <!-- Header -->
+        <div class="space-y-1">
+          <h1 class="text-2xl font-black text-stone-950 tracking-tight">Build Your Juice Box</h1>
+          <p class="text-xs text-stone-500 font-medium">Select your bundle size and mix your favorite flavors. (Fixed GHS 15.00 / 350ml bottle)</p>
+        </div>
 
+        <!-- 1. CHOOSE BUNDLE SIZE -->
+        <div class="space-y-3">
+          <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">1. Choose Bundle Size</label>
+          <div class="grid grid-cols-3 gap-3">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-emerald-600 bg-emerald-50/40" data-size="6" data-maxflavors="2">
+              <span class="block font-black text-base text-stone-950">6 Pcs</span>
+              <span class="block text-[10px] text-stone-500 font-semibold mt-0.5">Max 2 flavors</span>
+            </button>
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300" data-size="15" data-maxflavors="4">
+              <span class="block font-black text-base text-stone-950">15 Pcs</span>
+              <span class="block text-[10px] text-stone-500 font-semibold mt-0.5">Max 4 flavors</span>
+            </button>
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300" data-size="24" data-maxflavors="5">
+              <span class="block font-black text-base text-stone-950">24 Pcs</span>
+              <span class="block text-[10px] text-stone-500 font-semibold mt-0.5">Max 5 flavors</span>
+            </button>
+          </div>
+        </div>
 
+        <!-- 2. MIX FLAVORS STATS & FILTERS -->
+        <div class="space-y-4 pt-4 border-t border-stone-100">
+          <div class="flex items-center justify-between">
+            <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">2. Mix Flavors</label>
+            <span id="bottles-allocated-badge" class="text-xs font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+              Bottles allocated: <strong id="allocated-count">0</strong> / <span id="target-size">6</span>
+            </span>
+          </div>
 
----
-import MainLayout from "../layouts/MainLayout.astro";
-import JuiceMixer from "../components/JuiceMixer.astro";
-import Faq from "../components/Faq.astro";
----
+          <!-- Flavor Variety Tracker Bar -->
+          <div class="bg-stone-50 border border-stone-200/60 rounded-xl px-4 py-2.5 flex items-center justify-between text-xs font-bold text-stone-700">
+            <span>Flavor varieties used: <strong id="flavors-used-count" class="text-stone-950">0</strong> of <span id="max-flavors-allowed">2</span> max</span>
+            <span id="flavor-limit-warning" class="text-[10px] text-orange-600 font-extrabold hidden">Max flavor variety reached!</span>
+          </div>
 
-<MainLayout title="Order — Helthe Juice">
-  <JuiceMixer />
+          <!-- Search & Fruit Filter Bar -->
+          <div class="space-y-2 pt-2">
+            <input 
+              type="text" 
+              id="boxSearchInput" 
+              placeholder="Search flavor name..." 
+              class="w-full px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500"
+            />
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              {allFruits.map(fruit => (
+                <button type="button" class="box-fruit-filter px-2.5 py-1 rounded-lg text-[10px] font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all" data-fruit={fruit}>
+                  {fruit}
+                </button>
+              ))}
+            </div>
+          </div>
 
-  <!-- Section FAQ -->
-	 <Faq />
+          <!-- Flavors List with Direct Steppers & Strict Variety Control -->
+          <div id="box-flavor-list" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+            {juices.map(juice => (
+              <div 
+                class="flavor-row bg-stone-50/60 border border-stone-200/70 rounded-2xl p-3 flex items-center justify-between gap-3"
+                data-name={juice.name.toLowerCase()}
+                data-fruits={JSON.stringify(juice.fruits)}
+              >
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-white border border-stone-200 overflow-hidden flex-shrink-0">
+                    <Image src={juice.image} alt={juice.name} width={80} height={80} class="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <h4 class="font-extrabold text-xs text-stone-900">{juice.name}</h4>
+                    <div class="flex gap-1 mt-0.5">
+                      {juice.fruits.map(f => <span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold">{f}</span>)}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Stepper controls -->
+                <div class="flex items-center gap-1.5">
+                  <button type="button" class="qty-sub w-7 h-7 rounded-xl bg-white border border-stone-200 text-stone-600 font-black text-xs hover:bg-stone-100 transition-all">-</button>
+                  <input 
+                    type="number" 
+                    min="0" 
+                    value="0" 
+                    data-flavor={juice.name} 
+                    class="box-qty-input w-12 text-center py-1 bg-white border border-stone-200 rounded-xl text-xs font-black text-stone-900 focus:outline-none focus:border-emerald-500" 
+                  />
+                  <button type="button" class="qty-add w-7 h-7 rounded-xl bg-white border border-stone-200 text-stone-600 font-black text-xs hover:bg-stone-100 transition-all">+</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- 3. DELIVERY & PAYMENT CHECKOUT SECTION (Appears only when box is full) -->
+        <div id="checkout-section" class="space-y-6 pt-6 border-t border-stone-200 hidden">
+          <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-4 rounded-2xl">
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">Box Complete! Total Price</span>
+              <span id="final-box-price" class="text-xl font-black text-emerald-950">GHS 90.00</span>
+            </div>
+            <span class="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-black">Ready to Checkout</span>
+          </div>
+
+          <div class="space-y-4">
+            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">3. Delivery & Contact Details</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name</label>
+                <input id="order-name" required placeholder="Kofi Mensah" class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Phone Number (Momo / WhatsApp)</label>
+                <input id="order-phone" required placeholder="024XXXXXXX" class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Delivery Address (Accra, Tema, Madina, etc.)</label>
+              <textarea id="order-address" required rows="2" placeholder="House number, street, landmark..." class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Special Notes, Emergency or Event Instructions</label>
+              <textarea id="order-notes" rows="2" placeholder="E.g. Urgent for Friday morning meeting, or event catering breakdown..." class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+            </div>
+
+            <!-- Prominent Call to Action Button for Payment & Pre-Order Submission -->
+            <button type="button" id="submit-box-order-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-sm transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+              <span>🔒 Proceed to Secure Payment & Submit Pre-Order</span>
+            </button>
+            <p class="text-[10px] text-center text-stone-400 font-medium">Payments are processed securely via PayAngel / Mobile Money.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Box Builder Logic Script -->
+  <script>
+    import { db } from '../lib/firebase';
+    import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+    let targetSize = 6;
+    let maxFlavorsAllowed = 2;
+    const pricePerBottle = 15;
+
+    const sizeBtns = document.querySelectorAll('.bundle-size-btn');
+    const qtyInputs = document.querySelectorAll('.box-qty-input') as NodeListOf<HTMLInputElement>;
+    const allocatedCountEl = document.getElementById('allocated-count')!;
+    const targetSizeEl = document.getElementById('target-size')!;
+    const flavorsUsedCountEl = document.getElementById('flavors-used-count')!;
+    const maxFlavorsAllowedEl = document.getElementById('max-flavors-allowed')!;
+    const flavorLimitWarning = document.getElementById('flavor-limit-warning')!;
+    const checkoutSection = document.getElementById('checkout-section')!;
+    const finalBoxPriceEl = document.getElementById('final-box-price')!;
+
+    // Bundle Size Selector Handler
+    sizeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sizeBtns.forEach(b => {
+          b.classList.remove('border-emerald-600', 'bg-emerald-50/40');
+          b.classList.add('border-stone-200', 'bg-stone-50/50');
+        });
+        btn.classList.add('border-emerald-600', 'bg-emerald-50/40');
+        btn.classList.remove('border-stone-200', 'bg-stone-50/50');
+
+        targetSize = parseInt(btn.getAttribute('data-size') || '6');
+        maxFlavorsAllowed = parseInt(btn.getAttribute('data-maxflavors') || '2');
+        targetSizeEl.textContent = String(targetSize);
+        maxFlavorsAllowedEl.textContent = String(maxFlavorsAllowed);
+
+        // Reset all quantities on size change
+        qtyInputs.forEach(i => i.value = '0');
+        updateBoxState();
+      });
+    });
+
+    // Stepper + / - and Direct Input handlers with strict flavor enforcement
+    qtyInputs.forEach(input => {
+      const row = input.closest('.flavor-row')!;
+      const subBtn = row.querySelector('.qty-sub')!;
+      const addBtn = row.querySelector('.qty-add')!;
+
+      subBtn.addEventListener('click', () => {
+        let val = parseInt(input.value) || 0;
+        if (val > 0) {
+          input.value = String(val - 1);
+          updateBoxState();
+        }
+      });
+
+      addBtn.addEventListener('click', () => {
+        const currentTotal = getCurrentAllocatedTotal();
+        if (currentTotal >= targetSize) {
+          alert(`You have already filled your ${targetSize}-piece box!`);
+          return;
+        }
+
+        const currentVal = parseInt(input.value) || 0;
+        const usedFlavors = getUsedFlavorsCount();
+
+        // If this flavor currently has 0 quantity, and we have already hit max flavors, prevent adding a new variety
+        if (currentVal === 0 && usedFlavors >= maxFlavorsAllowed) {
+          alert(`Maximum flavor variety limit reached (${maxFlavorsAllowed} flavors for a ${targetSize}-piece box). Increase quantity on your existing selected flavors instead.`);
+          return;
+        }
+
+        input.value = String(currentVal + 1);
+        updateBoxState();
+      });
+
+      input.addEventListener('input', () => {
+        const allocated = getCurrentAllocatedTotal();
+        if (allocated > targetSize) {
+          // Revert excess input
+          let val = parseInt(input.value) || 0;
+          input.value = String(Math.max(0, val - (allocated - targetSize)));
+        }
+
+        const usedFlavors = getUsedFlavorsCount();
+        if (usedFlavors > maxFlavorsAllowed) {
+          alert(`You cannot exceed ${maxFlavorsAllowed} different flavor varieties for this box.`);
+          input.value = '0';
+        }
+
+        updateBoxState();
+      });
+    });
+
+    function getCurrentAllocatedTotal() {
+      let total = 0;
+      qtyInputs.forEach(i => total += parseInt(i.value) || 0);
+      return total;
+    }
+
+    function getUsedFlavorsCount() {
+      let count = 0;
+      qtyInputs.forEach(i => {
+        if ((parseInt(i.value) || 0) > 0) count++;
+      });
+      return count;
+    }
+
+    function updateBoxState() {
+      const allocated = getCurrentAllocatedTotal();
+      const flavorsUsed = getUsedFlavorsCount();
+
+      allocatedCountEl.textContent = String(allocated);
+      flavorsUsedCountEl.textContent = String(flavorsUsed);
+
+      if (flavorsUsed >= maxFlavorsAllowed) {
+        flavorLimitWarning.classList.remove('hidden');
+      } else {
+        flavorLimitWarning.classList.add('hidden');
+      }
+
+      if (allocated === targetSize && flavorsUsed <= maxFlavorsAllowed) {
+        checkoutSection.classList.remove('hidden');
+        finalBoxPriceEl.textContent = `GHS ${(targetSize * pricePerBottle).toFixed(2)}`;
+      } else {
+        checkoutSection.classList.add('hidden');
+      }
+    }
+
+    // Search and Filter logic inside box builder
+    const boxSearchInput = document.getElementById('boxSearchInput') as HTMLInputElement;
+    const boxFruitFilters = document.querySelectorAll('.box-fruit-filter');
+    const flavorRows = document.querySelectorAll('.flavor-row');
+
+    let currentSearch = '';
+    let selectedFruitFilter = '';
+
+    function filterBoxFlavors() {
+      flavorRows.forEach(row => {
+        const name = row.getAttribute('data-name') || '';
+        const fruits: string[] = JSON.parse(row.getAttribute('data-fruits') || '[]');
+
+        const matchesSearch = name.includes(currentSearch);
+        const matchesFruit = !selectedFruitFilter || fruits.includes(selectedFruitFilter);
+
+        if (matchesSearch && matchesFruit) {
+          (row as HTMLElement).style.display = 'flex';
+        } else {
+          (row as HTMLElement).style.display = 'none';
+        }
+      });
+    }
+
+    boxSearchInput?.addEventListener('input', (e) => {
+      currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      filterBoxFlavors();
+    });
+
+    boxFruitFilters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fruit = btn.getAttribute('data-fruit') || '';
+        if (selectedFruitFilter === fruit) {
+          selectedFruitFilter = '';
+          btn.classList.remove('bg-emerald-600', 'text-white');
+          btn.classList.add('bg-stone-100', 'text-stone-600');
+        } else {
+          boxFruitFilters.forEach(b => {
+            b.classList.remove('bg-emerald-600', 'text-white');
+            b.classList.add('bg-stone-100', 'text-stone-600');
+          });
+          selectedFruitFilter = fruit;
+          btn.classList.add('bg-emerald-600', 'text-white');
+          btn.classList.remove('bg-stone-100', 'text-stone-600');
+        }
+        filterBoxFlavors();
+      });
+    });
+
+    // Submit Box Pre-Order & Proceed to Payment
+    document.getElementById('submit-box-order-btn')?.addEventListener('click', async () => {
+      const allocated = getCurrentAllocatedTotal();
+      const flavorsUsed = getUsedFlavorsCount();
+
+      if (allocated !== targetSize) {
+        alert(`Please complete your box. You need exactly ${targetSize} bottles.`);
+        return;
+      }
+      if (flavorsUsed > maxFlavorsAllowed) {
+        alert(`You have selected too many flavor varieties for a ${targetSize}-piece box (Max is ${maxFlavorsAllowed}).`);
+        return;
+      }
+
+      const name = (document.getElementById('order-name') as HTMLInputElement).value.trim();
+      const phone = (document.getElementById('order-phone') as HTMLInputElement).value.trim();
+      const address = (document.getElementById('order-address') as HTMLTextAreaElement).value.trim();
+      const notes = (document.getElementById('order-notes') as HTMLTextAreaElement).value.trim();
+
+      if (!name || !phone || !address) {
+        alert('Please fill in your name, phone number, and delivery address.');
+        return;
+      }
+
+      const items: Array<{ name: string; price: number; qty: number }> = [];
+      qtyInputs.forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        if (qty > 0) {
+          items.push({
+            name: input.getAttribute('data-flavor') || 'Juice',
+            price: pricePerBottle * 100,
+            qty: qty
+          });
+        }
+      });
+
+      const orderData = {
+        orderType: `Box of ${targetSize}`,
+        customer: { name, phone, address, notes },
+        items,
+        total: targetSize * pricePerBottle * 100,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      };
+
+      try {
+        const docRef = await addDoc(collection(db, 'orders'), orderData);
+        alert(`Pre-Order submitted successfully! Order ID: #${docRef.id.slice(-6)}. Redirecting to payment gateway...`);
+        // Here you can plug in your PayAngel/Momo redirect link if needed
+        window.location.reload();
+      } catch (err) {
+        console.error('Order submission error:', err);
+        alert('Failed to submit order. Please check your connection.');
+      }
+    });
+  </script>
 </MainLayout>

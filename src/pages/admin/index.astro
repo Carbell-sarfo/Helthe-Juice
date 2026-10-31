@@ -1,0 +1,381 @@
+---
+// src/pages/admin/index.astro
+export const prerender = false;
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Helthe Juice</title>
+  </head>
+  <body class="bg-gray-50 font-sans min-h-screen text-gray-900">
+    
+    <!-- Login Section -->
+    <section id="login" class="max-w-md mx-auto mt-20 p-8 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-6">
+      <div class="text-center space-y-1">
+        <h1 class="text-2xl font-black text-gray-950">Admin Portal</h1>
+        <p class="text-xs text-gray-500">Sign in to manage flavors and pre-order batches</p>
+      </div>
+      
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email</label>
+          <input name="email" type="email" placeholder="helthegh@gmail.com" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
+          <input name="password" type="password" placeholder="••••••••" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white" />
+        </div>
+        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-all shadow-sm">
+          Log In
+        </button>
+      </form>
+      <p id="login-error" class="text-xs text-red-500 text-center font-medium"></p>
+    </section>
+
+    <!-- Admin Panel Content (Hidden until authenticated) -->
+    <main id="panel" hidden class="max-w-6xl mx-auto px-4 py-10 space-y-10">
+      
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div>
+          <h1 class="text-xl font-black">Helthe Juice Management</h1>
+          <p class="text-xs text-emerald-600 font-semibold">Make-to-Order Pre-Order Dashboard</p>
+        </div>
+        <button id="logout" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-all">
+          Log Out
+        </button>
+      </div>
+
+      <!-- Batch Production Aggregator Card -->
+      <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/80 p-6 rounded-2xl shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="space-y-0.5">
+            <span class="px-2.5 py-1 bg-amber-600 text-white rounded-full text-[10px] font-black uppercase tracking-wider">Pre-Order Batching</span>
+            <h2 class="text-base font-black text-stone-950 mt-1">Upcoming Juicing Production List</h2>
+            <p class="text-xs text-stone-600">Total bottles required based on incoming customer pre-orders:</p>
+          </div>
+        </div>
+        <div id="batch-prep-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+          <!-- Dynamically populated -->
+          <p class="text-xs text-stone-400 font-medium">Loading batch requirements...</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left: Product / Flavor Form -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4 h-fit">
+          <div class="flex items-center justify-between">
+            <h2 id="form-title" class="text-base font-extrabold">Add New Flavor</h2>
+            <button type="button" id="cancel-edit" hidden class="text-xs text-red-600 font-bold hover:underline">Cancel Edit</button>
+          </div>
+
+          <form id="product-form" class="space-y-4">
+            <input type="hidden" name="id" />
+            
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Juice Name</label>
+              <input name="name" placeholder="e.g. Pineapple Ginger" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Fruits (comma separated)</label>
+              <input name="fruits" placeholder="pineapple, ginger" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Price (GHS)</label>
+                <input name="price" type="number" step="0.50" min="0" value="15.00" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Volume</label>
+                <input name="volume" value="350ml" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Product Image</label>
+              <input name="image" type="file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
+            </div>
+
+            <div class="flex items-center gap-2 pt-2">
+              <input name="active" type="checkbox" id="active" checked class="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500" />
+              <label for="active" class="text-xs font-bold text-gray-700">Visible on live menu</label>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all shadow-sm">
+              Save Flavor
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Menu Flavors & Orders Management -->
+        <div class="lg:col-span-2 space-y-8">
+          
+          <!-- Menu Flavors Catalog List -->
+          <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+            <h2 class="text-base font-extrabold">Active Menu Flavors ({<span id="product-count">0</span>})</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-gray-100 text-gray-400 uppercase font-bold tracking-wider">
+                    <th class="pb-3">Flavor</th>
+                    <th class="pb-3">Price</th>
+                    <th class="pb-3">Status</th>
+                    <th class="pb-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="product-list" class="divide-y divide-gray-50">
+                  <!-- Injected via client script -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Orders Ledger List -->
+          <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+            <h2 class="text-base font-extrabold">Customer Pre-Orders Ledger</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-gray-100 text-gray-400 uppercase font-bold tracking-wider">
+                    <th class="pb-3">Order ID / Date</th>
+                    <th class="pb-3">Customer</th>
+                    <th class="pb-3">Items</th>
+                    <th class="pb-3">Total</th>
+                    <th class="pb-3">Status</th>
+                    <th class="pb-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="order-list" class="divide-y divide-gray-50">
+                  <!-- Injected via client script -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Admin Client Script Logic -->
+    <script>
+      import { auth, db, storage } from '../../lib/firebase';
+      import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+      import {
+        collection, doc, addDoc, updateDoc, onSnapshot, query, orderBy, limit, serverTimestamp, where,
+      } from 'firebase/firestore';
+      import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+      const $ = (id: string) => document.getElementById(id)!;
+      const form = $('product-form') as HTMLFormElement;
+      let products: Record<string, any> = {};
+      let unsubscribers: Array<() => void> = [];
+
+      // Login handler
+      $('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = new FormData(e.target as HTMLFormElement);
+        try {
+          $('login-error').textContent = '';
+          await signInWithEmailAndPassword(auth, String(f.get('email')), String(f.get('password')));
+        } catch (err: any) {
+          $('login-error').textContent = 'Invalid credentials or unauthorized.';
+        }
+      });
+
+      $('logout').addEventListener('click', () => signOut(auth));
+
+      // Auth state listener with custom claim check
+      onAuthStateChanged(auth, async (user) => {
+        unsubscribers.forEach((u) => u());
+        unsubscribers = [];
+        
+        if (!user) {
+          $('login').hidden = false;
+          $('panel').hidden = true;
+          return;
+        }
+
+        const token = await user.getIdTokenResult(true);
+        if (!token.claims.admin) {
+          $('login-error').textContent = 'Access denied: Account lacks administrator claims.';
+          await signOut(auth);
+          return;
+        }
+
+        $('login').hidden = true;
+        $('panel').hidden = false;
+        listenToProducts();
+        listenToOrders();
+        listenToBatchSummary();
+      });
+
+      // Products real-time listener
+      function listenToProducts() {
+        const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+        unsubscribers.push(onSnapshot(q, (snap) => {
+          products = {};
+          const list = $('product-list');
+          list.innerHTML = '';
+          $('product-count').textContent = String(snap.size);
+
+          snap.forEach((d) => {
+            const p = d.data();
+            products[d.id] = p;
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50/50';
+            tr.innerHTML = `
+              <td class="py-3 font-bold text-gray-900 flex items-center gap-2">
+                ${p.imageUrl ? `<img src="${p.imageUrl}" class="w-8 h-8 rounded-lg object-cover" />` : ''}
+                ${p.name}
+              </td>
+              <td class="py-3 font-semibold">GHS ${(p.price / 100).toFixed(2)}</td>
+              <td class="py-3">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${p.active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}">
+                  ${p.active ? 'Active' : 'Hidden'}
+                </span>
+              </td>
+              <td class="py-3 text-right">
+                <button type="button" class="edit-btn px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold" data-id="${d.id}">Edit</button>
+              </td>
+            `;
+            tr.querySelector('.edit-btn')!.addEventListener('click', () => startEdit(d.id));
+            list.append(tr);
+          });
+        }));
+      }
+
+      // Batch Production Aggregator Listener
+      function listenToBatchSummary() {
+        const q = query(collection(db, 'orders'), where('status', 'in', ['paid', 'pending']));
+        unsubscribers.push(onSnapshot(q, (snap) => {
+          const batchTotals: Record<string, number> = {};
+          snap.forEach(d => {
+            const order = d.data();
+            (order.items || []).forEach((item: any) => {
+              batchTotals[item.name] = (batchTotals[item.name] || 0) + item.qty;
+            });
+          });
+
+          const prepListEl = $('batch-prep-list');
+          if (Object.keys(batchTotals).length === 0) {
+            prepListEl.innerHTML = `<p class="col-span-full text-xs text-stone-500 font-medium">No pending pre-orders for the upcoming batch right now.</p>`;
+            return;
+          }
+
+          prepListEl.innerHTML = Object.entries(batchTotals).map(([name, qty]) => `
+            <div class="bg-white/80 border border-amber-200/60 p-3 rounded-xl flex justify-between items-center shadow-sm">
+              <span class="font-bold text-stone-900 text-xs">${name}</span>
+              <span class="px-2.5 py-1 bg-amber-600 text-white rounded-full font-black text-xs">${qty} bottles</span>
+            </div>
+          `).join('');
+        }));
+      }
+
+      function startEdit(id: string) {
+        const p = products[id];
+        (form.elements.namedItem('id') as HTMLInputElement).value = id;
+        (form.elements.namedItem('name') as HTMLInputElement).value = p.name;
+        (form.elements.namedItem('fruits') as HTMLInputElement).value = (p.fruits || []).join(', ');
+        (form.elements.namedItem('price') as HTMLInputElement).value = (p.price / 100).toFixed(2);
+        (form.elements.namedItem('volume') as HTMLInputElement).value = p.volume || '350ml';
+        (form.elements.namedItem('active') as HTMLInputElement).checked = p.active;
+        $('form-title').textContent = `Edit ${p.name}`;
+        $('cancel-edit').hidden = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function resetForm() {
+        form.reset();
+        (form.elements.namedItem('id') as HTMLInputElement).value = '';
+        $('form-title').textContent = 'Add New Flavor';
+        $('cancel-edit').hidden = true;
+      }
+      $('cancel-edit').addEventListener('click', resetForm);
+
+      // Product Form submission handler
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          const f = new FormData(form);
+          const id = String(f.get('id') || '');
+          const data = {
+            name: String(f.get('name')).trim(),
+            fruits: String(f.get('fruits')).split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
+            price: Math.round(Number(f.get('price')) * 100), // Pesewas conversion
+            volume: String(f.get('volume')).trim() || '350ml',
+            active: f.get('active') === 'on',
+          };
+
+          const file = f.get('image');
+          if (file && file.size > 0) {
+            const imgRef = ref(storage, `products/${Date.now()}-${file.name}`);
+            await uploadBytes(imgRef, file);
+            data.imageUrl = await getDownloadURL(imgRef);
+          }
+
+          if (id) {
+            await updateDoc(doc(db, 'products', id), data);
+          } else {
+            await addDoc(collection(db, 'products'), { ...data, createdAt: serverTimestamp() });
+          }
+          resetForm();
+          alert('Flavor saved successfully!');
+        } catch (err) {
+          console.error('Error saving flavor:', err);
+          alert('Failed to save flavor. Check console for details.');
+        }
+      });
+
+      // Orders real-time listener
+      function listenToOrders() {
+        const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(50));
+        unsubscribers.push(onSnapshot(q, (snap) => {
+          const list = $('order-list');
+          list.innerHTML = '';
+          snap.forEach((d) => {
+            const o = d.data();
+            const tr = document.createElement('tr');
+            const itemsSummary = (o.items || []).map((i: any) => `${i.qty}× ${i.name}`).join(', ');
+            const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString() : 'Just now';
+            
+            tr.className = 'hover:bg-gray-50/50';
+            tr.innerHTML = `
+              <td class="py-3">
+                <span class="font-bold text-gray-900 block">#${d.id.slice(-6)}</span>
+                <span class="text-[10px] text-gray-400">${dateStr}</span>
+              </td>
+              <td class="py-3">
+                <span class="font-bold text-gray-900 block">${o.customer.name}</span>
+                <span class="text-[10px] text-gray-500">${o.customer.phone}</span>
+              </td>
+              <td class="py-3 text-gray-600 max-w-xs truncate">${itemsSummary}</td>
+              <td class="py-3 font-extrabold">GHS ${(o.total / 100).toFixed(2)}</td>
+              <td class="py-3">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide ${
+                  o.status === 'paid' ? 'bg-emerald-100 text-emerald-800' :
+                  o.status === 'fulfilled' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+                }">
+                  ${o.status}
+                </span>
+              </td>
+              <td class="py-3 text-right">
+                ${o.status === 'paid' ? `<button class="fulfill-btn px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold" data-id="${d.id}">Fulfill</button>` : '<span class="text-gray-400 text-[10px]">Fulfilled</span>'}
+              </td>
+            `;
+            const fulfillBtn = tr.querySelector('.fulfill-btn');
+            if (fulfillBtn) {
+              fulfillBtn.addEventListener('click', () => updateDoc(doc(db, 'orders', d.id), { status: 'fulfilled' }));
+            }
+            list.append(tr);
+          });
+        }));
+      }
+    </script>
+  </body>
+</html>
