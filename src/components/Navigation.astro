@@ -1,16 +1,10 @@
 ---
 import { Image } from "astro:assets";
-import Logo from "/src/assets/logo-white.png"
-import LogoLight from "/src/assets/logo-light.png"
+import Logo from "/src/assets/logo-white.png";
 ---
 
-
-
-
 <!-- navOverlay -->
-<div class="nav-overlay"></div>
-
-
+<div id="nav-overlay" class="nav-overlay"></div>
 
 <!-- nav-bar -->
 <nav class="nav-bar">
@@ -18,68 +12,63 @@ import LogoLight from "/src/assets/logo-light.png"
         <div class="flex flex-wrap items-center justify-between mx-auto p-4">
             <!-- logo -->
             <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <Image src={Logo} alt="Winnard Bansah Logo" class="logo w-15">
+                <Image src={Logo} alt="Helthe Juice Logo" class="logo w-14">
             </a>
     
-            <!-- Buttons -->
-            <!-- Menu Button -->
-            <div class="nav-btn">
+            <!-- Mobile Menu Toggle Button -->
+            <div id="nav-btn" class="nav-btn">
                 <div class="lines"></div>
                 <div class="lines"></div>
                 <div class="lines"></div>
             </div>
     
-    
             <!-- Nav Menu -->
-            <div class="flex items-center justify-center nav-list">
+            <div class="flex items-center justify-center nav-list" id="nav-list">
                 <ul class="text-center pb-8 md:pb-0 md:pr-8 md:flex" id="navbar-sticky">
-                    <li class="nav-item">
-                        <a href="/watermelon" class="nav-link" aria-current="page">Pre-Order Watermelon</a>
-                    </li>
                     <li class="nav-item">
                         <a href="/juices" class="nav-link">Our Juices</a>
                     </li>
-                    
                     <li class="nav-item">
-                        <a href="/contact" class="nav-link">Contact</a>
+                        <a href="/order" class="nav-link">Build a Box</a>
                     </li>
                 </ul>
-                <a href="/order" class="btn btn-yellow">Order Now</a>
+                <a href="/order" class="btn btn-yellow px-4 py-2 bg-amber-500 hover:bg-amber-600 text-stone-950 font-extrabold rounded-xl text-xs transition-all shadow-sm">Order Now</a>
             </div>
         </div>
     </div>
-  </nav>
+</nav>
 
-  
+<!-- Mobile Toggle Script -->
+<script>
+    const navBtn = document.getElementById('nav-btn');
+    const navList = document.getElementById('nav-list');
+    const navOverlay = document.getElementById('nav-overlay');
 
+    function toggleMenu() {
+        navBtn?.classList.toggle('close');
+        navList?.classList.toggle('show');
+        navOverlay?.classList.toggle('show');
+    }
 
+    navBtn?.addEventListener('click', toggleMenu);
+    navOverlay?.addEventListener('click', toggleMenu);
 
-
-
-
-
-
-
-
-
-
-
-
+    // Close menu when clicking nav links on mobile
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (navList?.classList.contains('show')) {
+                toggleMenu();
+            }
+        });
+    });
+</script>
 
 <style lang="scss">
-
-
-
-    .btn {
-        // padding: .5rem 1rem;
-    }
-    
-    
     // ============= Nav-Overlay ================
     .nav-overlay {
         width: 100%;
         height: 100vh;
-        background-color: rgba(181, 176, 151, 0.397);
+        background-color: rgba(0, 0, 0, 0.4);
         position: fixed;
         z-index: 10;
         top: 0;
@@ -89,197 +78,152 @@ import LogoLight from "/src/assets/logo-light.png"
         pointer-events: none;
         opacity: 0;
         backdrop-filter: blur(10px);
+        transition: opacity 0.3s ease;
 
         &.show {
             opacity: 1;
             pointer-events: initial;
-
         }
     }
-
-
-.nav-bar {
-    background: linear-gradient( to right bottom, rgba(52, 52, 52, 0.318), rgba(60, 60, 60, 0.306));
-    // background-color: red;
-    width: 100%;
-    position: relative;
-
-
-
-
-
-
-
-
-
-
-
-    // ============= Nav Button  =================
-    .nav-btn {
-        position: absolute;
-        // top: 20px;
-        right: 35px;
-        z-index: 21;
-        cursor: pointer;
-
-        .lines {
-            width: 1.7rem;
-            height: .1rem;
-            background-color: var(--clr-white);
-            // background-color: green;
-            transition: .4s;
-
-            &:not(:last-child) {
-                margin-bottom: .5rem;
-            }
-        }
-        &.close {
-            
-            
-            .lines {
-    
-                &:nth-child(1) {
-                    transform: rotate(-45deg) translate(-8px, 6px);
-                }
-                &:nth-child(2) {
-                    opacity: 0;
-                }
-                &:nth-child(3) {
-                    transform: rotate(45deg) translate(-7px, -7px);
-                }
-            }
-        }
-    }
-
-}
-
-
-
-
-
-
-// desktops
-@media screen and (min-width: 768px) {
 
     .nav-bar {
-        // background-color: var(--clr-black);
+        background: linear-gradient(to right bottom, rgba(52, 52, 52, 0.318), rgba(60, 60, 60, 0.306));
         width: 100%;
-        // max-width: 900px;
-        display: flex;
-        padding: 0 3rem;
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, .2);
-        position: fixed;
-        position: -webkit-sticky;
-        top: s0px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        transition: .4s;
-        // display: none;
-        // position: fixed;
-    }
+        position: relative;
 
-    .nav-btn {
-        display: none;
-    }
+        // ============= Nav Button  =================
+        .nav-btn {
+            position: absolute;
+            right: 35px;
+            z-index: 21;
+            cursor: pointer;
 
-    // ====================== Nav List ================
-    .nav-list {
-        display: flex;
-        
-
-        .nav-item {
-
-            &:not(:last-child) {
-
-                .nav-link {
-                    border-right: 1px solid rgba(255, 255, 255, .1);
-                }
-            }
-        }
-
-        .nav-link {
-            display: inline-block;
-            color: var(--clr-white);
-            padding: 0rem .5rem;
-            font-size: .9rem;
-            font-weight: bold;
-
-            &:hover,
-            &:focus {
-                color: var(--clr-white);
-            }
-        }
-    }
-
-    
-}
-
-
-
-
-
-
-// Mobile devices
-@media screen and (max-width: 767px) {
-
-    .btn {
-        // display: none;
-    }
-
-    .nav-bar {
-        width: 95vw;
-        border-radius: 3rem;
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, .1);
-        position: fixed;
-        top: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 20;
-
-        .nav-list {
-            width: 100%;
-            transition: .4s;
-            background-color: var(--clr-black);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 50vh;
-            transform: translate3d(0, -110%, 0);
-            
-            &.show {
-                transform: translate3d(0, 00%, 0);
-                border-radius: 3rem;
-            }
-
-            .nav-item {
+            .lines {
+                width: 1.7rem;
+                height: .15rem;
+                background-color: var(--clr-white, #ffffff);
+                transition: .4s;
 
                 &:not(:last-child) {
-                    margin-bottom: .3rem;
+                    margin-bottom: .5rem;
+                }
+            }
+            &.close {
+                .lines {
+                    &:nth-child(1) {
+                        transform: rotate(-45deg) translate(-6px, 6px);
+                    }
+                    &:nth-child(2) {
+                        opacity: 0;
+                    }
+                    &:nth-child(3) {
+                        transform: rotate(45deg) translate(-6px, -6px);
+                    }
+                }
+            }
+        }
+    }
+
+    // desktops
+    @media screen and (min-width: 768px) {
+        .nav-bar {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            padding: 0 2rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, .2);
+            border-radius: 3rem;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            transition: .4s;
+        }
+
+        .nav-btn {
+            display: none;
+        }
+
+        .nav-list {
+            display: flex;
+
+            .nav-item {
+                &:not(:last-child) {
+                    .nav-link {
+                        border-right: 1px solid rgba(255, 255, 255, .1);
+                    }
                 }
             }
 
             .nav-link {
                 display: inline-block;
-                padding: .5rem 2rem;
-                font-size: 1.2rem;
-                border-radius: .5rem;
-                border: 1px solid transparent;
-                color: var(--clr-white);
+                color: var(--clr-white, #ffffff);
+                padding: 0rem 1rem;
+                font-size: .9rem;
+                font-weight: bold;
 
                 &:hover {
-                    border: 1px solid var(--clr-orange);
-                    color: var(--clr-yellow);
+                    color: #34d399;
                 }
             }
         }
     }
-}
+
+    // Mobile devices
+    @media screen and (max-width: 767px) {
+        .nav-bar {
+            width: 95vw;
+            border-radius: 3rem;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+
+            .nav-list {
+                width: 100%;
+                transition: transform 0.4s ease;
+                background-color: #111827;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 15;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 60vh;
+                transform: translate3d(0, -110%, 0);
+                padding-top: 2rem;
+                border-bottom-left-radius: 2rem;
+                border-bottom-right-radius: 2rem;
+                
+                &.show {
+                    transform: translate3d(0, 0%, 0);
+                }
+
+                .nav-item {
+                    &:not(:last-child) {
+                        margin-bottom: 1rem;
+                    }
+                }
+
+                .nav-link {
+                    display: inline-block;
+                    padding: .5rem 2rem;
+                    font-size: 1.2rem;
+                    border-radius: .5rem;
+                    color: #ffffff;
+
+                    &:hover {
+                        color: #34d399;
+                    }
+                }
+            }
+        }
+    }
 </style>
