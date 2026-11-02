@@ -149,18 +149,42 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
           </div>
         </div>
 
-        <!-- 3. DELIVERY & PAYMENT CHECKOUT SECTION (Appears only when box is full) -->
+        <!-- 3. ACCOUNT AUTH & CHECKOUT SECTION -->
         <div id="checkout-section" class="space-y-6 pt-6 border-t border-stone-200 hidden">
+          
           <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-4 rounded-2xl">
             <div>
               <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">Box Complete! Total Price</span>
               <span id="final-box-price" class="text-xl font-black text-emerald-950">GHS 90.00</span>
             </div>
-            <span class="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-black">Ready to Checkout</span>
+            <span class="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-black">Ready to Order</span>
+          </div>
+
+          <!-- Account Sign-in / Registration Card -->
+          <div id="auth-box-wrapper" class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-black text-stone-900 uppercase tracking-wider">Account Details</h3>
+              <span id="logged-in-status" class="text-[11px] font-bold text-emerald-700 hidden">✓ Signed in</span>
+            </div>
+
+            <!-- Login / Sign-up Input fields for Guests -->
+            <div id="auth-guest-fields" class="space-y-3">
+              <p class="text-[11px] text-stone-500 font-medium">Sign in or enter a password to automatically create your Helthe Juice buyer profile:</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address</label>
+                  <input id="order-email" type="email" placeholder="kofi@gmail.com" required class="w-full px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Password</label>
+                  <input id="order-password" type="password" placeholder="••••••••" required class="w-full px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="space-y-4">
-            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">3. Delivery & Contact Details</h2>
+            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">4. Delivery Details</h2>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -183,9 +207,9 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
               <textarea id="order-notes" rows="2" placeholder="E.g. Urgent for Friday morning meeting, or event catering breakdown..." class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500 resize-none"></textarea>
             </div>
 
-            <!-- Prominent Call to Action Button for Payment & Pre-Order Submission -->
+            <!-- Prominent Call to Action Button -->
             <button type="button" id="submit-box-order-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-sm transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
-              <span>🔒 Proceed to Secure Payment & Submit Pre-Order</span>
+              <span>🔒 Submit Pre-Order & Proceed to Payment</span>
             </button>
             <p class="text-[10px] text-center text-stone-400 font-medium">Payments are processed securely via PayAngel / Mobile Money.</p>
           </div>
@@ -196,14 +220,16 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
     </div>
   </div>
 
-  <!-- Box Builder Logic Script -->
+  <!-- Box Builder & Auth Logic Script -->
   <script>
-    import { db } from '../lib/firebase';
+    import { auth, db } from '../lib/firebase';
+    import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
     import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
     let targetSize = 6;
     let maxFlavorsAllowed = 2;
     const pricePerBottle = 15;
+    let currentUser: any = null;
 
     const sizeBtns = document.querySelectorAll('.bundle-size-btn');
     const qtyInputs = document.querySelectorAll('.box-qty-input') as NodeListOf<HTMLInputElement>;
@@ -214,6 +240,25 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
     const flavorLimitWarning = document.getElementById('flavor-limit-warning')!;
     const checkoutSection = document.getElementById('checkout-section')!;
     const finalBoxPriceEl = document.getElementById('final-box-price')!;
+
+    // Auth State Listener
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      const statusEl = document.getElementById('logged-in-status');
+      const guestFields = document.getElementById('auth-guest-fields');
+      const emailInput = document.getElementById('order-email') as HTMLInputElement;
+
+      if (user) {
+        console.log('User is logged in:', user.email);
+        if (statusEl) statusEl.classList.remove('hidden');
+        if (guestFields) guestFields.classList.add('hidden');
+        if (emailInput) emailInput.value = user.email || '';
+      } else {
+        console.log('No user logged in (Guest mode)');
+        if (statusEl) statusEl.classList.add('hidden');
+        if (guestFields) guestFields.classList.remove('hidden');
+      }
+    });
 
     // Bundle Size Selector Handler
     sizeBtns.forEach(btn => {
@@ -236,7 +281,7 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
       });
     });
 
-    // Stepper + / - and Direct Input handlers with strict flavor enforcement
+    // Steppers Handler
     qtyInputs.forEach(input => {
       const row = input.closest('.flavor-row')!;
       const subBtn = row.querySelector('.qty-sub')!;
@@ -260,7 +305,6 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
         const currentVal = parseInt(input.value) || 0;
         const usedFlavors = getUsedFlavorsCount();
 
-        // If this flavor currently has 0 quantity, and we have already hit max flavors, prevent adding a new variety
         if (currentVal === 0 && usedFlavors >= maxFlavorsAllowed) {
           alert(`Maximum flavor variety limit reached (${maxFlavorsAllowed} flavors for a ${targetSize}-piece box). Increase quantity on your existing selected flavors instead.`);
           return;
@@ -273,7 +317,6 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
       input.addEventListener('input', () => {
         const allocated = getCurrentAllocatedTotal();
         if (allocated > targetSize) {
-          // Revert excess input
           let val = parseInt(input.value) || 0;
           input.value = String(Math.max(0, val - (allocated - targetSize)));
         }
@@ -323,109 +366,100 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
       }
     }
 
-    // Search and Filter logic inside box builder
-    const boxSearchInput = document.getElementById('boxSearchInput') as HTMLInputElement;
-    const boxFruitFilters = document.querySelectorAll('.box-fruit-filter');
-    const flavorRows = document.querySelectorAll('.flavor-row');
+    // Submit Pre-Order & Handle Auth
+    const submitBtn = document.getElementById('submit-box-order-btn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('Submit Pre-Order button clicked!');
 
-    let currentSearch = '';
-    let selectedFruitFilter = '';
+        const allocated = getCurrentAllocatedTotal();
+        const flavorsUsed = getUsedFlavorsCount();
 
-    function filterBoxFlavors() {
-      flavorRows.forEach(row => {
-        const name = row.getAttribute('data-name') || '';
-        const fruits: string[] = JSON.parse(row.getAttribute('data-fruits') || '[]');
+        if (allocated !== targetSize) {
+          alert(`Please complete your box. You need exactly ${targetSize} bottles.`);
+          return;
+        }
 
-        const matchesSearch = name.includes(currentSearch);
-        const matchesFruit = !selectedFruitFilter || fruits.includes(selectedFruitFilter);
+        const emailInput = document.getElementById('order-email') as HTMLInputElement;
+        const passwordInput = document.getElementById('order-password') as HTMLInputElement;
+        const nameInput = document.getElementById('order-name') as HTMLInputElement;
+        const phoneInput = document.getElementById('order-phone') as HTMLInputElement;
+        const addressInput = document.getElementById('order-address') as HTMLTextAreaElement;
+        const notesInput = document.getElementById('order-notes') as HTMLTextAreaElement;
 
-        if (matchesSearch && matchesFruit) {
-          (row as HTMLElement).style.display = 'flex';
-        } else {
-          (row as HTMLElement).style.display = 'none';
+        const email = emailInput?.value.trim() || '';
+        const password = passwordInput?.value || '';
+        const name = nameInput?.value.trim() || '';
+        const phone = phoneInput?.value.trim() || '';
+        const address = addressInput?.value.trim() || '';
+        const notes = notesInput?.value.trim() || '';
+
+        if (!name || !phone || !address) {
+          alert('Please fill in your name, phone number, and delivery address.');
+          return;
+        }
+
+        let userId = currentUser?.uid || null;
+
+        // Handle Guest Account Creation / Login on Checkout if fields are provided
+        if (!currentUser && email && password) {
+          try {
+            console.log('Attempting Firebase account creation/login for:', email);
+            const userCred = await createUserWithEmailAndPassword(auth, email, password);
+            userId = userCred.user.uid;
+          } catch (authErr: any) {
+            console.warn('Auth creation note:', authErr.code);
+            if (authErr.code === 'auth/email-already-in-use') {
+              try {
+                const userCred = await signInWithEmailAndPassword(auth, email, password);
+                userId = userCred.user.uid;
+              } catch (loginErr) {
+                alert('Email already registered. Incorrect password entered.');
+                return;
+              }
+            } else {
+              alert(`Authentication notice: ${authErr.message}`);
+              return;
+            }
+          }
+        }
+
+        const items: Array<{ name: string; price: number; qty: number }> = [];
+        qtyInputs.forEach(input => {
+          const qty = parseInt(input.value) || 0;
+          if (qty > 0) {
+            items.push({
+              name: input.getAttribute('data-flavor') || 'Juice',
+              price: pricePerBottle * 100,
+              qty: qty
+            });
+          }
+        });
+
+        const orderData = {
+          orderType: `Box of ${targetSize}`,
+          userId: userId,
+          customer: { name, phone, address, notes, email },
+          items,
+          total: targetSize * pricePerBottle * 100,
+          status: 'pending',
+          createdAt: serverTimestamp(),
+        };
+
+        try {
+          console.log('Saving order to Firestore...', orderData);
+          const docRef = await addDoc(collection(db, 'orders'), orderData);
+          console.log('Order saved with ID:', docRef.id);
+          alert(`Pre-Order submitted successfully! Order ID: #${docRef.id.slice(-6)}. We will contact you via WhatsApp/Phone to confirm delivery and payment.`);
+          window.location.reload();
+        } catch (err: any) {
+          console.error('Firestore order submission error:', err);
+          alert(`Failed to submit order: ${err.message || 'Please check your connection.'}`);
         }
       });
+    } else {
+      console.error('Submit button element with ID #submit-box-order-btn was not found in the DOM.');
     }
-
-    boxSearchInput?.addEventListener('input', (e) => {
-      currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
-      filterBoxFlavors();
-    });
-
-    boxFruitFilters.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fruit = btn.getAttribute('data-fruit') || '';
-        if (selectedFruitFilter === fruit) {
-          selectedFruitFilter = '';
-          btn.classList.remove('bg-emerald-600', 'text-white');
-          btn.classList.add('bg-stone-100', 'text-stone-600');
-        } else {
-          boxFruitFilters.forEach(b => {
-            b.classList.remove('bg-emerald-600', 'text-white');
-            b.classList.add('bg-stone-100', 'text-stone-600');
-          });
-          selectedFruitFilter = fruit;
-          btn.classList.add('bg-emerald-600', 'text-white');
-          btn.classList.remove('bg-stone-100', 'text-stone-600');
-        }
-        filterBoxFlavors();
-      });
-    });
-
-    // Submit Box Pre-Order & Proceed to Payment
-    document.getElementById('submit-box-order-btn')?.addEventListener('click', async () => {
-      const allocated = getCurrentAllocatedTotal();
-      const flavorsUsed = getUsedFlavorsCount();
-
-      if (allocated !== targetSize) {
-        alert(`Please complete your box. You need exactly ${targetSize} bottles.`);
-        return;
-      }
-      if (flavorsUsed > maxFlavorsAllowed) {
-        alert(`You have selected too many flavor varieties for a ${targetSize}-piece box (Max is ${maxFlavorsAllowed}).`);
-        return;
-      }
-
-      const name = (document.getElementById('order-name') as HTMLInputElement).value.trim();
-      const phone = (document.getElementById('order-phone') as HTMLInputElement).value.trim();
-      const address = (document.getElementById('order-address') as HTMLTextAreaElement).value.trim();
-      const notes = (document.getElementById('order-notes') as HTMLTextAreaElement).value.trim();
-
-      if (!name || !phone || !address) {
-        alert('Please fill in your name, phone number, and delivery address.');
-        return;
-      }
-
-      const items: Array<{ name: string; price: number; qty: number }> = [];
-      qtyInputs.forEach(input => {
-        const qty = parseInt(input.value) || 0;
-        if (qty > 0) {
-          items.push({
-            name: input.getAttribute('data-flavor') || 'Juice',
-            price: pricePerBottle * 100,
-            qty: qty
-          });
-        }
-      });
-
-      const orderData = {
-        orderType: `Box of ${targetSize}`,
-        customer: { name, phone, address, notes },
-        items,
-        total: targetSize * pricePerBottle * 100,
-        status: 'pending',
-        createdAt: serverTimestamp(),
-      };
-
-      try {
-        const docRef = await addDoc(collection(db, 'orders'), orderData);
-        alert(`Pre-Order submitted successfully! Order ID: #${docRef.id.slice(-6)}. Redirecting to payment gateway...`);
-        // Here you can plug in your PayAngel/Momo redirect link if needed
-        window.location.reload();
-      } catch (err) {
-        console.error('Order submission error:', err);
-        alert('Failed to submit order. Please check your connection.');
-      }
-    });
   </script>
 </MainLayout>

@@ -1,6 +1,7 @@
 ---
 // src/pages/admin/index.astro
 export const prerender = false;
+import '../../styles/global.css'; // Adjust path if your global CSS filename is different (e.g. tailwind.css or app.css)
 ---
 <html lang="en">
   <head>
@@ -9,104 +10,107 @@ export const prerender = false;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | Helthe Juice</title>
   </head>
-  <body class="bg-gray-50 font-sans min-h-screen text-gray-900">
+  <body class="bg-stone-50 font-sans min-h-screen text-stone-900 selection:bg-emerald-500 selection:text-white">
     
     <!-- Login Section -->
-    <section id="login" class="max-w-md mx-auto mt-20 p-8 bg-white rounded-2xl shadow-sm border border-gray-100 space-y-6">
-      <div class="text-center space-y-1">
-        <h1 class="text-2xl font-black text-gray-950">Admin Portal</h1>
-        <p class="text-xs text-gray-500">Sign in to manage flavors and pre-order batches</p>
+    <section id="login" class="max-w-md mx-auto mt-24 p-8 bg-white rounded-3xl shadow-xl border border-stone-200/80 space-y-6">
+      <div class="text-center space-y-1.5">
+        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">Restricted Access</span>
+        <h1 class="text-2xl font-black text-stone-950 tracking-tight pt-2">Admin Portal</h1>
+        <p class="text-xs text-stone-500 font-medium">Sign in to manage flavors and weekly production batches</p>
       </div>
       
       <form id="login-form" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email</label>
-          <input name="email" type="email" placeholder="helthegh@gmail.com" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white" />
+          <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Email Address</label>
+          <input name="email" type="email" placeholder="helthegh@gmail.com" required class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
-          <input name="password" type="password" placeholder="••••••••" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white" />
+          <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Password</label>
+          <input name="password" type="password" placeholder="••••••••" required class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
         </div>
-        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-all shadow-sm">
-          Log In
+        <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20">
+          Sign In to Dashboard
         </button>
       </form>
-      <p id="login-error" class="text-xs text-red-500 text-center font-medium"></p>
+      <p id="login-error" class="text-xs text-rose-600 text-center font-bold"></p>
     </section>
 
     <!-- Admin Panel Content (Hidden until authenticated) -->
-    <main id="panel" hidden class="max-w-6xl mx-auto px-4 py-10 space-y-10">
+    <main id="panel" hidden class="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-10">
       
       <!-- Top Bar -->
-      <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        <div>
-          <h1 class="text-xl font-black">Helthe Juice Management</h1>
-          <p class="text-xs text-emerald-600 font-semibold">Make-to-Order Pre-Order Dashboard</p>
+      <div class="flex items-center justify-between bg-white p-6 rounded-3xl border border-stone-200/80 shadow-sm">
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-black tracking-tight text-stone-950">Helthe Juice Management</h1>
+            <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">Live</span>
+          </div>
+          <p class="text-xs text-stone-500 font-medium">Make-to-Order Pre-Order Dashboard & Batch Production System</p>
         </div>
-        <button id="logout" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-all">
+        <button id="logout" class="px-4 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-2xl text-xs font-black transition-all">
           Log Out
         </button>
       </div>
 
       <!-- Batch Production Aggregator Card -->
-      <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/80 p-6 rounded-2xl shadow-sm space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="space-y-0.5">
-            <span class="px-2.5 py-1 bg-amber-600 text-white rounded-full text-[10px] font-black uppercase tracking-wider">Pre-Order Batching</span>
-            <h2 class="text-base font-black text-stone-950 mt-1">Upcoming Juicing Production List</h2>
-            <p class="text-xs text-stone-600">Total bottles required based on incoming customer pre-orders:</p>
+      <div class="bg-gradient-to-br from-amber-50/80 via-orange-50/50 to-amber-100/40 border border-amber-200/70 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="space-y-1">
+            <span class="px-3 py-1 bg-amber-600 text-white rounded-full text-[10px] font-black uppercase tracking-wider">Weekly Batching</span>
+            <h2 class="text-lg font-black text-stone-950 mt-1">Upcoming Juicing Production List</h2>
+            <p class="text-xs text-stone-600 font-medium">Total bottles required based on all active customer pre-orders:</p>
           </div>
         </div>
-        <div id="batch-prep-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-          <!-- Dynamically populated -->
-          <p class="text-xs text-stone-400 font-medium">Loading batch requirements...</p>
+        <div id="batch-prep-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-2">
+          <p class="text-xs text-stone-400 font-medium col-span-full">Loading batch requirements...</p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <!-- Left: Product / Flavor Form -->
-        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4 h-fit">
-          <div class="flex items-center justify-between">
-            <h2 id="form-title" class="text-base font-extrabold">Add New Flavor</h2>
-            <button type="button" id="cancel-edit" hidden class="text-xs text-red-600 font-bold hover:underline">Cancel Edit</button>
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-sm space-y-5 h-fit">
+          <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+            <h2 id="form-title" class="text-sm font-black text-stone-950 uppercase tracking-wider">Add New Flavor</h2>
+            <button type="button" id="cancel-edit" hidden class="text-xs text-rose-600 font-bold hover:underline">Cancel Edit</button>
           </div>
 
           <form id="product-form" class="space-y-4">
             <input type="hidden" name="id" />
             
             <div>
-              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Juice Name</label>
-              <input name="name" placeholder="e.g. Pineapple Ginger" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+              <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Juice Name</label>
+              <input name="name" placeholder="e.g. Pineapple Ginger" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Fruits (comma separated)</label>
-              <input name="fruits" placeholder="pineapple, ginger" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+              <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Fruits (comma separated)</label>
+              <input name="fruits" placeholder="pineapple, ginger" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Price (GHS)</label>
-                <input name="price" type="number" step="0.50" min="0" value="15.00" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+                <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Price (GHS)</label>
+                <input name="price" type="number" step="0.50" min="0" value="15.00" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Volume</label>
-                <input name="volume" value="350ml" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500" />
+                <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Volume</label>
+                <input name="volume" value="350ml" required class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
               </div>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Product Image</label>
-              <input name="image" type="file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
+              <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Product Image</label>
+              <input name="image" type="file" accept="image/*" class="w-full text-xs text-stone-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all cursor-pointer" />
             </div>
 
-            <div class="flex items-center gap-2 pt-2">
-              <input name="active" type="checkbox" id="active" checked class="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500" />
-              <label for="active" class="text-xs font-bold text-gray-700">Visible on live menu</label>
+            <div class="flex items-center gap-2.5 pt-2">
+              <input name="active" type="checkbox" id="active" checked class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500" />
+              <label for="active" class="text-xs font-bold text-stone-700">Visible on live menu</label>
             </div>
 
-            <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all shadow-sm">
+            <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-emerald-600/20">
               Save Flavor
             </button>
           </form>
@@ -116,19 +120,21 @@ export const prerender = false;
         <div class="lg:col-span-2 space-y-8">
           
           <!-- Menu Flavors Catalog List -->
-          <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-            <h2 class="text-base font-extrabold">Active Menu Flavors ({<span id="product-count">0</span>})</h2>
+          <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-sm space-y-5">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+              <h2 class="text-sm font-black text-stone-950 uppercase tracking-wider">Active Menu Flavors (<span id="product-count" class="text-emerald-600">0</span>)</h2>
+            </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead>
-                  <tr class="border-b border-gray-100 text-gray-400 uppercase font-bold tracking-wider">
+                  <tr class="border-b border-stone-100 text-stone-400 uppercase font-black tracking-wider text-[10px]">
                     <th class="pb-3">Flavor</th>
                     <th class="pb-3">Price</th>
                     <th class="pb-3">Status</th>
                     <th class="pb-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody id="product-list" class="divide-y divide-gray-50">
+                <tbody id="product-list" class="divide-y divide-stone-100/80">
                   <!-- Injected via client script -->
                 </tbody>
               </table>
@@ -136,12 +142,14 @@ export const prerender = false;
           </div>
 
           <!-- Orders Ledger List -->
-          <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-            <h2 class="text-base font-extrabold">Customer Pre-Orders Ledger</h2>
+          <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-sm space-y-5">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+              <h2 class="text-sm font-black text-stone-950 uppercase tracking-wider">Customer Pre-Orders Ledger</h2>
+            </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead>
-                  <tr class="border-b border-gray-100 text-gray-400 uppercase font-bold tracking-wider">
+                  <tr class="border-b border-stone-100 text-stone-400 uppercase font-black tracking-wider text-[10px]">
                     <th class="pb-3">Order ID / Date</th>
                     <th class="pb-3">Customer</th>
                     <th class="pb-3">Items</th>
@@ -150,7 +158,7 @@ export const prerender = false;
                     <th class="pb-3 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody id="order-list" class="divide-y divide-gray-50">
+                <tbody id="order-list" class="divide-y divide-stone-100/80">
                   <!-- Injected via client script -->
                 </tbody>
               </table>
@@ -190,7 +198,7 @@ export const prerender = false;
 
       $('logout').addEventListener('click', () => signOut(auth));
 
-      // Auth state listener with custom claim check
+      // Auth state listener with custom claim & direct admin email check
       onAuthStateChanged(auth, async (user) => {
         unsubscribers.forEach((u) => u());
         unsubscribers = [];
@@ -202,8 +210,8 @@ export const prerender = false;
         }
 
         const token = await user.getIdTokenResult(true);
-        if (!token.claims.admin) {
-          $('login-error').textContent = 'Access denied: Account lacks administrator claims.';
+        if (!token.claims.admin && user.email !== 'helthegh@gmail.com') {
+          $('login-error').textContent = 'Access denied: Account lacks administrator permissions.';
           await signOut(auth);
           return;
         }
@@ -228,20 +236,20 @@ export const prerender = false;
             const p = d.data();
             products[d.id] = p;
             const tr = document.createElement('tr');
-            tr.className = 'hover:bg-gray-50/50';
+            tr.className = 'hover:bg-stone-50/60 transition-colors';
             tr.innerHTML = `
-              <td class="py-3 font-bold text-gray-900 flex items-center gap-2">
-                ${p.imageUrl ? `<img src="${p.imageUrl}" class="w-8 h-8 rounded-lg object-cover" />` : ''}
-                ${p.name}
+              <td class="py-3.5 font-bold text-stone-900 flex items-center gap-3">
+                ${p.imageUrl ? `<img src="${p.imageUrl}" class="w-9 h-9 rounded-xl object-cover border border-stone-200" />` : '<div class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-[10px] text-stone-400 font-bold">Juice</div>'}
+                <span>${p.name}</span>
               </td>
-              <td class="py-3 font-semibold">GHS ${(p.price / 100).toFixed(2)}</td>
-              <td class="py-3">
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${p.active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}">
+              <td class="py-3.5 font-extrabold text-stone-900">GHS ${(p.price / 100).toFixed(2)}</td>
+              <td class="py-3.5">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide ${p.active ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60' : 'bg-stone-100 text-stone-500'}">
                   ${p.active ? 'Active' : 'Hidden'}
                 </span>
               </td>
-              <td class="py-3 text-right">
-                <button type="button" class="edit-btn px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold" data-id="${d.id}">Edit</button>
+              <td class="py-3.5 text-right">
+                <button type="button" class="edit-btn px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl font-black text-xs transition-all" data-id="${d.id}">Edit</button>
               </td>
             `;
             tr.querySelector('.edit-btn')!.addEventListener('click', () => startEdit(d.id));
@@ -264,14 +272,14 @@ export const prerender = false;
 
           const prepListEl = $('batch-prep-list');
           if (Object.keys(batchTotals).length === 0) {
-            prepListEl.innerHTML = `<p class="col-span-full text-xs text-stone-500 font-medium">No pending pre-orders for the upcoming batch right now.</p>`;
+            prepListEl.innerHTML = `<p class="col-span-full text-xs text-stone-500 font-medium py-2">No pending pre-orders for the upcoming batch right now.</p>`;
             return;
           }
 
           prepListEl.innerHTML = Object.entries(batchTotals).map(([name, qty]) => `
-            <div class="bg-white/80 border border-amber-200/60 p-3 rounded-xl flex justify-between items-center shadow-sm">
-              <span class="font-bold text-stone-900 text-xs">${name}</span>
-              <span class="px-2.5 py-1 bg-amber-600 text-white rounded-full font-black text-xs">${qty} bottles</span>
+            <div class="bg-white/90 border border-amber-200/80 p-3.5 rounded-2xl flex flex-col justify-between shadow-xs space-y-2">
+              <span class="font-bold text-stone-900 text-xs line-clamp-1">${name}</span>
+              <span class="px-2.5 py-1 bg-amber-600 text-white rounded-xl font-black text-xs w-fit">${qty} bottles</span>
             </div>
           `).join('');
         }));
@@ -307,15 +315,15 @@ export const prerender = false;
           const data = {
             name: String(f.get('name')).trim(),
             fruits: String(f.get('fruits')).split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
-            price: Math.round(Number(f.get('price')) * 100), // Pesewas conversion
+            price: Math.round(Number(f.get('price')) * 100),
             volume: String(f.get('volume')).trim() || '350ml',
             active: f.get('active') === 'on',
           };
 
           const file = f.get('image');
-          if (file && file.size > 0) {
-            const imgRef = ref(storage, `products/${Date.now()}-${file.name}`);
-            await uploadBytes(imgRef, file);
+          if (file && (file as File).size > 0) {
+            const imgRef = ref(storage, `products/${Date.now()}-${(file as File).name}`);
+            await uploadBytes(imgRef, file as File);
             data.imageUrl = await getDownloadURL(imgRef);
           }
 
@@ -344,28 +352,28 @@ export const prerender = false;
             const itemsSummary = (o.items || []).map((i: any) => `${i.qty}× ${i.name}`).join(', ');
             const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString() : 'Just now';
             
-            tr.className = 'hover:bg-gray-50/50';
+            tr.className = 'hover:bg-stone-50/60 transition-colors';
             tr.innerHTML = `
-              <td class="py-3">
-                <span class="font-bold text-gray-900 block">#${d.id.slice(-6)}</span>
-                <span class="text-[10px] text-gray-400">${dateStr}</span>
+              <td class="py-3.5">
+                <span class="font-black text-stone-900 block">#${d.id.slice(-6)}</span>
+                <span class="text-[10px] text-stone-400 font-semibold">${dateStr}</span>
               </td>
-              <td class="py-3">
-                <span class="font-bold text-gray-900 block">${o.customer.name}</span>
-                <span class="text-[10px] text-gray-500">${o.customer.phone}</span>
+              <td class="py-3.5">
+                <span class="font-bold text-stone-900 block">${o.customer.name}</span>
+                <span class="text-[10px] text-stone-500 font-medium">${o.customer.phone}</span>
               </td>
-              <td class="py-3 text-gray-600 max-w-xs truncate">${itemsSummary}</td>
-              <td class="py-3 font-extrabold">GHS ${(o.total / 100).toFixed(2)}</td>
-              <td class="py-3">
-                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide ${
+              <td class="py-3.5 text-stone-600 max-w-xs truncate font-medium">${itemsSummary}</td>
+              <td class="py-3.5 font-black text-stone-900">GHS ${(o.total / 100).toFixed(2)}</td>
+              <td class="py-3.5">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide ${
                   o.status === 'paid' ? 'bg-emerald-100 text-emerald-800' :
                   o.status === 'fulfilled' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
                 }">
                   ${o.status}
                 </span>
               </td>
-              <td class="py-3 text-right">
-                ${o.status === 'paid' ? `<button class="fulfill-btn px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold" data-id="${d.id}">Fulfill</button>` : '<span class="text-gray-400 text-[10px]">Fulfilled</span>'}
+              <td class="py-3.5 text-right">
+                ${o.status === 'paid' ? `<button class="fulfill-btn px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-xs transition-all shadow-xs" data-id="${d.id}">Fulfill</button>` : '<span class="text-stone-400 font-bold text-[10px]">Fulfilled</span>'}
               </td>
             `;
             const fulfillBtn = tr.querySelector('.fulfill-btn');
