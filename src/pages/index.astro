@@ -1,12 +1,10 @@
 ---
 import Faq from '../components/Faq.astro';
-import Welcome from '../components/Welcome.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import Hwave from "../assets/h-wave.png"
 import { Image } from 'astro:assets';
 import NanaWelcome from "../assets/nana-owusua-helthe.png"
 import EventImage from "../assets/event-catering.png"
-
 
 // products
 import Cucpinmint from "../assets/products/cucumber-pineapple-mint.jpg"
@@ -18,22 +16,14 @@ import BeetMelon from "../assets/products/watermelon-beetroot.png"
 import nana from "../assets/Mask group.png"
 import thankyou from "../assets/Mask group-1.png"
 import watermelon from "../assets/Mask group-2.png"
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
-
-
-
 
 <MainLayout title='Helthe Juice | Home'>
 	
-
-
 	<!-- Section Hero -->
 	 <section class="section-hero" id="section-hero">
 		<div class="hero-container">
-			<div class=" container">
+			<div class="container">
 				<div class="hero-text">
 					<div class="container">
 						<h1>Helthe juice</h1>
@@ -41,16 +31,15 @@ import watermelon from "../assets/Mask group-2.png"
               Real fruits. Zero additives. Pure goodness in every sip.
 						</p>
 						<div>
-							<a href="juices" class="btn btn-blue">Our Menu</a>
-							<a href="order" class="btn btn-yellow">Order Now</a>
+							<a href="/juices" class="btn btn-blue">Our Menu</a>
+							<a href="/order" class="btn btn-yellow">Order Now</a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<Image src={Hwave} alt="helthe juice wave asset" class="w-full h-28 md:h-48 absolute left-0 bottom-0"></Image>
+		<Image src={Hwave} alt="helthe juice wave asset" class="w-full h-28 md:h-48 absolute left-0 bottom-0" />
 	 </section>
-
 
 	 <!-- Section Hero welcome -->
 	  <section class="section-welcome">
@@ -73,11 +62,6 @@ import watermelon from "../assets/Mask group-2.png"
 		</div>
 	  </section>
 
-
-
-
-
-
 	  <!-- Section Choose your flavor -->
 	   <section class="section-flavor">
 		<div class="container">
@@ -89,50 +73,58 @@ import watermelon from "../assets/Mask group-2.png"
 			 <div class="juices grid grid-cols-1 md:grid-cols-3 gap-12">
 				<!-- Cucumber Pineapple Mint -->
 				<div class="juice">
-					<Image src={Cucpinmint} alt="Helthe Juice Cucumber Pineapple Mint" />
+					<div class="juice-img-wrapper">
+						<Image src={Cucpinmint} alt="Helthe Juice Cucumber Pineapple Mint" class="uniform-juice-img" />
+					</div>
 					<h2 class="juice-title">PineCucumber</h2>
 					<p class="juice-description">Cucumber + Pineapple + Mint</p>
 				</div>
 				<!-- WaterMelon -->
 				<div class="juice">
-					<Image src={Watermelon} alt="Helthe Juice Watermelon" />
+					<div class="juice-img-wrapper">
+						<Image src={Watermelon} alt="Helthe Juice Watermelon" class="uniform-juice-img" />
+					</div>
 					<h2 class="juice-title">Watermelon</h2>
 					<p class="juice-description">Watermelon</p>
 				</div>
 				<!-- BeetMelon -->
 				<div class="juice">
-					<Image src={BeetMelon} alt="Helthe Juice Beetroot & Melon" />
+					<div class="juice-img-wrapper">
+						<Image src={BeetMelon} alt="Helthe Juice Beetroot & Melon" class="uniform-juice-img" />
+					</div>
 					<h2 class="juice-title">BeetMelon</h2>
 					<p class="juice-description">Beetroot + Melon</p>
 				</div>
 				<!-- Orange Carrot -->
 				<div class="juice">
-					<Image src={OrangeCarrot} alt="Helthe Juice Orange Carrot" />
+					<div class="juice-img-wrapper">
+						<Image src={OrangeCarrot} alt="Helthe Juice Orange Carrot" class="uniform-juice-img" />
+					</div>
 					<h2 class="juice-title">OrangeCarrot</h2>
 					<p class="juice-description">Orange + Carrot</p>
 				</div>
 				<!-- Cucumber Pineapple Spinach -->
 				<div class="juice">
-					<Image src={Cucpinspin} alt="Helthe Juice Cucumber Pineapple Spinach" />
+					<div class="juice-img-wrapper">
+						<Image src={Cucpinspin} alt="Helthe Juice Cucumber Pineapple Spinach" class="uniform-juice-img" />
+					</div>
 					<h2 class="juice-title">PineCucumber</h2>
 					<p class="juice-description">Cucumber + Pineapple + Spinach</p>
 				</div>
 				<!-- MangoMelon -->
 				<div class="juice">
-					<Image src={MangoMelon} alt="Helthe Juice Mango and Melon" />
+					<div class="juice-img-wrapper">
+						<Image src={MangoMelon} alt="Helthe Juice Mango and Melon" class="uniform-juice-img" />
+					</div>
 					<h2 class="juice-title">MangoMelon</h2>
 					<p class="juice-description">Mango + Melon</p>
 				</div>
-
 			 </div>
 			 <div class="text-center mt-20">
 				<a href="/order" class="btn btn-yellow">Place your Order</a>
 			 </div>
 		</div>
 	   </section>
-
-
-
 
 	   <section class="section-event pt-40 pb-20 bg-[var(--clr-yellow)] mt-[-6rem]">
 		<div class="container">
@@ -143,52 +135,28 @@ import watermelon from "../assets/Mask group-2.png"
 				<div>
 					<h2 class="heading-tertiary blue-text">Sip Your Way to Wellness</h2>
 					<p class="my-4">Elevate your next event with a Helthe Juice bar. From corporate gatherings and weddings to fitness events and activations, we bring the freshness to you. With live blending, branded setups, and custom menu options your guests will love.</p>
-					<p class="my-4">Healthy never has to be boring. Let us show your guests what real juice tastes like.
-          </p></p>
-					<a href="order" class="btn btn-blue">Order Now</a>
+					<p class="my-4">Healthy never has to be boring. Let us show your guests what real juice tastes like.</p>
+					<a href="/order" class="btn btn-blue">Order Now</a>
 				</div>
 			</div>
 		</div>
 	   </section>
-
 
 	   <section class="section-photo">
 		<div class="container">
 			<div class="photo-box">
 				<h2 class="heading-secondary mb-4">Ready to go down the helthe path?</h2>
 				<p class="mb-8">No sugar. No preservatives. No compromise. Just real fruit, real flavour, and real energy delivered fresh to your door.</p>
-				<a href="order" class="btn btn-blue">Order Now</a>
+				<a href="/order" class="btn btn-blue">Order Now</a>
+			</div>
 		</div>
 	   </section>
-
-
-
-
-
-
 
 	<!-- Section FAQ -->
 	 <Faq />
 </MainLayout>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <style lang="scss">
-
 	.section-hero {
 		background-image: url(../assets/hero-bg.png);
 		width: 100%;
@@ -196,11 +164,6 @@ import watermelon from "../assets/Mask group-2.png"
 		background-position: center;
 		position: relative;
 		background-size: cover;
-
-		.hero-wave {
-			// position: absolute;
-			// bottom: 0;
-		}
 
 		.hero-text {
 			width: 100%;
@@ -219,17 +182,11 @@ import watermelon from "../assets/Mask group-2.png"
 			h1 {
 				font-weight: bolder;
 				font-size: 6rem;
-				// font-family: "buttercake";
 				color: var(--clr-white);
 				text-shadow: 2px 1px 1px rgba(73, 73, 73, 0.315);
 			}
 		}
 	}
-
-
-
-
-
 
 	// Section Welcome
 	.section-welcome {
@@ -237,41 +194,54 @@ import watermelon from "../assets/Mask group-2.png"
 		padding: 5rem 0 12rem;
 	}
 
-
-
-	.section-flavor {
-
-
-		.juice {
-			text-align: center;
-
-			img {
-				width: 100%;
-				margin-bottom: .5rem;
-			}
-
-			.juice-title {
-				font-weight: bold;
-				font-size: 1.2rem;
-			}
-			.juice-description {
-				font-size: .8rem;
-				font-style: italic;
-				color: #7E7979;
-			}
-		}
-	}
-
-
-	// Section Flavor
 	.section-flavor {
 		background-color: var(--clr-dark);
 		color: var(--clr-white);
 		padding: 8rem 0;
 		margin-top: -5rem;
 		clip-path: polygon(0 5rem, 100% 0, 100% calc(100% - 5rem), 0 100%);
-	}
 
+		.juices {
+			.juice {
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+				height: 100%;
+
+				.juice-img-wrapper {
+					width: 100%;
+					height: 280px; /* Forces identical card height across all rows */
+					overflow: hidden;
+					border-radius: 2rem; /* Uniform rounded corners */
+					margin-bottom: 1rem;
+					background-color: #1a1a1a;
+
+					img.uniform-juice-img {
+						width: 100% !important;
+						height: 100% !important;
+						object-fit: contain !important; /* Shows full uncropped bottle inside uniform container */
+						border-radius: 2rem !important;
+						padding: 1rem; /* Keeps bottle nicely centered with soft margin */
+						transition: transform 0.4s ease;
+					}
+				}
+
+				&:hover .uniform-juice-img {
+					transform: scale(1.05);
+				}
+
+				.juice-title {
+					font-weight: bold;
+					font-size: 1.2rem;
+				}
+				.juice-description {
+					font-size: .8rem;
+					font-style: italic;
+					color: #7E7979;
+				}
+			}
+		}
+	}
 
 	.section-photo {
 		background-image: url(../assets/photo-separator.png);
