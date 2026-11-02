@@ -1,4 +1,5 @@
 ---
+// src/pages/juices.astro
 export const prerender = false;
 
 import MainLayout from '../layouts/MainLayout.astro';
@@ -24,34 +25,12 @@ import pineapplePassionfruit from '../assets/products/pineapple-passionfruit.png
 import orange from '../assets/products/orange.png';
 import orangeCarrot from '../assets/products/orange-carrot.png';
 
-const staticImageMap: Record<string, any> = {
-  'watermelon-red': watermelonRed,
-  'watermelon-yellow': watermelonYellow,
-  'watermelon-orange': watermelonOrange,
-  'watermelon-beetroot': watermelonBeetroot,
-  'watermelon-mango': watermelonMango,
-  'apple-beetroot-carrot': appleBeetrootCarrot,
-  'cucumber-apple-kale': cucumberAppleKale,
-  'pineapple': pineapple,
-  'pineapple-carrot': pineappleCarrot,
-  'pineapple-spinach-ginger': pineappleSpinachGinger,
-  'pineapple-cucumber-spinach': pineappleCucumberSpinach,
-  'pineapple-passionfruit': pineapplePassionfruit,
-  'pineapple-moringa-ginger': pineappleMoringaGinger,
-  'pineapple-ginger': pineappleGinger,
-  'pineapple-dandelion': pineappleDandelion,
-  'pineapple-cucumber-mint': pineappleCucumberMint,
-  'orange': orange,
-  'orange-carrot': orangeCarrot
-};
-
-// Full juice menu array (Fixed price to GHS 15.00)
 const juices = [
   { id: 'watermelon-red', name: 'Red Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: '100% Natural', image: watermelonRed },
   { id: 'watermelon-yellow', name: 'Yellow Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonYellow },
   { id: 'watermelon-orange', name: 'Orange Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonOrange },
-  { id: 'watermelon-beetroot', name: 'Beetroot Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonBeetroot },
-  { id: 'watermelon-mango', name: 'Mango Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonMango },
+  { id: 'watermelon-beetroot', name: 'Beetroot Watermelon', volume: '350ml', price: 15, fruits: ['watermelon', 'beetroot'], tagline: 'No Preservatives', image: watermelonBeetroot },
+  { id: 'watermelon-mango', name: 'Mango Watermelon', volume: '350ml', price: 15, fruits: ['watermelon', 'mango'], tagline: 'No Preservatives', image: watermelonMango },
   { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot', volume: '350ml', price: 15, fruits: ['apple', 'beetroot', 'carrot'], tagline: 'No Preservatives', image: appleBeetrootCarrot },
   { id: 'pineapple', name: 'Pineapple', volume: '350ml', price: 15, fruits: ['pineapple'], tagline: 'No Preservatives', image: pineapple },
   { id: 'pineapple-carrot', name: 'Pineapple Carrot', volume: '350ml', price: 15, fruits: ['pineapple', 'carrot'], tagline: 'No Preservatives', image: pineappleCarrot },
@@ -136,8 +115,8 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
             data-name={juice.name.toLowerCase()}
             data-fruits={JSON.stringify(juice.fruits.map(f => f.toLowerCase()))}
           >
-            <!-- Product Photo -->
-            <div class="relative aspect-[4/5] bg-amber-50/50 overflow-hidden flex items-center justify-center">
+            <!-- Product Photo (Unpadded, Full Bleed Image) -->
+            <div class="relative aspect-[4/5] bg-amber-50/50 overflow-hidden">
               <Image 
                 src={juice.image} 
                 alt={juice.name} 
