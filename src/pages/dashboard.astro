@@ -1,0 +1,314 @@
+---
+// src/pages/dashboard.astro
+export const prerender = false;
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="My Account & Orders — Helthe Juice">
+  <div class="min-h-screen bg-stone-50 py-10 px-4 sm:px-6 pt-32 pb-40 font-sans">
+    
+    <!-- Loading State -->
+    <div id="loading-state" class="max-w-xl mx-auto text-center py-20 space-y-3">
+      <div class="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+      <p class="text-xs text-stone-500 font-bold">Loading your Helthe Juice account...</p>
+    </div>
+
+    <!-- Main Dashboard View (Hidden until Auth verified) -->
+    <div id="dashboard-content" hidden class="max-w-4xl mx-auto space-y-8">
+      
+      <!-- Top Profile Card -->
+      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <h1 id="user-greeting" class="text-xl font-black text-stone-950">My Account</h1>
+            <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">Member</span>
+          </div>
+          <p id="user-email-display" class="text-xs text-stone-500 font-medium"></p>
+        </div>
+        
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <a href="/order" class="flex-1 sm:flex-none text-center px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-black transition-all shadow-md shadow-emerald-600/20">
+            + Build Juice Box
+          </a>
+          <button id="signout-btn" class="px-4 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-2xl text-xs font-black transition-all">
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left: Saved Profile & Allergies -->
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-sm space-y-5 h-fit">
+          <div class="border-b border-stone-100 pb-3">
+            <h2 class="text-xs font-black text-stone-950 uppercase tracking-wider">Saved Preferences</h2>
+            <p class="text-[10px] text-stone-400 font-medium mt-0.5">Auto-fills during checkout</p>
+          </div>
+
+          <form id="profile-form" class="space-y-4">
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name</label>
+              <input id="profile-name" type="text" class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" />
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Phone / WhatsApp</label>
+              <input id="profile-phone" type="text" placeholder="024XXXXXXX" class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" />
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Default Delivery Address</label>
+              <textarea id="profile-address" rows="2" placeholder="e.g. East Legon, near ANC Mall..." class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+            </div>
+
+            <div>
+            <div class="flex items-center justify-between mb-1">
+                <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Pin Link</label>
+                <button type="button" id="geo-location-btn" class="text-[10px] font-bold text-emerald-700 hover:underline">
+                📍 Use My GPS Location
+                </button>
+            </div>
+            <input 
+                id="profile-pin" 
+                type="url" 
+                placeholder="https://maps.google.com/?q=5.5600,-0.1800 or Ghana Post Digital Address" 
+                class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" 
+            />
+            <p class="text-[9px] text-stone-400 font-medium mt-1">
+                Tip: Open <a href="https://maps.google.com" target="_blank" class="underline text-emerald-700">Google Maps</a>, drop a pin on your house, tap "Share", and paste the link here.
+            </p>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Allergies / Dietary Notes</label>
+              <input id="profile-allergies" type="text" placeholder="e.g. Ginger sensitive, diabetic..." class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" />
+            </div>
+
+            <button type="submit" id="save-profile-btn" class="w-full py-3 bg-stone-900 hover:bg-stone-800 text-white font-black rounded-xl text-xs transition-all">
+              Save Saved Info
+            </button>
+            <p id="profile-save-msg" class="text-[10px] text-emerald-700 text-center font-bold min-h-[1rem]"></p>
+          </form>
+        </div>
+
+        <!-- Right: Order History & Active Orders -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-sm space-y-5">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+              <h2 class="text-xs font-black text-stone-950 uppercase tracking-wider">My Order History</h2>
+              <span id="order-count-badge" class="text-[10px] font-black text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">0 Orders</span>
+            </div>
+
+            <div id="orders-container" class="space-y-4">
+              <!-- Injected via Script -->
+              <p class="text-xs text-stone-400 font-medium py-4">Fetching your order history...</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    import { auth, db } from '../lib/firebase';
+    import { signOut, onAuthStateChanged } from 'firebase/auth';
+    import { 
+      collection, doc, getDoc, setDoc, query, where, orderBy, onSnapshot 
+    } from 'firebase/firestore';
+
+    let currentUser: any = null;
+
+    const loadingState = document.getElementById('loading-state')!;
+    const dashboardContent = document.getElementById('dashboard-content')!;
+    const userGreeting = document.getElementById('user-greeting')!;
+    const userEmailDisplay = document.getElementById('user-email-display')!;
+    const profileForm = document.getElementById('profile-form') as HTMLFormElement;
+    const saveMsg = document.getElementById('profile-save-msg')!;
+
+    // Check Auth State
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      currentUser = user;
+      userGreeting.textContent = `Welcome, ${user.displayName || user.email?.split('@')[0] || 'Member'}`;
+      userEmailDisplay.textContent = user.email || '';
+
+      loadingState.hidden = true;
+      dashboardContent.hidden = false;
+
+      loadUserProfile(user.uid);
+      listenToUserOrders(user.uid);
+    });
+
+    // Sign Out
+    document.getElementById('signout-btn')?.addEventListener('click', () => signOut(auth));
+
+    // Load User Profile Data from Firestore
+    async function loadUserProfile(uid: string) {
+      try {
+        const userRef = doc(db, 'users', uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          (document.getElementById('profile-name') as HTMLInputElement).value = data.name || '';
+          (document.getElementById('profile-phone') as HTMLInputElement).value = data.phone || '';
+          (document.getElementById('profile-address') as HTMLTextAreaElement).value = data.address || '';
+          (document.getElementById('profile-pin') as HTMLInputElement).value = data.locationPin || '';
+          (document.getElementById('profile-allergies') as HTMLInputElement).value = data.allergies || '';
+        }
+      } catch (e) {
+        console.error('Error loading profile:', e);
+      }
+    }
+
+    // Save Profile Form
+    // Save Profile Form
+    profileForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveMsg.textContent = 'Saving...';
+    saveMsg.className = 'text-[10px] text-amber-600 text-center font-bold min-h-[1rem]';
+
+    if (!currentUser) {
+        saveMsg.textContent = 'User session expired. Please sign in again.';
+        return;
+    }
+
+    try {
+        const data = {
+        name: (document.getElementById('profile-name') as HTMLInputElement).value.trim(),
+        phone: (document.getElementById('profile-phone') as HTMLInputElement).value.trim(),
+        address: (document.getElementById('profile-address') as HTMLTextAreaElement).value.trim(),
+        locationPin: (document.getElementById('profile-pin') as HTMLInputElement).value.trim(),
+        allergies: (document.getElementById('profile-allergies') as HTMLInputElement).value.trim(),
+        updatedAt: new Date().toISOString()
+        };
+
+        await setDoc(doc(db, 'users', currentUser.uid), data, { merge: true });
+        saveMsg.textContent = '✓ Preferences saved successfully!';
+        saveMsg.className = 'text-[10px] text-emerald-700 text-center font-bold min-h-[1rem]';
+        setTimeout(() => saveMsg.textContent = '', 3000);
+    } catch (err: any) {
+        console.error('Error saving profile to Firestore:', err);
+        saveMsg.textContent = `Failed: ${err.message || 'Permission denied'}`;
+        saveMsg.className = 'text-[10px] text-rose-600 text-center font-bold min-h-[1rem]';
+    }
+    });
+
+    // Real-Time Orders History
+    function listenToUserOrders(uid: string) {
+      const q = query(
+        collection(db, 'orders'), 
+        where('userId', '==', uid), 
+        orderBy('createdAt', 'desc')
+      );
+
+      onSnapshot(q, (snap) => {
+        const container = document.getElementById('orders-container')!;
+        document.getElementById('order-count-badge')!.textContent = `${snap.size} Orders`;
+
+        if (snap.empty) {
+          container.innerHTML = `
+            <div class="text-center py-8 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
+              <p class="text-xs font-bold text-stone-500">No pre-orders placed yet.</p>
+              <a href="/order" class="text-xs font-black text-emerald-700 underline mt-1 inline-block">Build your first box →</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = '';
+        snap.forEach((d) => {
+          const o = d.data();
+          const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString() : 'Recent';
+          const orderIdShort = d.id.slice(-6).toUpperCase();
+          const totalGhs = (o.total / 100).toFixed(2);
+          const itemsSummary = (o.items || []).map((i: any) => `${i.qty}× ${i.name}`).join(', ');
+
+          const card = document.createElement('div');
+          card.className = 'bg-stone-50 border border-stone-200/80 rounded-2xl p-4 space-y-3';
+          
+          card.innerHTML = `
+            <div class="flex items-center justify-between border-b border-stone-200/60 pb-2.5">
+              <div>
+                <span class="font-black text-stone-900 text-xs">#${orderIdShort}</span>
+                <span class="text-[10px] text-stone-400 font-semibold block">${dateStr}</span>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide ${
+                o.status === 'paid' ? 'bg-emerald-100 text-emerald-800' :
+                o.status === 'fulfilled' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+              }">
+                ${o.status}
+              </span>
+            </div>
+
+            <div class="text-xs text-stone-700 font-medium">
+              <span class="font-bold text-stone-900 block mb-0.5">${o.orderType || 'Juice Box'}</span>
+              <p class="text-stone-500 text-[11px]">${itemsSummary}</p>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-stone-200/50 text-xs">
+              <span class="font-black text-stone-950">GHS ${totalGhs}</span>
+              <button class="reorder-btn px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl font-black text-[11px] transition-all">
+                🔄 Re-Order Box
+              </button>
+            </div>
+          `;
+
+          // Re-order Action: loads items back into sessionStorage and sends user to /checkout
+          card.querySelector('.reorder-btn')?.addEventListener('click', () => {
+            const reorderConfig = {
+              boxSize: o.items.reduce((acc: number, i: any) => acc + i.qty, 0),
+              totalPrice: o.total / 100,
+              items: o.items
+            };
+            sessionStorage.setItem('helthe_box_config', JSON.stringify(reorderConfig));
+            window.location.href = '/checkout';
+          });
+
+          container.appendChild(card);
+        });
+      });
+    }
+
+    const geoBtn = document.getElementById('geo-location-btn');
+    const pinInput = document.getElementById('profile-pin') as HTMLInputElement;
+
+    if (geoBtn && pinInput) {
+    geoBtn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser. Please copy and paste your Google Maps link manually.');
+        return;
+        }
+
+        geoBtn.textContent = '⌛ Getting GPS coordinates...';
+
+        navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const lat = pos.coords.latitude.toFixed(6);
+            const lng = pos.coords.longitude.toFixed(6);
+            const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+            
+            pinInput.value = mapsUrl;
+            geoBtn.textContent = '✓ GPS Pin Attached!';
+            setTimeout(() => { geoBtn.textContent = '📍 Use My GPS Location'; }, 3000);
+        },
+        (err) => {
+            console.warn('Geolocation error:', err);
+            if (err.code === 1) {
+            alert('Location access was denied. Please allow location permissions in your browser settings or paste a Google Maps link manually.');
+            } else {
+            alert('Could not determine position. Please paste a Google Maps link or landmark manually.');
+            }
+            geoBtn.textContent = '📍 Use My GPS Location';
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    });
+    }
+  </script>
+</MainLayout>

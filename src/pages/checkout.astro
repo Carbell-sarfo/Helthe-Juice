@@ -1,0 +1,291 @@
+---
+// src/pages/checkout.astro
+export const prerender = false;
+
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Checkout & Delivery Details — Helthe Juice">
+  <div class="min-h-screen bg-stone-50 py-10 px-4 sm:px-6 pt-32 pb-40 font-sans">
+    <div class="max-w-xl mx-auto space-y-8">
+      
+      <!-- Checkout Card -->
+      <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-10 space-y-8">
+        
+        <!-- Header & Progress Back Button -->
+        <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+          <div>
+            <h1 class="text-2xl font-black text-stone-950 tracking-tight">Delivery & Order Details</h1>
+            <p class="text-xs text-stone-500 font-medium">Finalize your details to lock in your juice batch!</p>
+          </div>
+          <a href="/order" class="text-xs font-bold text-stone-500 hover:text-emerald-700 transition-colors">
+            ← Edit Box
+          </a>
+        </div>
+
+        <!-- Box Summary Preview Card -->
+        <div id="order-summary-card" class="bg-stone-50 border border-stone-200/80 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <span id="summary-box-title" class="text-xs font-black uppercase text-stone-800 tracking-wider">Box Summary</span>
+            <span id="summary-total-price" class="text-base font-black text-emerald-800">GHS 0.00</span>
+          </div>
+          <ul id="summary-items-list" class="text-xs text-stone-600 font-bold space-y-1 divide-y divide-stone-200/50 pt-1">
+            <!-- Injected via JavaScript from sessionStorage -->
+          </ul>
+        </div>
+
+        <!-- Checkout Form -->
+        <form id="checkout-form" class="space-y-6">
+          
+          <!-- 1. Customer Info -->
+          <div class="space-y-4">
+            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">1. Contact Information</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name *</label>
+                <input id="checkout-name" required placeholder="e.g. Kofi Mensah" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">WhatsApp / Phone Number *</label>
+                <input id="checkout-phone" required placeholder="024XXXXXXX" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address (Optional for order receipt)</label>
+              <input id="checkout-email" type="email" placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+            </div>
+          </div>
+
+          <!-- 2. Delivery Location & Pin -->
+          <div class="space-y-4 pt-4 border-t border-stone-100">
+            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">2. Delivery Location</h2>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Area / Address / Landmark *</label>
+              <textarea id="checkout-address" required rows="2" placeholder="e.g. East Legon, near ANC Mall / Madina Zongo Junction..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 resize-none transition-all"></textarea>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Location Pin Link (Optional)</label>
+                <button type="button" id="geo-location-btn" class="text-[10px] font-bold text-emerald-700 hover:underline">
+                  📍 Share Current Location
+                </button>
+              </div>
+              <input id="checkout-location-pin" type="url" placeholder="https://maps.google.com/?q=..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+            </div>
+          </div>
+
+          <!-- 3. Allergies & Dietary Preferences -->
+          <div class="space-y-4 pt-4 border-t border-stone-100">
+            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">3. Allergies & Preferences</h2>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Allergies or Special Health Notes</label>
+              <input id="checkout-allergies" placeholder="e.g. Ginger sensitivity, No Moringa, Diabetic friendly..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Delivery Notes or Event Instructions</label>
+              <textarea id="checkout-notes" rows="2" placeholder="e.g. Leave at security desk, call before arrival..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 resize-none transition-all"></textarea>
+            </div>
+          </div>
+
+          <!-- Submit Order Button -->
+          <div class="pt-4 space-y-3">
+            <button type="submit" id="submit-checkout-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-sm transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+              <span>🔒 Confirm & Pre-Order Box</span>
+            </button>
+            <p class="text-[10px] text-center text-stone-400 font-medium">After submitting, you can notify the owner directly via WhatsApp!</p>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 text-center shadow-2xl">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto text-2xl font-black">
+        ✓
+      </div>
+      <div class="space-y-2">
+        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">Pre-Order Placed!</span>
+        <h3 class="text-xl font-black text-stone-950">Order Received</h3>
+        <p class="text-xs text-stone-500 font-medium">Your pre-order <strong id="modal-order-id" class="text-stone-900">#------</strong> has been sent to our batch production queue.</p>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <a id="modal-whatsapp-btn" href="#" target="_blank" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
+          <span>💬 Confirm Order on WhatsApp</span>
+        </a>
+        <a href="/" class="block text-xs font-bold text-stone-500 hover:text-stone-800 transition-colors pt-2">
+          Return to Homepage
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  <!-- Client Script -->
+  <script>
+    import { auth, db } from '../lib/firebase';
+    import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+    import { onAuthStateChanged } from 'firebase/auth';
+
+    let currentConfig: any = null;
+    let currentUser: any = null;
+
+    const summaryTitleEl = document.getElementById('summary-box-title')!;
+    const summaryPriceEl = document.getElementById('summary-total-price')!;
+    const summaryListEl = document.getElementById('summary-items-list')!;
+    const checkoutForm = document.getElementById('checkout-form') as HTMLFormElement;
+    const geoBtn = document.getElementById('geo-location-btn');
+    const locationPinInput = document.getElementById('checkout-location-pin') as HTMLInputElement;
+
+    // Load Box Config from SessionStorage
+    const rawConfig = sessionStorage.getItem('helthe_box_config');
+    if (!rawConfig) {
+      alert('No juice box configuration found. Redirecting to box builder...');
+      window.location.href = '/order';
+    } else {
+      currentConfig = JSON.parse(rawConfig);
+      summaryTitleEl.textContent = `${currentConfig.boxSize}-Piece Juice Box`;
+      summaryPriceEl.textContent = `GHS ${Number(currentConfig.totalPrice).toFixed(2)}`;
+      
+      summaryListEl.innerHTML = currentConfig.items.map((item: any) => `
+        <li class="py-1.5 flex justify-between items-center">
+          <span>${item.name}</span>
+          <span class="px-2 py-0.5 bg-emerald-100 text-emerald-900 rounded-lg text-[10px] font-black">${item.qty} bottles</span>
+        </li>
+      `).join('');
+    }
+
+    // Auth state check & auto-fill profile data if logged in
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      if (user) {
+        const emailInput = document.getElementById('checkout-email') as HTMLInputElement;
+        if (emailInput && !emailInput.value) emailInput.value = user.email || '';
+
+        try {
+          const userDocSnap = await getDoc(doc(db, 'users', user.uid));
+          if (userDocSnap.exists()) {
+            const profile = userDocSnap.data();
+            
+            const nameInput = document.getElementById('checkout-name') as HTMLInputElement;
+            const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
+            const addressInput = document.getElementById('checkout-address') as HTMLTextAreaElement;
+            const pinInput = document.getElementById('checkout-location-pin') as HTMLInputElement;
+            const allergiesInput = document.getElementById('checkout-allergies') as HTMLInputElement;
+
+            if (nameInput && !nameInput.value) nameInput.value = profile.name || '';
+            if (phoneInput && !phoneInput.value) phoneInput.value = profile.phone || '';
+            if (addressInput && !addressInput.value) addressInput.value = profile.address || '';
+            if (pinInput && !pinInput.value) pinInput.value = profile.locationPin || '';
+            if (allergiesInput && !allergiesInput.value) allergiesInput.value = profile.allergies || '';
+          }
+        } catch (err) {
+          console.error('Error fetching user profile for checkout:', err);
+        }
+      }
+    });
+
+    // Geolocation Helper
+    if (geoBtn && locationPinInput) {
+      geoBtn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+          alert('Geolocation is not supported by your browser.');
+          return;
+        }
+        geoBtn.textContent = '⌛ Fetching location...';
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const url = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            locationPinInput.value = url;
+            geoBtn.textContent = '✓ Location Pin Saved';
+          },
+          (err) => {
+            alert('Unable to retrieve location. Please paste your Google Maps link manually.');
+            geoBtn.textContent = '📍 Share Current Location';
+          }
+        );
+      });
+    }
+
+    // Form Submission Handler
+    checkoutForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = (document.getElementById('checkout-name') as HTMLInputElement).value.trim();
+      const phone = (document.getElementById('checkout-phone') as HTMLInputElement).value.trim();
+      const email = (document.getElementById('checkout-email') as HTMLInputElement).value.trim();
+      const address = (document.getElementById('checkout-address') as HTMLTextAreaElement).value.trim();
+      const locationPin = locationPinInput.value.trim();
+      const allergies = (document.getElementById('checkout-allergies') as HTMLInputElement).value.trim();
+      const notes = (document.getElementById('checkout-notes') as HTMLTextAreaElement).value.trim();
+
+      const orderData = {
+        orderType: `Box of ${currentConfig.boxSize}`,
+        userId: currentUser?.uid || null,
+        customer: {
+          name,
+          phone,
+          email,
+          address,
+          locationPin,
+          allergies,
+          notes
+        },
+        items: currentConfig.items.map((i: any) => ({
+          name: i.name,
+          qty: i.qty
+        })),
+        total: Math.round(currentConfig.totalPrice * 100), // stored in pesewas
+        status: 'pending',
+        createdAt: serverTimestamp()
+      };
+
+      try {
+        const docRef = await addDoc(collection(db, 'orders'), orderData);
+        const orderIdShort = docRef.id.slice(-6).toUpperCase();
+
+        sessionStorage.removeItem('helthe_box_config');
+
+        // WhatsApp billing redirect route
+        const ownerPhone = '233547000817'; // Update with owner WhatsApp phone number
+        const itemsSummary = currentConfig.items.map((i: any) => `${i.qty}× ${i.name}`).join(', ');
+        const waText = encodeURIComponent(
+          `Hello Helthe Juice! 🍹 I just submitted a pre-order on your website.\n\n` +
+          `📋 *Order ID:* #${orderIdShort}\n` +
+          `👤 *Name:* ${name}\n` +
+          `📞 *Phone:* ${phone}\n` +
+          `📦 *Box:* ${currentConfig.boxSize}-Pack (${itemsSummary})\n` +
+          `💰 *Total:* GHS ${Number(currentConfig.totalPrice).toFixed(2)}\n` +
+          `📍 *Location:* ${address}\n` +
+          `${locationPin ? `🗺️ *Map Pin:* ${locationPin}\n` : ''}` +
+          `${allergies ? `⚠️ *Allergies:* ${allergies}\n` : ''}\n` +
+          `Please confirm my pre-order and billing details!`
+        );
+
+        const modal = document.getElementById('success-modal')!;
+        document.getElementById('modal-order-id')!.textContent = `#${orderIdShort}`;
+        (document.getElementById('modal-whatsapp-btn') as HTMLAnchorElement).href = `https://wa.me/${ownerPhone}?text=${waText}`;
+        modal.classList.remove('hidden');
+
+      } catch (err: any) {
+        console.error('Error creating order:', err);
+        alert('Failed to submit order. Please try again.');
+      }
+    });
+  </script>
+</MainLayout>
