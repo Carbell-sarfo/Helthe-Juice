@@ -5,7 +5,10 @@ export const prerender = false;
 import MainLayout from "../layouts/MainLayout.astro";
 ---
 
-<MainLayout title="Checkout & Delivery Details — Helthe Juice">
+<MainLayout title="Checkout & Secure Payment — Helthe Juice">
+  <!-- Paystack Inline JS SDK -->
+  <script src="https://js.paystack.co/v1/inline.js" is:inline></script>
+
   <div class="min-h-screen bg-stone-50 py-10 px-4 sm:px-6 pt-32 pb-40 font-sans">
     <div class="max-w-xl mx-auto space-y-8">
       
@@ -15,8 +18,8 @@ import MainLayout from "../layouts/MainLayout.astro";
         <!-- Header & Progress Back Button -->
         <div class="flex items-center justify-between border-b border-stone-100 pb-4">
           <div>
-            <h1 class="text-2xl font-black text-stone-950 tracking-tight">Delivery & Order Details</h1>
-            <p class="text-xs text-stone-500 font-medium">Finalize your details to lock in your juice batch!</p>
+            <h1 class="text-2xl font-black text-stone-950 tracking-tight">Checkout & Secure Payment</h1>
+            <p class="text-xs text-stone-500 font-medium">Finalize your details and pay securely via card or Mobile Money.</p>
           </div>
           <a href="/order" class="text-xs font-bold text-stone-500 hover:text-emerald-700 transition-colors">
             ← Edit Box
@@ -53,8 +56,8 @@ import MainLayout from "../layouts/MainLayout.astro";
             </div>
 
             <div>
-              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address (Optional for order receipt)</label>
-              <input id="checkout-email" type="email" placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address (Required for payment receipt) *</label>
+              <input id="checkout-email" type="email" required placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
             </div>
           </div>
 
@@ -96,9 +99,9 @@ import MainLayout from "../layouts/MainLayout.astro";
           <!-- Submit Order Button -->
           <div class="pt-4 space-y-3">
             <button type="submit" id="submit-checkout-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-sm transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
-              <span>🔒 Confirm & Pre-Order Box</span>
+              <span>💳 Pay Now Securely</span>
             </button>
-            <p class="text-[10px] text-center text-stone-400 font-medium">After submitting, you can notify the owner directly via WhatsApp!</p>
+            <p class="text-[10px] text-center text-stone-400 font-medium">Supports MTN MoMo, Telecel Cash, AT Money, and Bank Cards via Paystack.</p>
           </div>
 
         </form>
@@ -115,35 +118,30 @@ import MainLayout from "../layouts/MainLayout.astro";
         ✓
       </div>
       <div class="space-y-2">
-        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">Pre-Order Placed!</span>
-        <h3 class="text-xl font-black text-stone-950">Order Received</h3>
-        <p class="text-xs text-stone-500 font-medium">Your pre-order <strong id="modal-order-id" class="text-stone-900">#------</strong> has been sent to our batch production queue.</p>
+        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">Payment Successful!</span>
+        <h3 class="text-xl font-black text-stone-950">Order Confirmed</h3>
+        <p class="text-xs text-stone-500 font-medium">Your payment was verified and order <strong id="modal-order-id" class="text-stone-900">#------</strong> has been logged to production.</p>
       </div>
 
       <div class="space-y-3 pt-2">
-        <a id="modal-whatsapp-btn" href="#" target="_blank" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
-          <span>💬 Confirm Order on WhatsApp</span>
-        </a>
-        <a href="/" class="block text-xs font-bold text-stone-500 hover:text-stone-800 transition-colors pt-2">
-          Return to Homepage
+        <a href="/dashboard" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
+          <span>📊 View My Dashboard & Orders</span>
         </a>
       </div>
     </div>
   </div>
 
-
-
-
-
-
   <!-- Client Script -->
   <script>
     import { auth, db } from '../lib/firebase';
-    import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+    import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from 'firebase/firestore';
     import { onAuthStateChanged } from 'firebase/auth';
 
     let currentConfig: any = null;
     let currentUser: any = null;
+
+    // REPLACE THIS WITH YOUR ACTUAL PAYSTACK TEST PUBLIC KEY (`pk_test_...`)
+    const PAYSTACK_PUBLIC_KEY = 'pk_test_8c2d9a51aaca2a886f4b223f6278cbe619edbfca'; 
 
     const summaryTitleEl = document.getElementById('summary-box-title')!;
     const summaryPriceEl = document.getElementById('summary-total-price')!;
@@ -222,7 +220,27 @@ import MainLayout from "../layouts/MainLayout.astro";
       });
     }
 
-    // Form Submission Handler
+    // Define the Paystack success handler separately to satisfy strict function attribute rules
+    async function handlePaystackSuccess(response: any, docRefId: string, orderIdShort: string) {
+      try {
+        await updateDoc(doc(db, 'orders', docRefId), {
+          paymentStatus: 'paid',
+          status: 'processing',
+          paystackReference: response.reference,
+          paidAt: new Date().toISOString()
+        });
+
+        sessionStorage.removeItem('helthe_box_config');
+
+        document.getElementById('modal-order-id')!.textContent = `#${orderIdShort}`;
+        document.getElementById('success-modal')!.classList.remove('hidden');
+      } catch (updateErr) {
+        console.error('Error updating order payment status:', updateErr);
+        alert('Payment successful, but failed to update order ledger. Please contact support.');
+      }
+    }
+
+    // Form Submission & Paystack Trigger Handler
     checkoutForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -233,6 +251,8 @@ import MainLayout from "../layouts/MainLayout.astro";
       const locationPin = locationPinInput.value.trim();
       const allergies = (document.getElementById('checkout-allergies') as HTMLInputElement).value.trim();
       const notes = (document.getElementById('checkout-notes') as HTMLTextAreaElement).value.trim();
+
+      const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
 
       const orderData = {
         orderType: `Box of ${currentConfig.boxSize}`,
@@ -250,41 +270,44 @@ import MainLayout from "../layouts/MainLayout.astro";
           name: i.name,
           qty: i.qty
         })),
-        total: Math.round(currentConfig.totalPrice * 100), // stored in pesewas
+        total: amountInPesewas,
+        paymentStatus: 'pending',
         status: 'pending',
         createdAt: serverTimestamp()
       };
 
       try {
+        // Step 1: Save initial pending order to Firestore
         const docRef = await addDoc(collection(db, 'orders'), orderData);
         const orderIdShort = docRef.id.slice(-6).toUpperCase();
 
-        sessionStorage.removeItem('helthe_box_config');
+        // Step 2: Open Paystack Inline Gateway using a clean named callback
+        const paystackHandler = (window as any).PaystackPop.setup({
+          key: PAYSTACK_PUBLIC_KEY,
+          email: email,
+          amount: amountInPesewas,
+          currency: 'GHS',
+          ref: 'HEL-' + orderIdShort + '-' + Date.now(),
+          metadata: {
+            custom_fields: [
+              { display_name: "Customer Name", variable_name: "customer_name", value: name },
+              { display_name: "Phone Number", variable_name: "phone_number", value: phone },
+              { display_name: "Delivery Address", variable_name: "delivery_address", value: address }
+            ]
+          },
+          callback: function(response: any) {
+            handlePaystackSuccess(response, docRef.id, orderIdShort);
+          },
+          onClose: function() {
+            console.log('Payment window closed by user.');
+          }
+        });
 
-        // WhatsApp billing redirect route
-        const ownerPhone = '233547000817'; // Update with owner WhatsApp phone number
-        const itemsSummary = currentConfig.items.map((i: any) => `${i.qty}× ${i.name}`).join(', ');
-        const waText = encodeURIComponent(
-          `Hello Helthe Juice! 🍹 I just submitted a pre-order on your website.\n\n` +
-          `📋 *Order ID:* #${orderIdShort}\n` +
-          `👤 *Name:* ${name}\n` +
-          `📞 *Phone:* ${phone}\n` +
-          `📦 *Box:* ${currentConfig.boxSize}-Pack (${itemsSummary})\n` +
-          `💰 *Total:* GHS ${Number(currentConfig.totalPrice).toFixed(2)}\n` +
-          `📍 *Location:* ${address}\n` +
-          `${locationPin ? `🗺️ *Map Pin:* ${locationPin}\n` : ''}` +
-          `${allergies ? `⚠️ *Allergies:* ${allergies}\n` : ''}\n` +
-          `Please confirm my pre-order and billing details!`
-        );
-
-        const modal = document.getElementById('success-modal')!;
-        document.getElementById('modal-order-id')!.textContent = `#${orderIdShort}`;
-        (document.getElementById('modal-whatsapp-btn') as HTMLAnchorElement).href = `https://wa.me/${ownerPhone}?text=${waText}`;
-        modal.classList.remove('hidden');
+        paystackHandler.openIframe();
 
       } catch (err: any) {
         console.error('Error creating order:', err);
-        alert('Failed to submit order. Please try again.');
+        alert('Failed to initialize checkout. Please try again.');
       }
     });
   </script>
