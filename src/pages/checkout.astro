@@ -10,204 +10,249 @@ import MainLayout from "../layouts/MainLayout.astro";
   <script src="https://js.paystack.co/v1/inline.js" is:inline></script>
 
   <div class="min-h-screen bg-stone-50 py-10 px-4 sm:px-6 pt-32 pb-40 font-sans">
-    <div class="max-w-xl mx-auto space-y-8">
+    <div class="max-w-6xl mx-auto space-y-8">
       
-      <!-- Checkout Card -->
-      <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-10 space-y-8">
+      <!-- Page Header -->
+      <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+        <div>
+          <h1 class="text-2xl font-black text-stone-950 tracking-tight">Review Order & Secure Checkout</h1>
+          <p class="text-xs text-stone-500 font-medium">Verify your bundle selection and complete payment securely.</p>
+        </div>
+        <a href="/order" class="text-xs font-bold text-stone-500 hover:text-emerald-700 transition-colors cursor-pointer">
+          ← Edit Box Items
+        </a>
+      </div>
+
+      <!-- B&H / Amazon Inspired Two-Column Split Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- Header & Progress Back Button -->
-        <div class="flex items-center justify-between border-b border-stone-100 pb-4">
-          <div>
-            <h1 class="text-2xl font-black text-stone-950 tracking-tight">Checkout & Secure Payment</h1>
-            <p class="text-xs text-stone-500 font-medium">Finalize your details and pay securely via card or Mobile Money.</p>
-          </div>
-          <a href="/order" class="text-xs font-bold text-stone-500 hover:text-emerald-700 transition-colors">
-            ← Edit Box
-          </a>
-        </div>
-
-        <!-- Box Summary Preview Card -->
-        <div id="order-summary-card" class="bg-stone-50 border border-stone-200/80 rounded-2xl p-4 space-y-3">
-          <div class="flex items-center justify-between">
-            <span id="summary-box-title" class="text-xs font-black uppercase text-stone-800 tracking-wider">Box Summary</span>
-            <span id="summary-total-price" class="text-base font-black text-emerald-800">GHS 0.00</span>
-          </div>
-          <ul id="summary-items-list" class="text-xs text-stone-600 font-bold space-y-1 divide-y divide-stone-200/50 pt-1">
-            <!-- Injected via JavaScript from sessionStorage -->
-          </ul>
-        </div>
-
-        <!-- Checkout Form -->
-        <form id="checkout-form" class="space-y-6">
-          
-          <!-- 1. Customer Info -->
-          <div class="space-y-4">
-            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">1. Contact Information</h2>
+        <!-- LEFT COLUMN: Order Summary & Itemized Breakdown (7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-8 space-y-6">
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+              <h2 class="text-sm font-black text-stone-900 uppercase tracking-wider">Your Juice Box Summary</h2>
+              <span id="summary-box-badge" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase">Bundle</span>
+            </div>
+
+            <!-- Itemized List -->
+            <ul id="summary-items-list" class="divide-y divide-stone-100 text-xs text-stone-700 font-bold space-y-3 pt-2">
+              <!-- Injected via JavaScript -->
+            </ul>
+
+            <!-- Pricing Calculation Box -->
+            <div class="bg-stone-50 rounded-2xl p-4 space-y-2 border border-stone-200/60">
+              <div class="flex justify-between text-xs text-stone-500 font-medium">
+                <span>Subtotal</span>
+                <span id="summary-subtotal" class="font-bold text-stone-900">GHS 0.00</span>
+              </div>
+              <div class="flex justify-between text-xs text-stone-500 font-medium">
+                <span>Batch Production & Delivery</span>
+                <span class="font-bold text-emerald-700">Calculated at Checkout</span>
+              </div>
+              <div class="border-t border-stone-200 pt-2 flex justify-between items-center text-sm">
+                <span class="font-black text-stone-950">Total Due</span>
+                <span id="summary-total-price" class="text-lg font-black text-emerald-800">GHS 0.00</span>
+              </div>
+            </div>
+
+            <div class="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-4 flex items-start gap-3">
+              <span class="text-emerald-600 font-black text-base">🛡️</span>
+              <p class="text-[11px] text-emerald-900 font-medium leading-relaxed">
+                <strong>Secure Transaction:</strong> All payments are encrypted and verified instantly via Paystack. Supports MTN MoMo, Telecel Cash, AT Money, and Cards.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Customer Details & Payment Form (5 Cols) -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-8 space-y-6">
+            
+            <h2 class="text-sm font-black text-stone-900 uppercase tracking-wider border-b border-stone-100 pb-4">
+              Delivery & Contact Details
+            </h2>
+
+            <form id="checkout-form" class="space-y-4">
+              
               <div>
                 <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name *</label>
                 <input id="checkout-name" required placeholder="e.g. Kofi Mensah" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
               </div>
+
               <div>
-                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">WhatsApp / Phone Number (10 digits) *</label>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">WhatsApp / Phone (10 digits) *</label>
                 <input 
-                    id="checkout-phone" 
-                    type="tel" 
-                    inputmode="numeric" 
-                    required 
-                    maxlength="10" 
-                    pattern="[0-9]{10}" 
-                    placeholder="024XXXXXXX" 
-                    class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
+                  id="checkout-phone" 
+                  type="tel" 
+                  inputmode="numeric" 
+                  required 
+                  maxlength="10" 
+                  pattern="[0-9]{10}" 
+                  placeholder="024XXXXXXX" 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
                 />
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address (For receipt) *</label>
+                <input id="checkout-email" type="email" required placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Delivery Address / Landmark *</label>
+                <textarea id="checkout-address" required rows="2" placeholder="e.g. East Legon, near ANC Mall..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 resize-none transition-all"></textarea>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Pin Link</label>
+                  <button type="button" id="geo-location-btn" class="text-[10px] font-bold text-emerald-700 hover:underline cursor-pointer">
+                    📍 Share GPS
+                  </button>
                 </div>
-            </div>
+                <input id="checkout-location-pin" type="url" placeholder="https://maps.google.com/?q=..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              </div>
 
-            <div>
-              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address (Required for payment receipt) *</label>
-              <input id="checkout-email" type="email" required placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
-            </div>
-          </div>
+              <div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Allergies or Notes</label>
+                <input id="checkout-allergies" placeholder="e.g. Ginger sensitivity..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              </div>
 
-          <!-- 2. Delivery Location & Pin -->
-          <div class="space-y-4 pt-4 border-t border-stone-100">
-            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">2. Delivery Location</h2>
-
-            <div>
-              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Area / Address / Landmark *</label>
-              <textarea id="checkout-address" required rows="2" placeholder="e.g. East Legon, near ANC Mall / Madina Zongo Junction..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 resize-none transition-all"></textarea>
-            </div>
-
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Location Pin Link (Optional)</label>
-                <button type="button" id="geo-location-btn" class="text-[10px] font-bold text-emerald-700 hover:underline">
-                  📍 Share Current Location
+              <div class="pt-2">
+                <button type="submit" id="submit-checkout-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 cursor-pointer">
+                  <span>💳 Pay Now Securely</span>
                 </button>
               </div>
-              <input id="checkout-location-pin" type="url" placeholder="https://maps.google.com/?q=..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
-            </div>
+
+            </form>
+
           </div>
-
-          <!-- 3. Allergies & Dietary Preferences -->
-          <div class="space-y-4 pt-4 border-t border-stone-100">
-            <h2 class="text-xs font-black text-stone-900 uppercase tracking-wider">3. Allergies & Preferences</h2>
-
-            <div>
-              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Allergies or Special Health Notes</label>
-              <input id="checkout-allergies" placeholder="e.g. Ginger sensitivity, No Moringa, Diabetic friendly..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
-            </div>
-
-            <div>
-              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Delivery Notes or Event Instructions</label>
-              <textarea id="checkout-notes" rows="2" placeholder="e.g. Leave at security desk, call before arrival..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 resize-none transition-all"></textarea>
-            </div>
-          </div>
-
-          <!-- Submit Order Button -->
-          <div class="pt-4 space-y-3">
-            <button type="submit" id="submit-checkout-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-sm transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
-              <span>💳 Pay Now Securely</span>
-            </button>
-            <p class="text-[10px] text-center text-stone-400 font-medium">Supports MTN MoMo, Telecel Cash, AT Money, and Bank Cards via Paystack.</p>
-          </div>
-
-        </form>
+        </div>
 
       </div>
 
     </div>
   </div>
 
-  <!-- Success Modal -->
-  <div id="success-modal" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 text-center shadow-2xl">
-      <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto text-2xl font-black">
-        ✓
-      </div>
-      <div class="space-y-2">
-        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">Payment Successful!</span>
-        <h3 class="text-xl font-black text-stone-950">Order Confirmed</h3>
-        <p class="text-xs text-stone-500 font-medium">Your payment was verified and order <strong id="modal-order-id" class="text-stone-900">#------</strong> has been logged to production.</p>
+  <!-- Enterprise Success Modal -->
+  <div id="success-modal" class="fixed inset-0 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-8 space-y-6 shadow-2xl border border-stone-100 text-left">
+      
+      <div class="flex items-center justify-between border-b border-stone-100 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-black text-lg">✓</div>
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">Payment Verified</span>
+            <h3 class="text-lg font-black text-stone-950 mt-0.5">Order Confirmed Successfully</h3>
+          </div>
+        </div>
+        <span id="modal-order-id" class="text-xs font-mono font-bold bg-stone-100 text-stone-800 px-3 py-1.5 rounded-xl">#W0001</span>
       </div>
 
+      <div class="bg-stone-50 rounded-2xl p-4 space-y-2.5 text-xs text-stone-600 border border-stone-200/60 font-medium">
+        <div class="flex justify-between">
+          <span class="text-stone-400">Payment Gateway:</span>
+          <span class="font-bold text-stone-900">Paystack (Secure)</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-stone-400">Transaction Reference:</span>
+          <span id="modal-paystack-ref" class="font-mono font-bold text-stone-900">T-REF-XXXXXX</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-stone-400">Fulfillment Status:</span>
+          <span class="font-bold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md">Sent to Batch Production</span>
+        </div>
+      </div>
+
+      <p class="text-xs text-stone-500 font-medium leading-relaxed">
+        Thank you for choosing Helthe Juice! Your order has been securely logged into our system under ID <strong id="modal-order-id-text">#W0001</strong>. You can track batch progress anytime from your client dashboard.
+      </p>
+
       <div class="space-y-3 pt-2">
-        <a href="/dashboard" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
-          <span>📊 View My Dashboard & Orders</span>
+        <a href="/dashboard" class="w-full py-3.5 bg-stone-950 hover:bg-stone-900 text-white font-black rounded-2xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+          <span>View Order in Dashboard →</span>
+        </a>
+        <a href="/" class="block text-center text-xs font-bold text-stone-400 hover:text-stone-700 transition-colors pt-1 cursor-pointer">
+          Return to Store Homepage
         </a>
       </div>
+
     </div>
   </div>
 
   <!-- Client Script -->
   <script>
     import { auth, db } from '../lib/firebase';
-    import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from 'firebase/firestore';
+    import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
     import { onAuthStateChanged } from 'firebase/auth';
 
     let currentConfig: any = null;
     let currentUser: any = null;
 
-    // REPLACE THIS WITH YOUR ACTUAL PAYSTACK TEST PUBLIC KEY (`pk_test_...`)
     const PAYSTACK_PUBLIC_KEY = 'pk_test_8c2d9a51aaca2a886f4b223f6278cbe619edbfca'; 
 
-    const summaryTitleEl = document.getElementById('summary-box-title')!;
+    const summaryBoxBadge = document.getElementById('summary-box-badge')!;
+    const summarySubtotal = document.getElementById('summary-subtotal')!;
     const summaryPriceEl = document.getElementById('summary-total-price')!;
     const summaryListEl = document.getElementById('summary-items-list')!;
     const checkoutForm = document.getElementById('checkout-form') as HTMLFormElement;
     const geoBtn = document.getElementById('geo-location-btn');
     const locationPinInput = document.getElementById('checkout-location-pin') as HTMLInputElement;
 
-    // Load Box Config from SessionStorage
+    // Option B Auth Check: Force login/signup if not logged in when entering checkout
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        sessionStorage.setItem('helthe_auth_redirect', '/checkout');
+        window.location.href = '/login';
+        return;
+      }
+
+      currentUser = user;
+      const emailInput = document.getElementById('checkout-email') as HTMLInputElement;
+      if (emailInput && !emailInput.value) emailInput.value = user.email || '';
+
+      try {
+        const userDocSnap = await getDoc(doc(db, 'users', user.uid));
+        if (userDocSnap.exists()) {
+          const profile = userDocSnap.data();
+          
+          const nameInput = document.getElementById('checkout-name') as HTMLInputElement;
+          const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
+          const addressInput = document.getElementById('checkout-address') as HTMLTextAreaElement;
+          const pinInput = document.getElementById('checkout-location-pin') as HTMLInputElement;
+          const allergiesInput = document.getElementById('checkout-allergies') as HTMLInputElement;
+
+          if (nameInput && !nameInput.value) nameInput.value = profile.name || '';
+          if (phoneInput && !phoneInput.value) phoneInput.value = profile.phone || '';
+          if (addressInput && !addressInput.value) addressInput.value = profile.address || '';
+          if (pinInput && !pinInput.value) pinInput.value = profile.locationPin || '';
+          if (allergiesInput && !allergiesInput.value) allergiesInput.value = profile.allergies || '';
+        }
+      } catch (err) {
+        console.error('Error fetching user profile for checkout:', err);
+      }
+    });
+
     const rawConfig = sessionStorage.getItem('helthe_box_config');
     if (!rawConfig) {
       alert('No juice box configuration found. Redirecting to box builder...');
       window.location.href = '/order';
     } else {
       currentConfig = JSON.parse(rawConfig);
-      summaryTitleEl.textContent = `${currentConfig.boxSize}-Piece Juice Box`;
+      summaryBoxBadge.textContent = `${currentConfig.boxSize}-Piece Bundle`;
+      summarySubtotal.textContent = `GHS ${Number(currentConfig.totalPrice).toFixed(2)}`;
       summaryPriceEl.textContent = `GHS ${Number(currentConfig.totalPrice).toFixed(2)}`;
       
       summaryListEl.innerHTML = currentConfig.items.map((item: any) => `
-        <li class="py-1.5 flex justify-between items-center">
-          <span>${item.name}</span>
-          <span class="px-2 py-0.5 bg-emerald-100 text-emerald-900 rounded-lg text-[10px] font-black">${item.qty} bottles</span>
+        <li class="py-2 flex justify-between items-center">
+          <span class="font-bold text-stone-900">${item.name}</span>
+          <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-black">${item.qty} bottles</span>
         </li>
       `).join('');
     }
 
-    // Auth state check & auto-fill profile data if logged in
-    onAuthStateChanged(auth, async (user) => {
-      currentUser = user;
-      if (user) {
-        const emailInput = document.getElementById('checkout-email') as HTMLInputElement;
-        if (emailInput && !emailInput.value) emailInput.value = user.email || '';
-
-        try {
-          const userDocSnap = await getDoc(doc(db, 'users', user.uid));
-          if (userDocSnap.exists()) {
-            const profile = userDocSnap.data();
-            
-            const nameInput = document.getElementById('checkout-name') as HTMLInputElement;
-            const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
-            const addressInput = document.getElementById('checkout-address') as HTMLTextAreaElement;
-            const pinInput = document.getElementById('checkout-location-pin') as HTMLInputElement;
-            const allergiesInput = document.getElementById('checkout-allergies') as HTMLInputElement;
-
-            if (nameInput && !nameInput.value) nameInput.value = profile.name || '';
-            if (phoneInput && !phoneInput.value) phoneInput.value = profile.phone || '';
-            if (addressInput && !addressInput.value) addressInput.value = profile.address || '';
-            if (pinInput && !pinInput.value) pinInput.value = profile.locationPin || '';
-            if (allergiesInput && !allergiesInput.value) allergiesInput.value = profile.allergies || '';
-          }
-        } catch (err) {
-          console.error('Error fetching user profile for checkout:', err);
-        }
-      }
-    });
-
-    // Geolocation Helper
     if (geoBtn && locationPinInput) {
       geoBtn.addEventListener('click', () => {
         if (!navigator.geolocation) {
@@ -219,154 +264,75 @@ import MainLayout from "../layouts/MainLayout.astro";
           (pos) => {
             const url = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
             locationPinInput.value = url;
-            geoBtn.textContent = '✓ Location Pin Saved';
+            geoBtn.textContent = '✓ GPS Saved';
           },
           (err) => {
             alert('Unable to retrieve location. Please paste your Google Maps link manually.');
-            geoBtn.textContent = '📍 Share Current Location';
+            geoBtn.textContent = '📍 Share GPS';
           }
         );
       });
     }
 
-    // Define the Paystack success handler separately to satisfy strict function attribute rules
-    async function handlePaystackSuccess(response: any, docRefId: string, orderIdShort: string) {
+    // Safe Order ID generator (Avoids permission errors by using timestamp/random suffix)
+    function generateOrderCode() {
+      const randNum = Math.floor(1000 + Math.random() * 9000);
+      return `W${randNum}`;
+    }
+
+    // Named Paystack success callback function to prevent type/bundling errors
+    async function handlePaystackSuccess(response: any, customOrderCode: string, name: string, phone: string, email: string, address: string, locationPin: string, allergies: string) {
       try {
-        await updateDoc(doc(db, 'orders', docRefId), {
+        const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
+        const orderData = {
+          orderCode: customOrderCode,
+          orderType: `Box of ${currentConfig.boxSize}`,
+          userId: currentUser?.uid || null,
+          customer: { name, phone, email, address, locationPin, allergies, notes: '' },
+          items: currentConfig.items.map((i: any) => ({ name: i.name, qty: i.qty })),
+          total: amountInPesewas,
           paymentStatus: 'paid',
           status: 'processing',
+          paymentGateway: 'paystack',
           paystackReference: response.reference,
-          paidAt: new Date().toISOString()
-        });
+          paidAt: new Date().toISOString(),
+          createdAt: serverTimestamp()
+        };
 
+        await addDoc(collection(db, 'orders'), orderData);
         sessionStorage.removeItem('helthe_box_config');
 
-        document.getElementById('modal-order-id')!.textContent = `#${orderIdShort}`;
+        document.getElementById('modal-order-id')!.textContent = `#${customOrderCode}`;
+        document.getElementById('modal-order-id-text')!.textContent = `#${customOrderCode}`;
+        document.getElementById('modal-paystack-ref')!.textContent = response.reference;
         document.getElementById('success-modal')!.classList.remove('hidden');
-      } catch (updateErr) {
-        console.error('Error updating order payment status:', updateErr);
-        alert('Payment successful, but failed to update order ledger. Please contact support.');
+      } catch (err: any) {
+        console.error('Error saving paid order to Firestore:', err);
+        alert('Payment was successful on Paystack, but there was an issue saving your order. Please contact support with Ref: ' + response.reference);
       }
     }
 
-    // Form Submission & Paystack Trigger Handler
     checkoutForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = (document.getElementById('checkout-name') as HTMLInputElement).value.trim();
       const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
-        const phone = phoneInput.value.replace(/\D/g, ''); // strip any non-digit chars
+      const phone = phoneInput.value.replace(/\D/g, '');
 
-        if (phone.length !== 10) {
+      if (phone.length !== 10) {
         alert('Please enter a valid 10-digit phone number (e.g. 024XXXXXXX).');
         phoneInput.focus();
         return;
-        }
+      }
+
       const email = (document.getElementById('checkout-email') as HTMLInputElement).value.trim();
       const address = (document.getElementById('checkout-address') as HTMLTextAreaElement).value.trim();
       const locationPin = locationPinInput.value.trim();
       const allergies = (document.getElementById('checkout-allergies') as HTMLInputElement).value.trim();
-      const notes = (document.getElementById('checkout-notes') as HTMLTextAreaElement).value.trim();
 
       const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
+      const customOrderCode = generateOrderCode();
 
-      const orderData = {
-        orderType: `Box of ${currentConfig.boxSize}`,
-        userId: currentUser?.uid || null,
-        customer: {
-          name,
-          phone,
-          email,
-          address,
-          locationPin,
-          allergies,
-          notes
-        },
-        items: currentConfig.items.map((i: any) => ({
-          name: i.name,
-          qty: i.qty
-        })),
-        total: amountInPesewas,
-        paymentStatus: 'pending',
-        status: 'pending',
-        createdAt: serverTimestamp()
-      };
-
-      try {
-        // Step 1: Save initial pending order to Firestore
-        const docRef = await addDoc(collection(db, 'orders'), orderData);
-        const orderIdShort = docRef.id.slice(-6).toUpperCase();
-
-        // Step 2: Open Paystack Inline Gateway using a clean named callback
-        const paystackHandler = (window as any).PaystackPop.setup({
-          key: PAYSTACK_PUBLIC_KEY,
-          email: email,
-          amount: amountInPesewas,
-          currency: 'GHS',
-          ref: 'HEL-' + orderIdShort + '-' + Date.now(),
-          metadata: {
-            custom_fields: [
-              { display_name: "Customer Name", variable_name: "customer_name", value: name },
-              { display_name: "Phone Number", variable_name: "phone_number", value: phone },
-              { display_name: "Delivery Address", variable_name: "delivery_address", value: address }
-            ]
-          },
-          callback: function(response: any) {
-            handlePaystackSuccess(response, docRef.id, orderIdShort);
-          },
-          onClose: function() {
-            console.log('Payment window closed by user.');
-          }
-        });
-
-        paystackHandler.openIframe();
-
-      } catch (err: any) {
-        console.error('Error creating order:', err);
-        alert('Failed to initialize checkout. Please try again.');
-      }
-    });
-
-
-    import { auth, db } from '../lib/firebase';
-    import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, getDocs, query, orderBy, limit } from 'firebase/firestore';
-
-    // Helper to generate custom sequential W0001 IDs
-    async function getNextOrderId() {
-      try {
-        const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(1));
-        const snap = await getDocs(q);
-        if (!snap.empty) {
-          const lastOrder = snap.docs[0].data();
-          if (lastOrder.orderCode && lastOrder.orderCode.startsWith('W')) {
-            const num = parseInt(lastOrder.orderCode.replace('W', ''), 10);
-            if (!isNaN(num)) {
-              return `W${String(num + 1).padStart(4, '0')}`;
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Could not calculate sequential order ID, falling back:', err);
-      }
-      return `W${Math.floor(1000 + Math.random() * 9000)}`;
-    }
-
-    // Form Submission & Paystack Trigger Handler
-    checkoutForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const name = (document.getElementById('checkout-name') as HTMLInputElement).value.trim();
-      const phone = (document.getElementById('checkout-phone') as HTMLInputElement).value.trim();
-      const email = (document.getElementById('checkout-email') as HTMLInputElement).value.trim();
-      const address = (document.getElementById('checkout-address') as HTMLTextAreaElement).value.trim();
-      const locationPin = locationPinInput.value.trim();
-      const allergies = (document.getElementById('checkout-allergies') as HTMLInputElement).value.trim();
-      const notes = (document.getElementById('checkout-notes') as HTMLTextAreaElement).value.trim();
-
-      const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
-      const customOrderCode = await getNextOrderId(); // e.g. W0001
-
-      // Trigger Paystack Popup FIRST
       const paystackHandler = (window as any).PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
         email: email,
@@ -381,35 +347,8 @@ import MainLayout from "../layouts/MainLayout.astro";
             { display_name: "Delivery Address", variable_name: "delivery_address", value: address }
           ]
         },
-        callback: async function(response: any) {
-          // Payment Successful! Save complete order with payment reference directly to Firestore
-          try {
-            const orderData = {
-              orderCode: customOrderCode, // "W0001"
-              orderType: `Box of ${currentConfig.boxSize}`,
-              userId: currentUser?.uid || null,
-              customer: { name, phone, email, address, locationPin, allergies, notes },
-              items: currentConfig.items.map((i: any) => ({ name: i.name, qty: i.qty })),
-              total: amountInPesewas,
-              paymentStatus: 'paid',
-              status: 'processing',
-              paymentGateway: 'paystack',
-              paystackReference: response.reference, // Paystack transaction ref recorded!
-              paidAt: new Date().toISOString(),
-              createdAt: serverTimestamp()
-            };
-
-            await addDoc(collection(db, 'orders'), orderData);
-
-            sessionStorage.removeItem('helthe_box_config');
-
-            // Show success modal with W0001 ID
-            document.getElementById('modal-order-id')!.textContent = `#${customOrderCode}`;
-            document.getElementById('success-modal')!.classList.remove('hidden');
-          } catch (err: any) {
-            console.error('Error saving paid order to Firestore:', err);
-            alert('Payment was successful on Paystack, but there was an issue saving your order. Please contact support with Ref: ' + response.reference);
-          }
+        callback: function(response: any) {
+          handlePaystackSuccess(response, customOrderCode, name, phone, email, address, locationPin, allergies);
         },
         onClose: function() {
           console.log('Payment window closed by user.');

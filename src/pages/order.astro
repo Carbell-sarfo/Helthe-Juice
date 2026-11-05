@@ -1,4 +1,5 @@
 ---
+// src/pages/order.astro
 export const prerender = false;
 
 import MainLayout from "../layouts/MainLayout.astro";
@@ -61,128 +62,119 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
 ---
 
 <MainLayout title="Build Your Juice Box — Helthe Juice">
-  <div class="min-h-screen bg-stone-50 py-10 px-4 sm:px-6 pt-32 pb-40 font-sans">
-    <div class="max-w-2xl mx-auto space-y-8">
+  <div class="min-h-screen bg-stone-50 py-10 px-3 sm:px-6 pt-32 pb-56 font-sans">
+    <div class="max-w-6xl mx-auto space-y-8">
       
-      <!-- Box Builder Card Container -->
-      <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-10 space-y-8">
+      <!-- Main Box Builder Container -->
+      <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-4 sm:p-10 space-y-8">
         
         <!-- Header -->
-        <div class="space-y-1">
-          <h1 class="text-2xl font-black text-stone-950 tracking-tight">Build Your Juice Box</h1>
-          <p class="text-xs text-stone-500 font-medium">Select your bundle size. Built in economic production batches to guarantee ultimate freshness!</p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 pb-6">
+          <div class="space-y-1">
+            <h1 class="text-2xl font-black text-stone-950 tracking-tight">Build Your Juice Box</h1>
+            <p class="text-xs text-stone-500 font-medium">Select your bundle size and mix fresh cold-pressed blends in economic production batches.</p>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-2xl flex items-center gap-3 self-start sm:self-auto">
+            <span class="text-xs font-black text-emerald-800 uppercase tracking-wider">Allocated:</span>
+            <span class="text-sm font-black text-emerald-950"><strong id="allocated-count">0</strong> / <span id="target-size">6</span> Btls</span>
+          </div>
         </div>
 
         <!-- 1. CHOOSE BUNDLE SIZE -->
         <div class="space-y-3">
           <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">1. Choose Bundle Size</label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-emerald-600 bg-emerald-50/40" data-size="6" data-price="240" data-step="3" data-maxflavors="2">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-emerald-600 bg-emerald-50/40 cursor-pointer" data-size="6" data-price="240" data-step="3" data-maxflavors="2">
               <span class="block font-black text-base text-stone-950">6 Pcs</span>
-              <span class="block font-[9px] text-emerald-800 font-bold mt-0.5">GHS 240</span>
+              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 240</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 2 flavors (±3)</span>
             </button>
-            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300" data-size="15" data-price="525" data-step="5" data-maxflavors="3">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer" data-size="15" data-price="525" data-step="5" data-maxflavors="3">
               <span class="block font-black text-base text-stone-950">15 Pcs</span>
-              <span class="block font-[9px] text-emerald-800 font-bold mt-0.5">GHS 525</span>
+              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 525</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 3 flavors (±5)</span>
             </button>
-            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300" data-size="20" data-price="700" data-step="5" data-maxflavors="4">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer" data-size="20" data-price="700" data-step="5" data-maxflavors="4">
               <span class="block font-black text-base text-stone-950">20 Pcs</span>
-              <span class="block font-[9px] text-emerald-800 font-bold mt-0.5">GHS 700</span>
+              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 700</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 4 flavors (±5)</span>
             </button>
-            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300" data-size="30" data-price="1050" data-step="5" data-maxflavors="5">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer" data-size="30" data-price="1050" data-step="5" data-maxflavors="5">
               <span class="block font-black text-base text-stone-950">30 Pcs</span>
-              <span class="block font-[9px] text-emerald-800 font-bold mt-0.5">GHS 1050</span>
+              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 1050</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 5 flavors (±5)</span>
             </button>
           </div>
         </div>
 
-        <!-- 2. MIX FLAVORS STATS & FILTERS -->
+        <!-- 2. MIX FLAVORS & FILTERS -->
         <div class="space-y-4 pt-4 border-t border-stone-100">
-          <div class="flex items-center justify-between">
-            <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">2. Mix Flavors (Batch Multiples)</label>
-            <span id="bottles-allocated-badge" class="text-xs font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Allocated: <strong id="allocated-count">0</strong> / <span id="target-size">6</span>
-            </span>
-          </div>
-
-          <!-- Flavor Variety Tracker Bar -->
-          <div class="bg-stone-50 border border-stone-200/60 rounded-xl px-4 py-2.5 flex items-center justify-between text-xs font-bold text-stone-700">
-            <span>Flavor varieties used: <strong id="flavors-used-count" class="text-stone-950">0</strong> of <span id="max-flavors-allowed">2</span> max</span>
-            <span id="flavor-limit-warning" class="text-[10px] text-orange-600 font-extrabold hidden">Max flavor variety reached!</span>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">2. Choose Your Blends & Quantities</label>
+            <div class="bg-stone-100 border border-stone-200 rounded-xl px-3 py-1.5 text-xs font-bold text-stone-700 flex items-center gap-2 self-start sm:self-auto">
+              <span>Variety used: <strong id="flavors-used-count" class="text-stone-950">0</strong> / <span id="max-flavors-allowed">2</span> max</span>
+              <span id="flavor-limit-warning" class="text-[10px] text-orange-600 font-extrabold hidden">• Limit reached</span>
+            </div>
           </div>
 
           <!-- Search & Fruit Filter Bar -->
-          <div class="space-y-2 pt-2">
+          <div class="space-y-2.5">
             <input 
               type="text" 
               id="boxSearchInput" 
-              placeholder="Search flavor name..." 
-              class="w-full px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500"
+              placeholder="Search by juice name (e.g., Pineapple Ginger, Beetroot)..." 
+              class="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold focus:outline-none focus:border-emerald-500"
             />
             <div class="flex flex-wrap gap-1.5 pt-1">
               {allFruits.map(fruit => (
-                <button type="button" class="box-fruit-filter px-2.5 py-1 rounded-lg text-[10px] font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all" data-fruit={fruit}>
+                <button type="button" class="box-fruit-filter px-3 py-1 rounded-xl text-[10px] font-bold bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all cursor-pointer" data-fruit={fruit}>
                   {fruit}
                 </button>
               ))}
             </div>
           </div>
 
-          <!-- Flavors List with Steppers matched to Batch Multiples -->
-          <div id="box-flavor-list" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+          <!-- PRODUCT CARD GRID: 2-Column on Mobile, 3/4-Column on Desktop with Unclipped Natural Images -->
+          <div id="box-flavor-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 pt-2">
             {juices.map(juice => (
               <div 
-                class="flavor-row bg-stone-50/60 border border-stone-200/70 rounded-2xl p-3 flex items-center justify-between gap-3"
+                class="flavor-card bg-stone-50/70 border border-stone-200/80 rounded-3xl p-3 sm:p-4 flex flex-col justify-between gap-3 transition-all hover:shadow-md"
                 data-name={juice.name.toLowerCase()}
                 data-fruits={JSON.stringify(juice.fruits)}
               >
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-white border border-stone-200 overflow-hidden flex-shrink-0">
-                    <Image src={juice.image} alt={juice.name} width={80} height={80} class="w-full h-full object-cover" />
+                <!-- Juice Image Container (Unclipped Natural View) -->
+                <div class="space-y-2.5">
+                  <div class="w-full aspect-[4/5] rounded-2xl bg-white border border-stone-200/80 overflow-hidden relative flex items-center justify-center p-3 shadow-xs">
+                    <span class="absolute top-2 left-2 bg-stone-950/70 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-lg z-10">350ml</span>
+                    <Image src={juice.image} alt={juice.name} width={300} height={400} class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 hover:scale-105" />
                   </div>
                   <div>
-                    <h4 class="font-extrabold text-xs text-stone-900">{juice.name}</h4>
-                    <div class="flex gap-1 mt-0.5">
-                      {juice.fruits.map(f => <span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold">{f}</span>)}
+                    <h3 class="font-black text-xs sm:text-sm text-stone-950 line-clamp-1">{juice.name}</h3>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                      {juice.fruits.map(f => <span class="text-[8px] bg-emerald-100/80 text-emerald-900 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">{f}</span>)}
                     </div>
                   </div>
                 </div>
 
-                <!-- Stepper controls in batch increments -->
-                <div class="flex items-center gap-1.5">
-                  <button type="button" class="qty-sub w-8 h-8 rounded-xl bg-white border border-stone-200 text-stone-700 font-black text-xs hover:bg-stone-100 transition-all">-</button>
-                  <input 
-                    type="number" 
-                    value="0" 
-                    readonly
-                    data-flavor={juice.name} 
-                    class="box-qty-input w-12 text-center py-1 bg-white border border-stone-200 rounded-xl text-xs font-black text-stone-900 focus:outline-none" 
-                  />
-                  <button type="button" class="qty-add w-8 h-8 rounded-xl bg-white border border-stone-200 text-stone-700 font-black text-xs hover:bg-stone-100 transition-all">+</button>
+                <!-- Stepper Controls -->
+                <div class="bg-white border border-stone-200 rounded-2xl p-1.5 sm:p-2 flex items-center justify-between shadow-xs">
+                  <span class="text-[9px] font-black uppercase text-stone-400 pl-1 hidden sm:inline">Qty</span>
+                  <div class="flex items-center gap-1.5 w-full justify-between sm:w-auto">
+                    <button type="button" class="qty-sub w-8 h-8 rounded-xl bg-stone-100 border border-stone-200 text-stone-800 font-black text-xs hover:bg-stone-200 transition-all cursor-pointer flex items-center justify-center">-</button>
+                    <input 
+                      type="number" 
+                      value="0" 
+                      readonly
+                      data-flavor={juice.name} 
+                      class="box-qty-input w-8 text-center bg-transparent text-xs font-black text-stone-950 focus:outline-none" 
+                    />
+                    <button type="button" class="qty-add w-8 h-8 rounded-xl bg-emerald-600 text-white font-black text-xs hover:bg-emerald-700 transition-all cursor-pointer flex items-center justify-center shadow-xs">+</button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
 
-        <!-- 3. CHECKOUT SECTION TRIGGER -->
-        <div id="checkout-section" class="space-y-6 pt-6 border-t border-stone-200 hidden">
-          <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-4 rounded-2xl">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">Box Complete! Total Price</span>
-              <span id="final-box-price" class="text-xl font-black text-emerald-950">GHS 240.00</span>
-            </div>
-            <span class="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-black">Ready</span>
-          </div>
-
-          <!-- Proceed to Checkout Page Button -->
-          <button type="button" id="proceed-to-checkout-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-sm transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
-            <span>Proceed to Delivery & Details ➔</span>
-          </button>
         </div>
 
       </div>
@@ -190,7 +182,47 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
     </div>
   </div>
 
-  <!-- Box Builder Step Script -->
+  <!-- STICKY BOTTOM SUMMARY DRAWER WITH LIVE ITEMIZED BREAKDOWN -->
+  <div id="sticky-checkout-bar" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-2xl p-4 sm:p-6 z-40 transition-all transform translate-y-full">
+    <div class="max-w-6xl mx-auto space-y-3">
+      
+      <!-- Live Itemized Breakdown (Shows selected juices so you know what's in your box!) -->
+      <div id="sticky-items-preview" class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold text-stone-700 no-scrollbar">
+        <span class="text-stone-400 italic text-[11px]">No juices selected yet.</span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-stone-100 pt-3">
+        <div class="flex items-center gap-6 w-full sm:w-auto">
+          <div>
+            <span class="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Selected Box</span>
+            <span id="drawer-box-title" class="text-sm font-black text-stone-950">6-Piece Bundle</span>
+          </div>
+          <div class="h-8 w-px bg-stone-200 hidden sm:block"></div>
+          <div>
+            <span class="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Total Price</span>
+            <span id="drawer-total-price" class="text-lg font-black text-emerald-800">GHS 240.00</span>
+          </div>
+          <div class="hidden md:block">
+            <span id="drawer-status-text" class="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+              Add 6 more bottles to complete box
+            </span>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          id="proceed-to-checkout-btn" 
+          disabled
+          class="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-stone-300 disabled:cursor-not-allowed text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/30 cursor-pointer flex items-center justify-center gap-2"
+        >
+          <span>Proceed to Secure Checkout →</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Box Builder Script -->
   <script>
     let targetSize = 6;
     let stepSize = 3;
@@ -204,10 +236,13 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
     const flavorsUsedCountEl = document.getElementById('flavors-used-count')!;
     const maxFlavorsAllowedEl = document.getElementById('max-flavors-allowed')!;
     const flavorLimitWarning = document.getElementById('flavor-limit-warning')!;
-    const checkoutSection = document.getElementById('checkout-section')!;
-    const finalBoxPriceEl = document.getElementById('final-box-price')!;
+    const stickyBar = document.getElementById('sticky-checkout-bar')!;
+    const drawerBoxTitle = document.getElementById('drawer-box-title')!;
+    const drawerTotalPrice = document.getElementById('drawer-total-price')!;
+    const drawerStatusText = document.getElementById('drawer-status-text')!;
+    const stickyItemsPreview = document.getElementById('sticky-items-preview')!;
+    const proceedBtn = document.getElementById('proceed-to-checkout-btn') as HTMLButtonElement;
 
-    // Bundle Size Selector Handler
     sizeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         sizeBtns.forEach(b => {
@@ -224,18 +259,18 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
 
         targetSizeEl.textContent = String(targetSize);
         maxFlavorsAllowedEl.textContent = String(maxFlavorsAllowed);
+        drawerBoxTitle.textContent = `${targetSize}-Piece Bundle`;
+        drawerTotalPrice.textContent = `GHS ${currentBoxPrice.toFixed(2)}`;
 
-        // Reset all quantities on size change
         qtyInputs.forEach(i => i.value = '0');
         updateBoxState();
       });
     });
 
-    // Steppers Handler with Batch Multiples Step Size
     qtyInputs.forEach(input => {
-      const row = input.closest('.flavor-row')!;
-      const subBtn = row.querySelector('.qty-sub')!;
-      const addBtn = row.querySelector('.qty-add')!;
+      const card = input.closest('.flavor-card')!;
+      const subBtn = card.querySelector('.qty-sub')!;
+      const addBtn = card.querySelector('.qty-add')!;
 
       subBtn.addEventListener('click', () => {
         let val = parseInt(input.value) || 0;
@@ -256,7 +291,7 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
         const usedFlavors = getUsedFlavorsCount();
 
         if (currentVal === 0 && usedFlavors >= maxFlavorsAllowed) {
-          alert(`Maximum flavor variety limit reached (${maxFlavorsAllowed} flavors for this box). Increase quantity on your existing flavors.`);
+          alert(`Maximum flavor variety limit reached (${maxFlavorsAllowed} flavors for this box). Increase quantity on existing flavors.`);
           return;
         }
 
@@ -292,65 +327,85 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
         flavorLimitWarning.classList.add('hidden');
       }
 
-      if (allocated === targetSize && flavorsUsed <= maxFlavorsAllowed) {
-        checkoutSection.classList.remove('hidden');
-        finalBoxPriceEl.textContent = `GHS ${currentBoxPrice.toFixed(2)}`;
+      // Build live itemized preview pills
+      let previewHTML = '';
+      qtyInputs.forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        if (qty > 0) {
+          const name = input.getAttribute('data-flavor') || '';
+          previewHTML += `<span class="bg-emerald-50 border border-emerald-200 text-emerald-900 px-2.5 py-1 rounded-xl text-[11px] font-black whitespace-nowrap flex items-center gap-1">
+            ${qty}× ${name}
+          </span>`;
+        }
+      });
+
+      if (previewHTML === '') {
+        stickyItemsPreview.innerHTML = `<span class="text-stone-400 italic text-[11px]">No juices selected yet. Pick your blends above!</span>`;
       } else {
-        checkoutSection.classList.add('hidden');
+        stickyItemsPreview.innerHTML = previewHTML;
+      }
+
+      if (allocated > 0) {
+        stickyBar.classList.remove('translate-y-full');
+      } else {
+        stickyBar.classList.add('translate-y-full');
+      }
+
+      if (allocated === targetSize && flavorsUsed <= maxFlavorsAllowed) {
+        proceedBtn.disabled = false;
+        drawerStatusText.textContent = 'Box complete & ready!';
+        drawerStatusText.className = 'text-xs font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200';
+      } else {
+        proceedBtn.disabled = true;
+        const diff = targetSize - allocated;
+        if (diff > 0) {
+          drawerStatusText.textContent = `Add ${diff} more bottles to complete box`;
+        } else {
+          drawerStatusText.textContent = `Too many bottles! Remove ${Math.abs(diff)}`;
+        }
+        drawerStatusText.className = 'text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200';
       }
     }
 
-    // Save configuration to sessionStorage and navigate to dedicated checkout page
-    const proceedBtn = document.getElementById('proceed-to-checkout-btn');
-    if (proceedBtn) {
-      proceedBtn.addEventListener('click', () => {
-        const selectedItems: Array<{ name: string; qty: number }> = [];
-        qtyInputs.forEach(input => {
-          const qty = parseInt(input.value) || 0;
-          if (qty > 0) {
-            selectedItems.push({
-              name: input.getAttribute('data-flavor') || 'Juice',
-              qty: qty
-            });
-          }
-        });
-
-        const boxConfig = {
-          boxSize: targetSize,
-          totalPrice: currentBoxPrice,
-          items: selectedItems
-        };
-
-        sessionStorage.setItem('helthe_box_config', JSON.stringify(boxConfig));
-        window.location.href = '/checkout';
+    proceedBtn.addEventListener('click', () => {
+      const selectedItems: Array<{ name: string; qty: number }> = [];
+      qtyInputs.forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        if (qty > 0) {
+          selectedItems.push({
+            name: input.getAttribute('data-flavor') || 'Juice',
+            qty: qty
+          });
+        }
       });
-    }
 
-    // --- SEARCH & FRUIT FILTER LOGIC ---
+      const boxConfig = {
+        boxSize: targetSize,
+        totalPrice: currentBoxPrice,
+        items: selectedItems
+      };
+
+      sessionStorage.setItem('helthe_box_config', JSON.stringify(boxConfig));
+      window.location.href = '/checkout';
+    });
+
     const searchInput = document.getElementById('boxSearchInput') as HTMLInputElement;
     const fruitFilterBtns = document.querySelectorAll('.box-fruit-filter');
-    const flavorRows = document.querySelectorAll('.flavor-row') as NodeListOf<HTMLElement>;
+    const flavorCards = document.querySelectorAll('.flavor-card') as NodeListOf<HTMLElement>;
     let activeFruitFilter = '';
 
-    // Search input listener
     if (searchInput) {
-      searchInput.addEventListener('input', () => {
-        applyFilters();
-      });
+      searchInput.addEventListener('input', () => applyFilters());
     }
 
-    // Fruit filter buttons listener
     fruitFilterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const fruit = btn.getAttribute('data-fruit') || '';
-        
         if (activeFruitFilter === fruit) {
-          // Toggle off if already active
           activeFruitFilter = '';
           btn.classList.remove('bg-emerald-600', 'text-white');
           btn.classList.add('bg-stone-100', 'text-stone-600');
         } else {
-          // Set new active filter
           activeFruitFilter = fruit;
           fruitFilterBtns.forEach(b => {
             b.classList.remove('bg-emerald-600', 'text-white');
@@ -366,23 +421,19 @@ const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
     function applyFilters() {
       const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-      flavorRows.forEach(row => {
-        const name = row.getAttribute('data-name') || '';
-        const fruitsAttr = row.getAttribute('data-fruits') || '[]';
+      flavorCards.forEach(card => {
+        const name = card.getAttribute('data-name') || '';
+        const fruitsAttr = card.getAttribute('data-fruits') || '[]';
         let fruits: string[] = [];
-        try {
-          fruits = JSON.parse(fruitsAttr);
-        } catch (e) {
-          fruits = [];
-        }
+        try { fruits = JSON.parse(fruitsAttr); } catch (e) { fruits = []; }
 
         const matchesSearch = name.includes(query);
         const matchesFruit = activeFruitFilter === '' || fruits.includes(activeFruitFilter);
 
         if (matchesSearch && matchesFruit) {
-          row.style.display = 'flex';
+          card.style.display = 'flex';
         } else {
-          row.style.display = 'none';
+          card.style.display = 'none';
         }
       });
     }

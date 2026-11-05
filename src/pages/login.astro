@@ -15,14 +15,14 @@ import MainLayout from "../layouts/MainLayout.astro";
           <button 
             type="button" 
             id="tab-signin" 
-            class="py-2.5 rounded-xl text-xs font-black transition-all bg-white text-stone-950 shadow-xs"
+            class="py-2.5 rounded-xl text-xs font-black transition-all bg-white text-stone-950 shadow-xs cursor-pointer"
           >
             Sign In
           </button>
           <button 
             type="button" 
             id="tab-signup" 
-            class="py-2.5 rounded-xl text-xs font-black transition-all text-stone-500 hover:text-stone-900"
+            class="py-2.5 rounded-xl text-xs font-black transition-all text-stone-500 hover:text-stone-900 cursor-pointer"
           >
             Create Account
           </button>
@@ -36,7 +36,7 @@ import MainLayout from "../layouts/MainLayout.astro";
         </div>
 
         <!-- Google Sign-In Button -->
-        <button type="button" id="google-auth-btn" class="w-full py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-900 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-3 border border-stone-200">
+        <button type="button" id="google-auth-btn" class="w-full py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-900 font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-3 border border-stone-200 cursor-pointer">
           <svg class="w-4 h-4" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -87,7 +87,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Pin Link</label>
-                <button type="button" id="auth-geo-btn" class="text-[10px] font-bold text-emerald-700 hover:underline">
+                <button type="button" id="auth-geo-btn" class="text-[10px] font-bold text-emerald-700 hover:underline cursor-pointer">
                   📍 Use GPS Location
                 </button>
               </div>
@@ -106,7 +106,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <input id="auth-password" type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" />
           </div>
 
-          <button type="submit" id="auth-submit-btn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-emerald-600/20">
+          <button type="submit" id="auth-submit-btn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-emerald-600/20 cursor-pointer">
             Sign In
           </button>
         </form>
@@ -123,8 +123,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     import { 
       signInWithEmailAndPassword, 
       createUserWithEmailAndPassword, 
-      signInWithPopup, 
-      onAuthStateChanged 
+      signInWithPopup 
     } from 'firebase/auth';
     import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -140,12 +139,12 @@ import MainLayout from "../layouts/MainLayout.astro";
     const authGeoBtn = document.getElementById('auth-geo-btn');
     const authPinInput = document.getElementById('auth-pin') as HTMLInputElement;
 
-    // Redirect if already logged in
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        window.location.href = '/dashboard';
-      }
-    });
+    // Helper to determine where to redirect after successful login/signup
+    function handlePostAuthRedirect() {
+      const redirectUrl = sessionStorage.getItem('helthe_auth_redirect') || '/dashboard';
+      sessionStorage.removeItem('helthe_auth_redirect');
+      window.location.href = redirectUrl;
+    }
 
     // Unified Mode Switcher Function
     function setAuthMode(signUp: boolean) {
@@ -157,8 +156,8 @@ import MainLayout from "../layouts/MainLayout.astro";
       const addressInput = document.getElementById('auth-address') as HTMLTextAreaElement;
 
       if (isSignUpMode) {
-        tabSignUp.className = "py-2.5 rounded-xl text-xs font-black transition-all bg-white text-stone-950 shadow-xs";
-        tabSignIn.className = "py-2.5 rounded-xl text-xs font-black transition-all text-stone-500 hover:text-stone-900";
+        tabSignUp.className = "py-2.5 rounded-xl text-xs font-black transition-all bg-white text-stone-950 shadow-xs cursor-pointer";
+        tabSignIn.className = "py-2.5 rounded-xl text-xs font-black transition-all text-stone-500 hover:text-stone-900 cursor-pointer";
         
         titleEl.textContent = 'Create Account';
         subtitleEl.textContent = 'Set up your profile once for instant 1-click juice ordering.';
@@ -169,8 +168,8 @@ import MainLayout from "../layouts/MainLayout.astro";
         phoneInput.required = true;
         addressInput.required = true;
       } else {
-        tabSignIn.className = "py-2.5 rounded-xl text-xs font-black transition-all bg-white text-stone-950 shadow-xs";
-        tabSignUp.className = "py-2.5 rounded-xl text-xs font-black transition-all text-stone-500 hover:text-stone-900";
+        tabSignIn.className = "py-2.5 rounded-xl text-xs font-black transition-all bg-white text-stone-950 shadow-xs cursor-pointer";
+        tabSignUp.className = "py-2.5 rounded-xl text-xs font-black transition-all text-stone-500 hover:text-stone-900 cursor-pointer";
         
         titleEl.textContent = 'Welcome Back';
         subtitleEl.textContent = 'Sign in to track orders and re-order in seconds.';
@@ -210,7 +209,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       });
     }
 
-    // Handle Google Auth (Saves or merges profile preferences)
+    // Handle Google Auth
     document.getElementById('google-auth-btn')?.addEventListener('click', async () => {
       try {
         errorEl.textContent = '';
@@ -220,7 +219,6 @@ import MainLayout from "../layouts/MainLayout.astro";
         const userRef = doc(db, 'users', user.uid);
         const snap = await getDoc(userRef);
         
-        // Seed initial profile document if it doesn't exist
         if (!snap.exists()) {
           await setDoc(userRef, {
             email: user.email || '',
@@ -233,40 +231,37 @@ import MainLayout from "../layouts/MainLayout.astro";
             updatedAt: new Date().toISOString()
           }, { merge: true });
         }
-        window.location.href = '/dashboard';
+        handlePostAuthRedirect();
       } catch (err: any) {
         errorEl.textContent = err.message || 'Google sign-in failed.';
       }
     });
 
-    // Form Submit Handler (Supports both Sign In and Sign Up)
+    // Form Submit Handler (Sign In / Sign Up)
     document.getElementById('auth-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       errorEl.textContent = '';
 
       const email = (document.getElementById('auth-email') as HTMLInputElement).value.trim();
       const password = (document.getElementById('auth-password') as HTMLInputElement).value;
-      
 
       try {
         if (isSignUpMode) {
           const name = (document.getElementById('auth-name') as HTMLInputElement).value.trim();
           const phoneInput = document.getElementById('auth-phone') as HTMLInputElement;
-          const phone = phoneInput.value.replace(/\D/g, ''); // strip any non-digit chars
+          const phone = phoneInput.value.replace(/\D/g, '');
 
-          if (isSignUpMode) {
-            if (phone.length !== 10) {
-              errorEl.textContent = 'Phone number must be exactly 10 digits (e.g. 0241234567).';
-              return;
-            }
+          if (phone.length !== 10) {
+            errorEl.textContent = 'Phone number must be exactly 10 digits (e.g. 0241234567).';
+            return;
           }
+
           const address = (document.getElementById('auth-address') as HTMLTextAreaElement).value.trim();
           const locationPin = (document.getElementById('auth-pin') as HTMLInputElement).value.trim();
           const allergies = (document.getElementById('auth-allergies') as HTMLInputElement).value.trim();
 
           const userCred = await createUserWithEmailAndPassword(auth, email, password);
           
-          // Use { merge: true } to guarantee all fields write safely into Firestore
           await setDoc(doc(db, 'users', userCred.user.uid), {
             email: email,
             name: name,
@@ -280,7 +275,7 @@ import MainLayout from "../layouts/MainLayout.astro";
         } else {
           await signInWithEmailAndPassword(auth, email, password);
         }
-        window.location.href = '/dashboard';
+        handlePostAuthRedirect();
       } catch (err: any) {
         if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
           errorEl.textContent = 'Invalid email or password.';
