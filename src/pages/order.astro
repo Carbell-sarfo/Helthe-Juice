@@ -14,6 +14,8 @@ import watermelonBeetroot from '../assets/products/watermelon-beetroot.png';
 import watermelonMango from '../assets/products/watermelon-mango.png';
 import appleBeetrootCarrot from '../assets/products/apple-beetroot-carrot.png';
 import cucumberAppleKale from '../assets/products/cucumber-apple-kale.png';
+import cucumberAppleSpinach from '../assets/products/cucumber-apple-spinach.png';
+import cucumberBittermelon from '../assets/products/cucumber-bittermelon.png';
 import pineapple from '../assets/products/pineapple.png';
 import pineappleCucumberSpinach from '../assets/products/pineapple-cucumber-spinach.png';
 import pineappleCarrot from '../assets/products/pineapple-carrot.png';
@@ -23,8 +25,10 @@ import pineappleGinger from '../assets/products/pineapple-ginger.png';
 import pineappleMoringaGinger from '../assets/products/pineapple-moringa-ginger.png';
 import pineappleSpinachGinger from '../assets/products/pineapple-spinach-ginger.png';
 import pineapplePassionfruit from '../assets/products/pineapple-passionfruit.png';
+import pineappleBeetroot from '../assets/products/pineapple-beetroot.png';
 import orange from '../assets/products/orange.png';
 import orangeCarrot from '../assets/products/orange-carrot.png';
+import orangeBitterleafGinger from '../assets/products/orange-bitterleaf-ginger.png';
 
 const juices = [
   { id: 'mango', name: 'Mango', fruits: ['mango'], image: mango },
@@ -44,9 +48,13 @@ const juices = [
   { id: 'pineapple-ginger', name: 'Pineapple Ginger', fruits: ['pineapple', 'ginger'], image: pineappleGinger },
   { id: 'pineapple-dandelion', name: 'Pineapple Dandelion', fruits: ['pineapple', 'dandelion'], image: pineappleDandelion },
   { id: 'pineapple-cucumber-mint', name: 'Pineapple Cucumber Mint', fruits: ['pineapple', 'cucumber', 'mint'], image: pineappleCucumberMint },
+  { id: 'pineapple-beetroot', name: 'Pineapple Beetroot', fruits: ['pineapple', 'beetroot'], image: pineappleBeetroot },
+  { id: 'cucumber-bittermelon', name: 'Cucumber Bittermelon', fruits: ['cucumber', 'bittermelon'], image: cucumberBittermelon },
   { id: 'orange', name: 'Orange', fruits: ['orange'], image: orange },
   { id: 'orange-carrot', name: 'Orange Carrot', fruits: ['orange', 'carrot'], image: orangeCarrot },
+  { id: 'orange-bitterleaf-ginger', name: 'Orange Bitter-leaf Ginger', fruits: ['orange', 'bitter-leaf', 'ginger'], image: orangeBitterleafGinger },
   { id: 'cucumber-apple-kale', name: 'Cucumber Apple Kale', fruits: ['cucumber', 'apple', 'kale'], image: cucumberAppleKale },
+  { id: 'cucumber-apple-spinach', name: 'Cucumber Apple Spinach', fruits: ['cucumber', 'apple', 'spinach'], image: cucumberAppleSpinach },
 ];
 
 const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));

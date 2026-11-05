@@ -6,6 +6,12 @@ import MainLayout from '../layouts/MainLayout.astro';
 import { Image } from 'astro:assets';
 
 // 1. Static images fallback mapping
+import mango from '../assets/products/mango.png';
+import pineappleMango from '../assets/products/pineapple-mango.png';
+import cucumberAppleSpinach from '../assets/products/cucumber-apple-spinach.png';
+import cucumberBittermelon from '../assets/products/cucumber-bittermelon.png';
+import pineappleBeetroot from '../assets/products/pineapple-beetroot.png';
+import orangeBitterleafGinger from '../assets/products/orange-bitterleaf-ginger.png';
 import watermelonRed from '../assets/products/watermelon-red.png';
 import watermelonOrange from '../assets/products/watermelon-orange.png';
 import watermelonYellow from '../assets/products/watermelon-yellow.png';
@@ -26,24 +32,30 @@ import orange from '../assets/products/orange.png';
 import orangeCarrot from '../assets/products/orange-carrot.png';
 
 const juices = [
-  { id: 'watermelon-red', name: 'Red Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: '100% Natural', image: watermelonRed },
-  { id: 'watermelon-yellow', name: 'Yellow Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonYellow },
-  { id: 'watermelon-orange', name: 'Orange Watermelon', volume: '350ml', price: 15, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonOrange },
-  { id: 'watermelon-beetroot', name: 'Beetroot Watermelon', volume: '350ml', price: 15, fruits: ['watermelon', 'beetroot'], tagline: 'No Preservatives', image: watermelonBeetroot },
-  { id: 'watermelon-mango', name: 'Mango Watermelon', volume: '350ml', price: 15, fruits: ['watermelon', 'mango'], tagline: 'No Preservatives', image: watermelonMango },
-  { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot', volume: '350ml', price: 15, fruits: ['apple', 'beetroot', 'carrot'], tagline: 'No Preservatives', image: appleBeetrootCarrot },
-  { id: 'pineapple', name: 'Pineapple', volume: '350ml', price: 15, fruits: ['pineapple'], tagline: 'No Preservatives', image: pineapple },
-  { id: 'pineapple-carrot', name: 'Pineapple Carrot', volume: '350ml', price: 15, fruits: ['pineapple', 'carrot'], tagline: 'No Preservatives', image: pineappleCarrot },
-  { id: 'pineapple-spinach-ginger', name: 'Pineapple Spinach Ginger', volume: '350ml', price: 15, fruits: ['pineapple', 'spinach', 'ginger'], tagline: 'No Preservatives', image: pineappleSpinachGinger },
-  { id: 'pineapple-cucumber-spinach', name: 'Pineapple Cucumber Spinach', volume: '350ml', price: 15, fruits: ['pineapple', 'cucumber', 'spinach'], tagline: 'No Preservatives', image: pineappleCucumberSpinach },
-  { id: 'pineapple-passionfruit', name: 'Pineapple Passionfruit', volume: '350ml', price: 15, fruits: ['pineapple', 'passionfruit'], tagline: 'No Preservatives', image: pineapplePassionfruit },
-  { id: 'pineapple-moringa-ginger', name: 'Pineapple Moringa Ginger', volume: '350ml', price: 15, fruits: ['pineapple', 'moringa', 'ginger'], tagline: 'No Preservatives', image: pineappleMoringaGinger },
-  { id: 'pineapple-ginger', name: 'Pineapple Ginger', volume: '350ml', price: 15, fruits: ['pineapple', 'ginger'], tagline: 'No Preservatives', image: pineappleGinger },
-  { id: 'pineapple-dandelion', name: 'Pineapple Dandelion', volume: '350ml', price: 15, fruits: ['pineapple', 'dandelion'], tagline: 'No Preservatives', image: pineappleDandelion },
-  { id: 'pineapple-cucumber-mint', name: 'Pineapple Cucumber Mint', volume: '350ml', price: 15, fruits: ['pineapple', 'cucumber', 'mint'], tagline: 'No Preservatives', image: pineappleCucumberMint },
-  { id: 'orange', name: 'Orange', volume: '350ml', price: 15, fruits: ['orange'], tagline: 'No Preservatives', image: orange },
-  { id: 'orange-carrot', name: 'Orange Carrot', volume: '350ml', price: 15, fruits: ['orange', 'carrot'], tagline: 'No Preservatives', image: orangeCarrot },
-  { id: 'cucumber-apple-kale', name: 'Cucumber Apple Kale', volume: '350ml', price: 15, fruits: ['cucumber', 'apple', 'kale'], tagline: 'No Preservatives', image: cucumberAppleKale },
+  { id: 'watermelon-red', name: 'Red Watermelon', volume: '350ml', price: 35, fruits: ['watermelon'], tagline: '100% Natural', image: watermelonRed },
+  { id: 'watermelon-yellow', name: 'Yellow Watermelon', volume: '350ml', price: 35, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonYellow },
+  { id: 'watermelon-orange', name: 'Orange Watermelon', volume: '350ml', price: 35, fruits: ['watermelon'], tagline: 'No Preservatives', image: watermelonOrange },
+  { id: 'watermelon-beetroot', name: 'Beetroot Watermelon', volume: '350ml', price: 35, fruits: ['watermelon', 'beetroot'], tagline: 'No Preservatives', image: watermelonBeetroot },
+  { id: 'watermelon-mango', name: 'Mango Watermelon', volume: '350ml', price: 35, fruits: ['watermelon', 'mango'], tagline: 'No Preservatives', image: watermelonMango },
+  { id: 'mango', name: 'Mango', volume: '350ml', price: 35, fruits: ['mango'], tagline: 'No Preservatives', image: mango },
+  { id: 'pineappleMango', name: 'Pineapple Mango', volume: '350ml', price: 35, fruits: ['mango', 'pineapple'], tagline: 'No Preservatives', image: pineappleMango },
+  { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot', volume: '350ml', price: 35, fruits: ['apple', 'beetroot', 'carrot'], tagline: 'No Preservatives', image: appleBeetrootCarrot },
+  { id: 'pineappleBeetroot', name: 'Pineapple Beetroot', volume: '350ml', price: 35, fruits: ['beetroot', 'pineapple'], tagline: 'No Preservatives', image: pineappleBeetroot },
+  { id: 'pineapple', name: 'Pineapple', volume: '350ml', price: 35, fruits: ['pineapple'], tagline: 'No Preservatives', image: pineapple },
+  { id: 'pineapple-ginger', name: 'Pineapple Ginger', volume: '350ml', price: 35, fruits: ['pineapple', 'ginger'], tagline: 'No Preservatives', image: pineappleGinger },
+  { id: 'pineapple-spinach-ginger', name: 'Pineapple Spinach Ginger', volume: '350ml', price: 35, fruits: ['pineapple', 'spinach', 'ginger'], tagline: 'No Preservatives', image: pineappleSpinachGinger },
+  { id: 'pineapple-cucumber-spinach', name: 'Pineapple Cucumber Spinach', volume: '350ml', price: 35, fruits: ['pineapple', 'cucumber', 'spinach'], tagline: 'No Preservatives', image: pineappleCucumberSpinach },
+  { id: 'pineapple-passionfruit', name: 'Pineapple Passionfruit', volume: '350ml', price: 35, fruits: ['pineapple', 'passionfruit'], tagline: 'No Preservatives', image: pineapplePassionfruit },
+  { id: 'pineapple-moringa-ginger', name: 'Pineapple Moringa Ginger', volume: '350ml', price: 35, fruits: ['pineapple', 'moringa', 'ginger'], tagline: 'No Preservatives', image: pineappleMoringaGinger },
+  { id: 'pineapple-dandelion', name: 'Pineapple Dandelion', volume: '350ml', price: 35, fruits: ['pineapple', 'dandelion'], tagline: 'No Preservatives', image: pineappleDandelion },
+  { id: 'pineapple-cucumber-mint', name: 'Pineapple Cucumber Mint', volume: '350ml', price: 35, fruits: ['pineapple', 'cucumber', 'mint'], tagline: 'No Preservatives', image: pineappleCucumberMint },
+  { id: 'pineapple-carrot', name: 'Pineapple Carrot', volume: '350ml', price: 35, fruits: ['pineapple', 'carrot'], tagline: 'No Preservatives', image: pineappleCarrot },
+  { id: 'orange-carrot', name: 'Orange Carrot', volume: '350ml', price: 35, fruits: ['orange', 'carrot'], tagline: 'No Preservatives', image: orangeCarrot },
+  { id: 'orange', name: 'Orange', volume: '350ml', price: 35, fruits: ['orange'], tagline: 'No Preservatives', image: orange },
+  { id: 'orange-bitterleaf-ginger', name: 'Orange Bitter-leaf Ginger', volume: '350ml', price: 35, fruits: ['orange', 'bitter-leaf', 'ginger'], tagline: 'No Preservatives', image: orangeBitterleafGinger },
+  { id: 'cucumber-apple-spinach', name: 'Cucumber Apple Spinach', volume: '350ml', price: 35, fruits: ['cucumber', 'apple', 'spinach'], tagline: 'No Preservatives', image: cucumberAppleSpinach },
+  { id: 'cucumber-bittermelon', name: 'Cucumber Bitter-melon', volume: '350ml', price: 35, fruits: ['cucumber', 'bittermelon'], tagline: 'No Preservatives', image: cucumberBittermelon },
+  { id: 'cucumber-apple-kale', name: 'Cucumber Apple Kale', volume: '350ml', price: 35, fruits: ['cucumber', 'apple', 'kale'], tagline: 'No Preservatives', image: cucumberAppleKale },
 ];
 
 const allFruits = Array.from(new Set(juices.flatMap(j => j.fruits)));
