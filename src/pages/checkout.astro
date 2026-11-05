@@ -50,9 +50,18 @@ import MainLayout from "../layouts/MainLayout.astro";
                 <input id="checkout-name" required placeholder="e.g. Kofi Mensah" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
               </div>
               <div>
-                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">WhatsApp / Phone Number *</label>
-                <input id="checkout-phone" required placeholder="024XXXXXXX" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
-              </div>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">WhatsApp / Phone Number (10 digits) *</label>
+                <input 
+                    id="checkout-phone" 
+                    type="tel" 
+                    inputmode="numeric" 
+                    required 
+                    maxlength="10" 
+                    pattern="[0-9]{10}" 
+                    placeholder="024XXXXXXX" 
+                    class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
+                />
+                </div>
             </div>
 
             <div>
@@ -245,7 +254,14 @@ import MainLayout from "../layouts/MainLayout.astro";
       e.preventDefault();
 
       const name = (document.getElementById('checkout-name') as HTMLInputElement).value.trim();
-      const phone = (document.getElementById('checkout-phone') as HTMLInputElement).value.trim();
+      const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
+        const phone = phoneInput.value.replace(/\D/g, ''); // strip any non-digit chars
+
+        if (phone.length !== 10) {
+        alert('Please enter a valid 10-digit phone number (e.g. 024XXXXXXX).');
+        phoneInput.focus();
+        return;
+        }
       const email = (document.getElementById('checkout-email') as HTMLInputElement).value.trim();
       const address = (document.getElementById('checkout-address') as HTMLTextAreaElement).value.trim();
       const locationPin = locationPinInput.value.trim();
@@ -309,6 +325,98 @@ import MainLayout from "../layouts/MainLayout.astro";
         console.error('Error creating order:', err);
         alert('Failed to initialize checkout. Please try again.');
       }
+    });
+
+
+    import { auth, db } from '../lib/firebase';
+    import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, getDocs, query, orderBy, limit } from 'firebase/firestore';
+
+    // Helper to generate custom sequential W0001 IDs
+    async function getNextOrderId() {
+      try {
+        const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(1));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const lastOrder = snap.docs[0].data();
+          if (lastOrder.orderCode && lastOrder.orderCode.startsWith('W')) {
+            const num = parseInt(lastOrder.orderCode.replace('W', ''), 10);
+            if (!isNaN(num)) {
+              return `W${String(num + 1).padStart(4, '0')}`;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Could not calculate sequential order ID, falling back:', err);
+      }
+      return `W${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+
+    // Form Submission & Paystack Trigger Handler
+    checkoutForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = (document.getElementById('checkout-name') as HTMLInputElement).value.trim();
+      const phone = (document.getElementById('checkout-phone') as HTMLInputElement).value.trim();
+      const email = (document.getElementById('checkout-email') as HTMLInputElement).value.trim();
+      const address = (document.getElementById('checkout-address') as HTMLTextAreaElement).value.trim();
+      const locationPin = locationPinInput.value.trim();
+      const allergies = (document.getElementById('checkout-allergies') as HTMLInputElement).value.trim();
+      const notes = (document.getElementById('checkout-notes') as HTMLTextAreaElement).value.trim();
+
+      const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
+      const customOrderCode = await getNextOrderId(); // e.g. W0001
+
+      // Trigger Paystack Popup FIRST
+      const paystackHandler = (window as any).PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: email,
+        amount: amountInPesewas,
+        currency: 'GHS',
+        ref: `${customOrderCode}-${Date.now()}`,
+        metadata: {
+          custom_fields: [
+            { display_name: "Order Code", variable_name: "order_code", value: customOrderCode },
+            { display_name: "Customer Name", variable_name: "customer_name", value: name },
+            { display_name: "Phone Number", variable_name: "phone_number", value: phone },
+            { display_name: "Delivery Address", variable_name: "delivery_address", value: address }
+          ]
+        },
+        callback: async function(response: any) {
+          // Payment Successful! Save complete order with payment reference directly to Firestore
+          try {
+            const orderData = {
+              orderCode: customOrderCode, // "W0001"
+              orderType: `Box of ${currentConfig.boxSize}`,
+              userId: currentUser?.uid || null,
+              customer: { name, phone, email, address, locationPin, allergies, notes },
+              items: currentConfig.items.map((i: any) => ({ name: i.name, qty: i.qty })),
+              total: amountInPesewas,
+              paymentStatus: 'paid',
+              status: 'processing',
+              paymentGateway: 'paystack',
+              paystackReference: response.reference, // Paystack transaction ref recorded!
+              paidAt: new Date().toISOString(),
+              createdAt: serverTimestamp()
+            };
+
+            await addDoc(collection(db, 'orders'), orderData);
+
+            sessionStorage.removeItem('helthe_box_config');
+
+            // Show success modal with W0001 ID
+            document.getElementById('modal-order-id')!.textContent = `#${customOrderCode}`;
+            document.getElementById('success-modal')!.classList.remove('hidden');
+          } catch (err: any) {
+            console.error('Error saving paid order to Firestore:', err);
+            alert('Payment was successful on Paystack, but there was an issue saving your order. Please contact support with Ref: ' + response.reference);
+          }
+        },
+        onClose: function() {
+          console.log('Payment window closed by user.');
+        }
+      });
+
+      paystackHandler.openIframe();
     });
   </script>
 </MainLayout>

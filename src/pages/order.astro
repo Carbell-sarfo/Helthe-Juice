@@ -5,6 +5,8 @@ import MainLayout from "../layouts/MainLayout.astro";
 import { Image } from 'astro:assets';
 
 // Import full flavor images
+import mango from '../assets/products/mango.png';
+import pineappleMango from '../assets/products/pineapple-mango.png';
 import watermelonRed from '../assets/products/watermelon-red.png';
 import watermelonOrange from '../assets/products/watermelon-orange.png';
 import watermelonYellow from '../assets/products/watermelon-yellow.png';
@@ -25,11 +27,13 @@ import orange from '../assets/products/orange.png';
 import orangeCarrot from '../assets/products/orange-carrot.png';
 
 const juices = [
+  { id: 'mango', name: 'Mango', fruits: ['mango'], image: mango },
+  { id: 'pineapple-mango', name: 'Pineapple Mango', fruits: ['mango', 'pineapple'], image: pineappleMango },
   { id: 'watermelon-red', name: 'Red Watermelon', fruits: ['watermelon'], image: watermelonRed },
   { id: 'watermelon-yellow', name: 'Yellow Watermelon', fruits: ['watermelon'], image: watermelonYellow },
   { id: 'watermelon-orange', name: 'Orange Watermelon', fruits: ['watermelon'], image: watermelonOrange },
-  { id: 'watermelon-beetroot', name: 'Beetroot Watermelon', fruits: ['watermelon'], image: watermelonBeetroot },
-  { id: 'watermelon-mango', name: 'Mango Watermelon', fruits: ['watermelon'], image: watermelonMango },
+  { id: 'watermelon-beetroot', name: 'Beetroot Watermelon', fruits: ['watermelon', 'beetroot'], image: watermelonBeetroot },
+  { id: 'watermelon-mango', name: 'Mango Watermelon', fruits: ['watermelon', 'mango'], image: watermelonMango },
   { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot', fruits: ['apple', 'beetroot', 'carrot'], image: appleBeetrootCarrot },
   { id: 'pineapple', name: 'Pineapple', fruits: ['pineapple'], image: pineapple },
   { id: 'pineapple-carrot', name: 'Pineapple Carrot', fruits: ['pineapple', 'carrot'], image: pineappleCarrot },
