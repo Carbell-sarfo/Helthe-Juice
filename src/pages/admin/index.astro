@@ -29,7 +29,7 @@ import '../../styles/global.css';
           <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider mb-1.5">Password</label>
           <input name="password" type="password" placeholder="••••••••" required class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all" />
         </div>
-        <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20">
+        <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20 cursor-pointer">
           Sign In to Dashboard
         </button>
       </form>
@@ -48,7 +48,7 @@ import '../../styles/global.css';
           </div>
           <p class="text-xs text-stone-500 font-medium">Make-to-Order Pre-Order Dashboard & Batch Production System</p>
         </div>
-        <button id="logout" class="w-full sm:w-auto px-4 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-2xl text-xs font-black transition-all">
+        <button id="logout" class="w-full sm:w-auto px-4 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-2xl text-xs font-black transition-all cursor-pointer">
           Log Out
         </button>
       </div>
@@ -73,7 +73,7 @@ import '../../styles/global.css';
         <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-sm space-y-5 h-fit">
           <div class="flex items-center justify-between border-b border-stone-100 pb-4">
             <h2 id="form-title" class="text-sm font-black text-stone-950 uppercase tracking-wider">Add New Flavor</h2>
-            <button type="button" id="cancel-edit" hidden class="text-xs text-rose-600 font-bold hover:underline">Cancel Edit</button>
+            <button type="button" id="cancel-edit" hidden class="text-xs text-rose-600 font-bold hover:underline cursor-pointer">Cancel Edit</button>
           </div>
 
           <form id="product-form" class="space-y-4">
@@ -106,11 +106,11 @@ import '../../styles/global.css';
             </div>
 
             <div class="flex items-center gap-2.5 pt-2">
-              <input name="active" type="checkbox" id="active" checked class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500" />
-              <label for="active" class="text-xs font-bold text-stone-700">Visible on live menu</label>
+              <input name="active" type="checkbox" id="active" checked class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500 cursor-pointer" />
+              <label for="active" class="text-xs font-bold text-stone-700 cursor-pointer">Visible on live menu</label>
             </div>
 
-            <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-emerald-600/20">
+            <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/20 cursor-pointer">
               Save Flavor
             </button>
           </form>
@@ -150,7 +150,7 @@ import '../../styles/global.css';
               <table class="w-full text-left text-xs min-w-[650px]">
                 <thead>
                   <tr class="border-b border-stone-100 text-stone-400 uppercase font-black tracking-wider text-[10px]">
-                    <th class="pb-3">Order ID / Date</th>
+                    <th class="pb-3">Order Code & Date</th>
                     <th class="pb-3">Customer</th>
                     <th class="pb-3">Items</th>
                     <th class="pb-3">Total</th>
@@ -198,7 +198,7 @@ import '../../styles/global.css';
 
       $('logout').addEventListener('click', () => signOut(auth));
 
-      // Auth state listener with custom claim & direct admin email check
+      // Auth state listener
       onAuthStateChanged(auth, async (user) => {
         unsubscribers.forEach((u) => u());
         unsubscribers = [];
@@ -249,7 +249,7 @@ import '../../styles/global.css';
                 </span>
               </td>
               <td class="py-3.5 text-right">
-                <button type="button" class="edit-btn px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl font-black text-xs transition-all" data-id="${d.id}">Edit</button>
+                <button type="button" class="edit-btn px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl font-black text-xs transition-all cursor-pointer" data-id="${d.id}">Edit</button>
               </td>
             `;
             tr.querySelector('.edit-btn')!.addEventListener('click', () => startEdit(d.id));
@@ -260,7 +260,7 @@ import '../../styles/global.css';
 
       // Batch Production Aggregator Listener
       function listenToBatchSummary() {
-        const q = query(collection(db, 'orders'), where('status', 'in', ['paid', 'pending']));
+        const q = query(collection(db, 'orders'), where('status', 'in', ['paid', 'processing', 'pending']));
         unsubscribers.push(onSnapshot(q, (snap) => {
           const batchTotals: Record<string, number> = {};
           snap.forEach(d => {
@@ -340,7 +340,7 @@ import '../../styles/global.css';
         }
       });
 
-      // Orders real-time listener with WhatsApp confirmation builder
+      // Orders real-time listener (WhatsApp button completely removed)
       function listenToOrders() {
         const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(50));
         unsubscribers.push(onSnapshot(q, (snap) => {
@@ -351,48 +351,31 @@ import '../../styles/global.css';
             const tr = document.createElement('tr');
             const itemsSummary = (o.items || []).map((i: any) => `${i.qty}× ${i.name}`).join(', ');
             const dateStr = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString() : 'Just now';
-            const orderIdShort = d.id.slice(-6).toUpperCase();
+            const displayOrderCode = o.orderCode || `#${d.id.slice(-6).toUpperCase()}`;
             const totalGhs = (o.total / 100).toFixed(2);
-
-            // Clean customer phone number for WhatsApp link (removes spaces/symbols)
-            const rawPhone = o.customer.phone || '';
-            const cleanPhone = rawPhone.replace(/\D/g, '');
-            
-            // Pre-formatted WhatsApp confirmation message
-            const waMessage = encodeURIComponent(
-              `Hello ${o.customer.name}! 👋 Thank you for your Helthe Juice pre-order (#${orderIdShort}).\n\n` +
-              `📦 *Items:* ${itemsSummary}\n` +
-              `💰 *Total:* GHS ${totalGhs}\n` +
-              `📍 *Delivery Area:* ${o.customer.location || 'Accra'}\n\n` +
-              `We are confirming your order for our upcoming batch delivery. Let us know if you have any questions!`
-            );
-            const waUrl = cleanPhone ? `https://wa.me/${cleanPhone.startsWith('233') ? cleanPhone : '233' + cleanPhone.replace(/^0/, '')}?text=${waMessage}` : '#';
 
             tr.className = 'hover:bg-stone-50/60 transition-colors';
             tr.innerHTML = `
               <td class="py-3.5">
-                <span class="font-black text-stone-900 block">#${orderIdShort}</span>
+                <span class="font-black text-stone-900 block">${displayOrderCode}</span>
                 <span class="text-[10px] text-stone-400 font-semibold">${dateStr}</span>
               </td>
               <td class="py-3.5">
-                <span class="font-bold text-stone-900 block">${o.customer.name}</span>
-                <span class="text-[10px] text-stone-500 font-medium">${o.customer.phone}</span>
+                <span class="font-bold text-stone-900 block">${o.customer?.name || 'Customer'}</span>
+                <span class="text-[10px] text-stone-500 font-medium">${o.customer?.phone || ''}</span>
               </td>
               <td class="py-3.5 text-stone-600 max-w-xs truncate font-medium">${itemsSummary}</td>
               <td class="py-3.5 font-black text-stone-900">GHS ${totalGhs}</td>
               <td class="py-3.5">
                 <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide ${
-                  o.status === 'paid' ? 'bg-emerald-100 text-emerald-800' :
+                  o.status === 'processing' || o.status === 'paid' ? 'bg-emerald-100 text-emerald-800' :
                   o.status === 'fulfilled' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
                 }">
-                  ${o.status}
+                  ${o.status || 'processing'}
                 </span>
               </td>
-              <td class="py-3.5 text-right space-x-2">
-                <a href="${waUrl}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs transition-all shadow-xs">
-                  WhatsApp
-                </a>
-                ${o.status === 'paid' || o.status === 'pending' ? `<button class="fulfill-btn px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-xl font-black text-xs transition-all shadow-xs" data-id="${d.id}">Fulfill</button>` : '<span class="text-stone-400 font-bold text-[10px]">Fulfilled</span>'}
+              <td class="py-3.5 text-right">
+                ${o.status !== 'fulfilled' ? `<button class="fulfill-btn px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-xl font-black text-xs transition-all shadow-xs cursor-pointer" data-id="${d.id}">Mark Fulfilled</button>` : '<span class="text-emerald-700 font-bold text-[10px] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">Fulfilled ✓</span>'}
               </td>
             `;
             const fulfillBtn = tr.querySelector('.fulfill-btn');

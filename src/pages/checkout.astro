@@ -274,13 +274,47 @@ import MainLayout from "../layouts/MainLayout.astro";
       });
     }
 
-    // Safe Order ID generator (Avoids permission errors by using timestamp/random suffix)
+    // Safe Order ID generator
     function generateOrderCode() {
       const randNum = Math.floor(1000 + Math.random() * 9000);
       return `W${randNum}`;
     }
 
-    // Named Paystack success callback function to prevent type/bundling errors
+    // Function to trigger mNotify SMS notifications via our local Astro API route
+    async function sendOrderSuccessSMS(orderData: any) {
+      try {
+        const customerPhone = orderData.customer.phone;
+        const customerName = orderData.customer.name;
+        const orderCode = orderData.orderCode || '#W0001';
+        const totalGhs = (orderData.total / 100).toFixed(2);
+        const itemsSummary = (orderData.items || []).map((i: any) => `${i.qty}× ${i.name}`).join(', ');
+
+        // 1. Message text for the Customer
+        const customerMessage = `Hi ${customerName}! Thanks for your Helthe Juice order (${orderCode}). Items: ${itemsSummary}. Total: GHS ${totalGhs}. We are prepping your fresh batch now!`;
+
+        await fetch('/api/send-sms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: customerPhone, message: customerMessage })
+        });
+
+        // 2. Message text for the Founder / Kitchen
+        const ownerPhone = "0547000817"; 
+        const ownerMessage = `🚨 New Paid Order (${orderCode})! Customer: ${customerName} (${customerPhone}). Total: GHS ${totalGhs}. Check Admin Portal.`;
+
+        await fetch('/api/send-sms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: ownerPhone, message: ownerMessage })
+        });
+
+        console.log('Order SMS notifications sent via mNotify successfully!');
+      } catch (err) {
+        console.error('Failed to dispatch SMS:', err);
+      }
+    }
+
+    // Paystack success callback function
     async function handlePaystackSuccess(response: any, customOrderCode: string, name: string, phone: string, email: string, address: string, locationPin: string, allergies: string) {
       try {
         const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
@@ -299,7 +333,12 @@ import MainLayout from "../layouts/MainLayout.astro";
           createdAt: serverTimestamp()
         };
 
+        // 1. Save order to Firestore
         await addDoc(collection(db, 'orders'), orderData);
+
+        // 2. Automatically trigger mNotify SMS alerts
+        await sendOrderSuccessSMS(orderData);
+
         sessionStorage.removeItem('helthe_box_config');
 
         document.getElementById('modal-order-id')!.textContent = `#${customOrderCode}`;
