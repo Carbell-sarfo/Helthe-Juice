@@ -16,14 +16,14 @@ import MainLayout from "../layouts/MainLayout.astro";
       <div class="flex items-center justify-between border-b border-stone-200 pb-4">
         <div>
           <h1 class="text-2xl font-black text-stone-950 tracking-tight">Review Order & Secure Checkout</h1>
-          <p class="text-xs text-stone-500 font-medium">Verify your bundle selection and complete payment securely.</p>
+          <p class="text-xs text-stone-500 font-medium">Verify your bundle selection, delivery schedule, and complete payment securely.</p>
         </div>
         <a href="/order" class="text-xs font-bold text-stone-500 hover:text-emerald-700 transition-colors cursor-pointer">
           ← Edit Box Items
         </a>
       </div>
 
-      <!-- B&H / Amazon Inspired Two-Column Split Layout -->
+      <!-- Two-Column Split Layout -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         <!-- LEFT COLUMN: Order Summary & Itemized Breakdown (7 Cols) -->
@@ -43,15 +43,19 @@ import MainLayout from "../layouts/MainLayout.astro";
             <!-- Pricing Calculation Box -->
             <div class="bg-stone-50 rounded-2xl p-4 space-y-2 border border-stone-200/60">
               <div class="flex justify-between text-xs text-stone-500 font-medium">
-                <span>Subtotal</span>
-                <span id="summary-subtotal" class="font-bold text-stone-900">GHS 0.00</span>
+                <span>Single Box Base Cost</span>
+                <span id="summary-single-box-cost" class="font-bold text-stone-900">GHS 0.00</span>
+              </div>
+              <div id="frequency-multiplier-row" class="flex justify-between text-xs text-stone-500 font-medium hidden">
+                <span>Deliveries per Month</span>
+                <span id="summary-multiplier-text" class="font-bold text-emerald-800">4× dispatches</span>
               </div>
               <div class="flex justify-between text-xs text-stone-500 font-medium">
                 <span>Batch Production & Delivery</span>
-                <span class="font-bold text-emerald-700">Calculated at Checkout</span>
+                <span class="font-bold text-emerald-700">Included</span>
               </div>
               <div class="border-t border-stone-200 pt-2 flex justify-between items-center text-sm">
-                <span class="font-black text-stone-950">Total Due</span>
+                <span class="font-black text-stone-950">Total Billed Today</span>
                 <span id="summary-total-price" class="text-lg font-black text-emerald-800">GHS 0.00</span>
               </div>
             </div>
@@ -61,6 +65,29 @@ import MainLayout from "../layouts/MainLayout.astro";
               <p class="text-[11px] text-emerald-900 font-medium leading-relaxed">
                 <strong>Secure Transaction:</strong> All payments are encrypted and verified instantly via Paystack. Supports MTN MoMo, Telecel Cash, AT Money, and Cards.
               </p>
+            </div>
+
+            <!-- Subscription Frequency Toggle Selector -->
+            <div class="bg-stone-50 rounded-2xl p-4 border border-stone-200/60 space-y-3">
+              <label class="block text-[10px] font-black text-stone-700 uppercase tracking-wider">Choose Payment & Delivery Plan</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="type-onetime" class="py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer">
+                  One-Time Purchase
+                </button>
+                <button type="button" id="type-sub" class="py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer">
+                  Monthly Subscription
+                </button>
+              </div>
+
+              <!-- Frequency Options -->
+              <div id="subscription-frequency-box" class="space-y-2 pt-2 border-t border-stone-200/60 hidden">
+                <label class="block text-[10px] font-bold text-stone-600 uppercase">Delivery Frequency (Billed Monthly)</label>
+                <select id="sub-frequency-select" class="w-full px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500">
+                  <option value="weekly">Weekly Deliveries (4 dispatches / month)</option>
+                  <option value="bi-weekly">Bi-Weekly Deliveries (2 dispatches / month)</option>
+                  <option value="monthly">Monthly Delivery (1 dispatch / month)</option>
+                </select>
+              </div>
             </div>
 
           </div>
@@ -77,7 +104,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <form id="checkout-form" class="space-y-4">
               
               <div>
-                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name *</label>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name (Your Name) *</label>
                 <input id="checkout-name" required placeholder="e.g. Kofi Mensah" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
               </div>
 
@@ -98,6 +125,41 @@ import MainLayout from "../layouts/MainLayout.astro";
               <div>
                 <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address (For receipt) *</label>
                 <input id="checkout-email" type="email" required placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              </div>
+
+              <!-- Recipient Checkbox -->
+              <div class="pt-2 border-t border-stone-100 mb-8">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                  <input type="checkbox" id="different-recipient-checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-stone-300" />
+                  <span class="text-xs font-bold text-stone-800">I am not the person receiving this delivery</span>
+                </label>
+              </div>
+
+              <!-- Recipient Drawer -->
+              <div id="recipient-section" class="space-y-4 p-4 bg-stone-50 rounded-2xl border border-stone-200/60 hidden">
+                <span class="text-[10px] font-black text-emerald-800 uppercase tracking-wider block">Recipient Contact Details</span>
+                <div>
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Recipient Full Name *</label>
+                  <input id="recipient-name" placeholder="e.g. Ama Serwaa" class="w-full px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Recipient Phone (10 digits) *</label>
+                  <input id="recipient-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="027XXXXXXX" class="w-full px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+                </div>
+              </div>
+
+              <!-- Delivery Schedule & Calendar -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase">First Delivery Date *</label>
+                  <span class="text-[9px] text-stone-400 font-medium">Defaults to next week batch</span>
+                </div>
+                <input 
+                  id="checkout-delivery-date" 
+                  type="date" 
+                  required 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all cursor-pointer" 
+                />
               </div>
 
               <div>
@@ -136,10 +198,9 @@ import MainLayout from "../layouts/MainLayout.astro";
     </div>
   </div>
 
-  <!-- Enterprise Success Modal -->
+  <!-- Success Modal -->
   <div id="success-modal" class="fixed inset-0 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-white rounded-3xl max-w-lg w-full p-8 space-y-6 shadow-2xl border border-stone-100 text-left">
-      
       <div class="flex items-center justify-between border-b border-stone-100 pb-4">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-black text-lg">✓</div>
@@ -160,25 +221,17 @@ import MainLayout from "../layouts/MainLayout.astro";
           <span class="text-stone-400">Transaction Reference:</span>
           <span id="modal-paystack-ref" class="font-mono font-bold text-stone-900">T-REF-XXXXXX</span>
         </div>
-        <div class="flex justify-between">
-          <span class="text-stone-400">Fulfillment Status:</span>
-          <span class="font-bold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md">Sent to Batch Production</span>
-        </div>
       </div>
 
       <p class="text-xs text-stone-500 font-medium leading-relaxed">
-        Thank you for choosing Helthe Juice! Your order has been securely logged into our system under ID <strong id="modal-order-id-text">#W0001</strong>. You can track batch progress anytime from your client dashboard.
+        Thank you for choosing Helthe Juice! Your order is logged under ID <strong id="modal-order-id-text">#W0001</strong>. Track batch progress anytime in your dashboard.
       </p>
 
       <div class="space-y-3 pt-2">
         <a href="/dashboard" class="w-full py-3.5 bg-stone-950 hover:bg-stone-900 text-white font-black rounded-2xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
           <span>View Order in Dashboard →</span>
         </a>
-        <a href="/" class="block text-center text-xs font-bold text-stone-400 hover:text-stone-700 transition-colors pt-1 cursor-pointer">
-          Return to Store Homepage
-        </a>
       </div>
-
     </div>
   </div>
 
@@ -187,6 +240,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     import { auth, db } from '../lib/firebase';
     import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
     import { onAuthStateChanged } from 'firebase/auth';
+    import { SUBSCRIPTION_PLANS } from '../data/subscriptionPlans';
 
     let currentConfig: any = null;
     let currentUser: any = null;
@@ -194,21 +248,51 @@ import MainLayout from "../layouts/MainLayout.astro";
     const PAYSTACK_PUBLIC_KEY = 'pk_test_8c2d9a51aaca2a886f4b223f6278cbe619edbfca'; 
 
     const summaryBoxBadge = document.getElementById('summary-box-badge')!;
-    const summarySubtotal = document.getElementById('summary-subtotal')!;
+    const summarySingleCostEl = document.getElementById('summary-single-box-cost')!;
+    const summaryMultiplierRow = document.getElementById('frequency-multiplier-row')!;
+    const summaryMultiplierText = document.getElementById('summary-multiplier-text')!;
     const summaryPriceEl = document.getElementById('summary-total-price')!;
     const summaryListEl = document.getElementById('summary-items-list')!;
     const checkoutForm = document.getElementById('checkout-form') as HTMLFormElement;
     const geoBtn = document.getElementById('geo-location-btn');
     const locationPinInput = document.getElementById('checkout-location-pin') as HTMLInputElement;
+    
+    const differentRecipientCheckbox = document.getElementById('different-recipient-checkbox') as HTMLInputElement;
+    const recipientSection = document.getElementById('recipient-section') as HTMLElement;
+    const deliveryDateInput = document.getElementById('checkout-delivery-date') as HTMLInputElement;
 
-    // Option B Auth Check: Force login/signup if not logged in when entering checkout
+    const btnOneTime = document.getElementById('type-onetime') as HTMLButtonElement;
+    const btnSub = document.getElementById('type-sub') as HTMLButtonElement;
+    const subFrequencyBox = document.getElementById('subscription-frequency-box') as HTMLElement;
+    const subFrequencySelect = document.getElementById('sub-frequency-select') as HTMLSelectElement;
+
+    // Set Calendar Min Date (Next Week)
+    const today = new Date();
+    const nextWeekDate = new Date(today);
+    nextWeekDate.setDate(today.getDate() + 7);
+    deliveryDateInput.min = nextWeekDate.toISOString().split('T')[0];
+    deliveryDateInput.value = nextWeekDate.toISOString().split('T')[0];
+
+    // Recipient Toggle
+    differentRecipientCheckbox.addEventListener('change', () => {
+      if (differentRecipientCheckbox.checked) {
+        recipientSection.classList.remove('hidden');
+        (document.getElementById('recipient-name') as HTMLInputElement).required = true;
+        (document.getElementById('recipient-phone') as HTMLInputElement).required = true;
+      } else {
+        recipientSection.classList.add('hidden');
+        (document.getElementById('recipient-name') as HTMLInputElement).required = false;
+        (document.getElementById('recipient-phone') as HTMLInputElement).required = false;
+      }
+    });
+
+    // Auth Check
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         sessionStorage.setItem('helthe_auth_redirect', '/checkout');
         window.location.href = '/login';
         return;
       }
-
       currentUser = user;
       const emailInput = document.getElementById('checkout-email') as HTMLInputElement;
       if (emailInput && !emailInput.value) emailInput.value = user.email || '';
@@ -217,7 +301,6 @@ import MainLayout from "../layouts/MainLayout.astro";
         const userDocSnap = await getDoc(doc(db, 'users', user.uid));
         if (userDocSnap.exists()) {
           const profile = userDocSnap.data();
-          
           const nameInput = document.getElementById('checkout-name') as HTMLInputElement;
           const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
           const addressInput = document.getElementById('checkout-address') as HTMLTextAreaElement;
@@ -231,169 +314,210 @@ import MainLayout from "../layouts/MainLayout.astro";
           if (allergiesInput && !allergiesInput.value) allergiesInput.value = profile.allergies || '';
         }
       } catch (err) {
-        console.error('Error fetching user profile for checkout:', err);
+        console.error('Error fetching user profile:', err);
       }
     });
 
+    // Load Box Config
     const rawConfig = sessionStorage.getItem('helthe_box_config');
     if (!rawConfig) {
       alert('No juice box configuration found. Redirecting to box builder...');
       window.location.href = '/order';
     } else {
       currentConfig = JSON.parse(rawConfig);
-      summaryBoxBadge.textContent = `${currentConfig.boxSize}-Piece Bundle`;
-      summarySubtotal.textContent = `GHS ${Number(currentConfig.totalPrice).toFixed(2)}`;
+      currentConfig.isSubscription = currentConfig.isSubscription || false;
+      currentConfig.frequency = currentConfig.frequency || 'weekly';
+
+      if (currentConfig.isSubscription) {
+        btnSub.click();
+      }
+    }
+
+    // Dynamic Math Engine: Single Box Cost x Frequency Count
+    function calculateAndUpdatePricing() {
+      if (!currentConfig) return;
+
+      let singleBoxPrice = 0;
+      currentConfig.items.forEach((item: any) => {
+        const nameLower = item.name.toLowerCase();
+        // Premium GHS 60 rule for ABC & Bitter-leaf
+        const isPremium = nameLower.includes('abc') || nameLower.includes('beetroot') || nameLower.includes('bitter-leaf');
+        const unitPrice = isPremium ? 60 : (item.price || (currentConfig.totalPrice / currentConfig.boxSize) || 45);
+        singleBoxPrice += unitPrice * item.qty;
+      });
+
+      summarySingleCostEl.textContent = `GHS ${singleBoxPrice.toFixed(2)}`;
+
+      if (currentConfig.isSubscription) {
+        let multiplier = 4;
+        if (currentConfig.frequency === 'bi-weekly') multiplier = 2;
+        if (currentConfig.frequency === 'monthly') multiplier = 1;
+
+        const monthlyBilledTotal = singleBoxPrice * multiplier;
+        currentConfig.totalPrice = monthlyBilledTotal;
+
+        const subKey = `${currentConfig.boxSize}_${currentConfig.frequency}`;
+        const planObj = SUBSCRIPTION_PLANS[subKey];
+        if (planObj) currentConfig.planCode = planObj.planCode;
+
+        summaryMultiplierRow.classList.remove('hidden');
+        summaryMultiplierText.textContent = `${multiplier}× dispatches/month`;
+        summaryBoxBadge.textContent = `${currentConfig.boxSize}-Piece Sub (${currentConfig.frequency})`;
+      } else {
+        currentConfig.planCode = null;
+        currentConfig.totalPrice = singleBoxPrice;
+        summaryMultiplierRow.classList.add('hidden');
+        summaryBoxBadge.textContent = `${currentConfig.boxSize}-Piece Bundle (One-Time)`;
+      }
+
       summaryPriceEl.textContent = `GHS ${Number(currentConfig.totalPrice).toFixed(2)}`;
-      
+    }
+
+    if (currentConfig) {
       summaryListEl.innerHTML = currentConfig.items.map((item: any) => `
         <li class="py-2 flex justify-between items-center">
           <span class="font-bold text-stone-900">${item.name}</span>
           <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-black">${item.qty} bottles</span>
         </li>
       `).join('');
+      calculateAndUpdatePricing();
     }
+
+    btnOneTime.addEventListener('click', () => {
+      currentConfig.isSubscription = false;
+      btnOneTime.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer";
+      btnSub.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer";
+      subFrequencyBox.classList.add('hidden');
+      calculateAndUpdatePricing();
+    });
+
+    btnSub.addEventListener('click', () => {
+      currentConfig.isSubscription = true;
+      btnSub.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer";
+      btnOneTime.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer";
+      subFrequencyBox.classList.remove('hidden');
+      calculateAndUpdatePricing();
+    });
+
+    subFrequencySelect.addEventListener('change', (e: any) => {
+      currentConfig.frequency = e.target.value;
+      calculateAndUpdatePricing();
+    });
 
     if (geoBtn && locationPinInput) {
       geoBtn.addEventListener('click', () => {
-        if (!navigator.geolocation) {
-          alert('Geolocation is not supported by your browser.');
-          return;
-        }
+        if (!navigator.geolocation) return alert('Geolocation unsupported');
         geoBtn.textContent = '⌛ Fetching location...';
         navigator.geolocation.getCurrentPosition(
           (pos) => {
-            const url = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-            locationPinInput.value = url;
+            locationPinInput.value = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
             geoBtn.textContent = '✓ GPS Saved';
           },
-          (err) => {
-            alert('Unable to retrieve location. Please paste your Google Maps link manually.');
-            geoBtn.textContent = '📍 Share GPS';
-          }
+          () => alert('Unable to retrieve GPS.')
         );
       });
     }
 
-    // Safe Order ID generator
     function generateOrderCode() {
-      const randNum = Math.floor(1000 + Math.random() * 9000);
-      return `W${randNum}`;
+      return `W${Math.floor(1000 + Math.random() * 9000)}`;
     }
 
-    // Function to trigger mNotify SMS notifications via our local Astro API route
     async function sendOrderSuccessSMS(orderData: any) {
       try {
-        const customerPhone = orderData.customer.phone;
-        const customerName = orderData.customer.name;
-        const orderCode = orderData.orderCode || '#W0001';
-        const totalGhs = (orderData.total / 100).toFixed(2);
-        const itemsSummary = (orderData.items || []).map((i: any) => `${i.qty}× ${i.name}`).join(', ');
+        const phone = orderData.recipient.isDifferentPerson ? orderData.recipient.phone : orderData.buyer.phone;
+        const msg = `Hi ${orderData.buyer.name}! Helthe Juice order ${orderData.orderCode} confirmed. Delivery: ${orderData.delivery.scheduledDate}. Total: GHS ${(orderData.total/100).toFixed(2)}.`;
+        await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone, message: msg }) });
 
-        // 1. Message text for the Customer
-        const customerMessage = `Hi ${customerName}! Thanks for your Helthe Juice order (${orderCode}). Items: ${itemsSummary}. Total: GHS ${totalGhs}. We are prepping your fresh batch now!`;
-
-        await fetch('/api/send-sms', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: customerPhone, message: customerMessage })
-        });
-
-        // 2. Message text for the Founder / Kitchen
-        const ownerPhone = "0547000817"; 
-        const ownerMessage = `🚨 New Paid Order (${orderCode})! Customer: ${customerName} (${customerPhone}). Total: GHS ${totalGhs}. Check Admin Portal.`;
-
-        await fetch('/api/send-sms', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: ownerPhone, message: ownerMessage })
-        });
-
-        console.log('Order SMS notifications sent via mNotify successfully!');
+        const ownerMsg = `🚨 New Paid Order (${orderData.orderCode})! Customer: ${orderData.buyer.name} (${phone}). Total: GHS ${(orderData.total/100).toFixed(2)}. Scheduled: ${orderData.delivery.scheduledDate}.`;
+        await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: '0547000817', message: ownerMsg }) });
       } catch (err) {
-        console.error('Failed to dispatch SMS:', err);
+        console.error('SMS error:', err);
       }
     }
 
-    // Paystack success callback function
-    async function handlePaystackSuccess(response: any, customOrderCode: string, name: string, phone: string, email: string, address: string, locationPin: string, allergies: string) {
+    async function handlePaystackSuccess(response: any, payload: any) {
       try {
-        const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
-        const orderData = {
-          orderCode: customOrderCode,
-          orderType: `Box of ${currentConfig.boxSize}`,
-          userId: currentUser?.uid || null,
-          customer: { name, phone, email, address, locationPin, allergies, notes: '' },
-          items: currentConfig.items.map((i: any) => ({ name: i.name, qty: i.qty })),
-          total: amountInPesewas,
-          paymentStatus: 'paid',
-          status: 'processing',
-          paymentGateway: 'paystack',
-          paystackReference: response.reference,
-          paidAt: new Date().toISOString(),
-          createdAt: serverTimestamp()
-        };
-
-        // 1. Save order to Firestore
-        await addDoc(collection(db, 'orders'), orderData);
-
-        // 2. Automatically trigger mNotify SMS alerts
-        await sendOrderSuccessSMS(orderData);
-
+        await addDoc(collection(db, 'orders'), payload);
+        await sendOrderSuccessSMS(payload);
         sessionStorage.removeItem('helthe_box_config');
 
-        document.getElementById('modal-order-id')!.textContent = `#${customOrderCode}`;
-        document.getElementById('modal-order-id-text')!.textContent = `#${customOrderCode}`;
+        document.getElementById('modal-order-id')!.textContent = `#${payload.orderCode}`;
+        document.getElementById('modal-order-id-text')!.textContent = `#${payload.orderCode}`;
         document.getElementById('modal-paystack-ref')!.textContent = response.reference;
         document.getElementById('success-modal')!.classList.remove('hidden');
       } catch (err: any) {
-        console.error('Error saving paid order to Firestore:', err);
-        alert('Payment was successful on Paystack, but there was an issue saving your order. Please contact support with Ref: ' + response.reference);
+        alert('Payment verified, but saving order failed: ' + response.reference);
       }
     }
 
     checkoutForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = (document.getElementById('checkout-name') as HTMLInputElement).value.trim();
-      const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
-      const phone = phoneInput.value.replace(/\D/g, '');
+      const buyerName = (document.getElementById('checkout-name') as HTMLInputElement).value.trim();
+      const buyerPhoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
+      const buyerPhone = buyerPhoneInput.value.replace(/\D/g, '');
 
-      if (phone.length !== 10) {
-        alert('Please enter a valid 10-digit phone number (e.g. 024XXXXXXX).');
-        phoneInput.focus();
-        return;
-      }
+      if (buyerPhone.length !== 10) return alert('Enter a valid 10-digit phone number.');
 
       const email = (document.getElementById('checkout-email') as HTMLInputElement).value.trim();
       const address = (document.getElementById('checkout-address') as HTMLTextAreaElement).value.trim();
       const locationPin = locationPinInput.value.trim();
       const allergies = (document.getElementById('checkout-allergies') as HTMLInputElement).value.trim();
+      const scheduledDate = deliveryDateInput.value;
+
+      const isDifferent = differentRecipientCheckbox.checked;
+      const recipientName = isDifferent ? (document.getElementById('recipient-name') as HTMLInputElement).value.trim() : buyerName;
+      const recipientPhone = isDifferent ? (document.getElementById('recipient-phone') as HTMLInputElement).value.replace(/\D/g, '') : buyerPhone;
 
       const amountInPesewas = Math.round(currentConfig.totalPrice * 100);
       const customOrderCode = generateOrderCode();
 
-      const paystackHandler = (window as any).PaystackPop.setup({
+      const orderDataPayload = {
+        orderCode: customOrderCode,
+        orderType: currentConfig.isSubscription ? `Subscription (${currentConfig.frequency})` : `Box of ${currentConfig.boxSize}`,
+        isSubscription: Boolean(currentConfig.isSubscription),
+        frequency: currentConfig.isSubscription ? currentConfig.frequency : null,
+        planCode: currentConfig.planCode || null,
+        userId: currentUser?.uid || null,
+        buyer: { name: buyerName, phone: buyerPhone, email },
+        recipient: { isDifferentPerson: isDifferent, name: recipientName, phone: recipientPhone },
+        delivery: { scheduledDate, address, locationPin, notes: allergies },
+        items: currentConfig.items.map((i: any) => ({ name: i.name, qty: i.qty })),
+        total: amountInPesewas,
+        paymentStatus: 'paid',
+        status: 'processing',
+        paymentGateway: 'paystack',
+        paystackReference: '',
+        paidAt: '',
+        createdAt: serverTimestamp()
+      };
+
+      const paystackConfig: any = {
         key: PAYSTACK_PUBLIC_KEY,
-        email: email,
+        email,
         amount: amountInPesewas,
         currency: 'GHS',
         ref: `${customOrderCode}-${Date.now()}`,
         metadata: {
           custom_fields: [
             { display_name: "Order Code", variable_name: "order_code", value: customOrderCode },
-            { display_name: "Customer Name", variable_name: "customer_name", value: name },
-            { display_name: "Phone Number", variable_name: "phone_number", value: phone },
-            { display_name: "Delivery Address", variable_name: "delivery_address", value: address }
+            { display_name: "Buyer Name", variable_name: "buyer_name", value: buyerName },
+            { display_name: "Recipient Name", variable_name: "recipient_name", value: recipientName },
+            { display_name: "Delivery Date", variable_name: "delivery_date", value: scheduledDate }
           ]
         },
         callback: function(response: any) {
-          handlePaystackSuccess(response, customOrderCode, name, phone, email, address, locationPin, allergies);
-        },
-        onClose: function() {
-          console.log('Payment window closed by user.');
+          orderDataPayload.paystackReference = response.reference;
+          orderDataPayload.paidAt = new Date().toISOString();
+          handlePaystackSuccess(response, orderDataPayload);
         }
-      });
+      };
 
+      if (currentConfig.isSubscription && currentConfig.planCode) {
+        paystackConfig.plan = currentConfig.planCode;
+      }
+
+      const paystackHandler = (window as any).PaystackPop.setup(paystackConfig);
       paystackHandler.openIframe();
     });
   </script>

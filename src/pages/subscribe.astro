@@ -1,0 +1,137 @@
+---
+// src/pages/subscribe.astro
+export const prerender = false;
+
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Juice Subscriptions — Helthe Juice">
+  <div class="min-h-screen bg-stone-50 py-16 px-4 sm:px-6 pt-32 pb-40 font-sans">
+    <div class="max-w-6xl mx-auto space-y-12 text-center">
+      
+      <!-- Page Title -->
+      <div class="max-w-2xl mx-auto space-y-4">
+        <span class="px-3.5 py-1.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black uppercase tracking-wider">
+          Automatic Monthly Deliveries
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-black text-stone-950 tracking-tight leading-tight">
+          Subscribe to Fresh, Cold-Pressed Wellness Every Month
+        </h1>
+        <p class="text-sm text-stone-600 font-medium">
+          Choose your box size and delivery schedule. Automated monthly billing with zero hassle—cancel or edit anytime.
+        </p>
+      </div>
+
+      <!-- Tiers Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+        
+        <!-- 6-PIECE PLAN CARD -->
+        <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-xl flex flex-col justify-between space-y-6 hover:border-emerald-500 transition-all">
+          <div class="space-y-4">
+            <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-lg text-[10px] font-black uppercase">Starter Plan</span>
+            <h2 class="text-xl font-black text-stone-900">6-Bottle Box</h2>
+            <p class="text-xs text-stone-500 font-medium">Ideal for individuals looking for weekly fresh cold-pressed immunity boosts.</p>
+            <div class="border-t border-stone-100 pt-4 space-y-1">
+              <div class="text-xs text-stone-400 font-bold uppercase">Weekly Delivery Rate</div>
+              <div class="text-2xl font-black text-emerald-800">GHS 1,080 <span class="text-xs font-bold text-stone-400">/mo</span></div>
+              <div class="text-[10px] text-stone-500 font-medium">Includes 4 dispatches per month</div>
+            </div>
+          </div>
+
+          <button data-box="6" class="subscribe-btn w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-md cursor-pointer text-center">
+            Subscribe 6-Bottle Box →
+          </button>
+        </div>
+
+        <!-- 15-PIECE PLAN CARD -->
+        <div class="bg-white rounded-3xl p-6 border-2 border-emerald-500 shadow-2xl flex flex-col justify-between space-y-6 relative">
+          <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-md">
+            Most Popular
+          </span>
+          <div class="space-y-4">
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-[10px] font-black uppercase">Family Plan</span>
+            <h2 class="text-xl font-black text-stone-900">15-Bottle Box</h2>
+            <p class="text-xs text-stone-500 font-medium">Great for couples and small households staying hydrated together.</p>
+            <div class="border-t border-stone-100 pt-4 space-y-1">
+              <div class="text-xs text-stone-400 font-bold uppercase">Weekly Delivery Rate</div>
+              <div class="text-2xl font-black text-emerald-800">GHS 2,700 <span class="text-xs font-bold text-stone-400">/mo</span></div>
+              <div class="text-[10px] text-stone-500 font-medium">Includes 4 dispatches per month</div>
+            </div>
+          </div>
+
+          <button data-box="15" class="subscribe-btn w-full py-3.5 bg-stone-950 hover:bg-stone-900 text-white font-black rounded-2xl text-xs transition-all shadow-md cursor-pointer text-center">
+            Subscribe 15-Bottle Box →
+          </button>
+        </div>
+
+        <!-- 20-PIECE PLAN CARD -->
+        <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-xl flex flex-col justify-between space-y-6 hover:border-emerald-500 transition-all">
+          <div class="space-y-4">
+            <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-lg text-[10px] font-black uppercase">Pro Plan</span>
+            <h2 class="text-xl font-black text-stone-900">20-Bottle Box</h2>
+            <p class="text-xs text-stone-500 font-medium">Designed for daily juice drinkers and active fitness enthusiasts.</p>
+            <div class="border-t border-stone-100 pt-4 space-y-1">
+              <div class="text-xs text-stone-400 font-bold uppercase">Weekly Delivery Rate</div>
+              <div class="text-2xl font-black text-emerald-800">GHS 3,600 <span class="text-xs font-bold text-stone-400">/mo</span></div>
+              <div class="text-[10px] text-stone-500 font-medium">Includes 4 dispatches per month</div>
+            </div>
+          </div>
+
+          <button data-box="20" class="subscribe-btn w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-md cursor-pointer text-center">
+            Subscribe 20-Bottle Box →
+          </button>
+        </div>
+
+        <!-- 30-PIECE PLAN CARD -->
+        <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-xl flex flex-col justify-between space-y-6 hover:border-emerald-500 transition-all">
+          <div class="space-y-4">
+            <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-lg text-[10px] font-black uppercase">Office & Enterprise</span>
+            <h2 class="text-xl font-black text-stone-900">30-Bottle Box</h2>
+            <p class="text-xs text-stone-500 font-medium">Bulk supply for corporate teams, offices, or large families.</p>
+            <div class="border-t border-stone-100 pt-4 space-y-1">
+              <div class="text-xs text-stone-400 font-bold uppercase">Weekly Delivery Rate</div>
+              <div class="text-2xl font-black text-emerald-800">GHS 5,400 <span class="text-xs font-bold text-stone-400">/mo</span></div>
+              <div class="text-[10px] text-stone-500 font-medium">Includes 4 dispatches per month</div>
+            </div>
+          </div>
+
+          <button data-box="30" class="subscribe-btn w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-md cursor-pointer text-center">
+            Subscribe 30-Bottle Box →
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+
+  
+  <script>
+    const subBtns = document.querySelectorAll('.subscribe-btn');
+
+    subBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const boxSize = Number(btn.getAttribute('data-box'));
+
+        // Default item pre-selection for subscription quick-start
+        const defaultItems = [
+          { name: "Pineapple Ginger Immunity", qty: Math.ceil(boxSize / 2), price: 45 },
+          { name: "ABC (Apple Beetroot Carrot)", qty: Math.floor(boxSize / 2), price: 60 }
+        ];
+
+        const config = {
+          boxSize: boxSize,
+          isSubscription: true,
+          frequency: 'weekly',
+          items: defaultItems,
+          totalPrice: 0
+        };
+
+        sessionStorage.setItem('helthe_box_config', JSON.stringify(config));
+        window.location.href = '/checkout';
+      });
+    });
+  </script>
+</MainLayout>
