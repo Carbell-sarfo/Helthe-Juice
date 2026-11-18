@@ -71,14 +71,31 @@ import MainLayout from "../layouts/MainLayout.astro";
               <input 
                 id="profile-pin" 
                 type="url" 
-                placeholder="https://maps.google.com/?q=..." 
+                placeholder="https://maps.app.goo.gl/..." 
                 class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" 
               />
             </div>
 
-            <div>
-              <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Allergies / Dietary Notes</label>
-              <input id="profile-allergies" type="text" placeholder="e.g. Ginger sensitive..." class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" />
+            <!-- ALLERGIES & DIETARY PREFERENCES WITH SELECTABLE CHIPS -->
+            <div class="space-y-2">
+              <label class="block text-[10px] font-bold text-stone-600 uppercase">Allergies & Dietary Sensitivities</label>
+              
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" class="profile-allergy-chip px-2.5 py-1 rounded-xl text-[10px] font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-allergy="Lemon sensitive">
+                  🍋 Lemon Sensitive
+                </button>
+                <button type="button" class="profile-allergy-chip px-2.5 py-1 rounded-xl text-[10px] font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-allergy="Pineapple allergy">
+                  🍍 Pineapple Allergy
+                </button>
+              </div>
+
+              <input 
+                id="profile-allergies" 
+                type="text" 
+                placeholder="e.g. Ginger sensitive..." 
+                class="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500" 
+              />
+              <p class="text-[9px] text-stone-400">Saved here so you never have to re-enter them during checkout.</p>
             </div>
 
             <button type="submit" id="save-profile-btn" class="w-full py-3 bg-stone-900 hover:bg-stone-800 text-white font-black rounded-xl text-xs transition-all cursor-pointer">
@@ -122,6 +139,8 @@ import MainLayout from "../layouts/MainLayout.astro";
     const userEmailDisplay = document.getElementById('user-email-display')!;
     const profileForm = document.getElementById('profile-form') as HTMLFormElement;
     const saveMsg = document.getElementById('profile-save-msg')!;
+    const profileAllergiesInput = document.getElementById('profile-allergies') as HTMLInputElement;
+    const profileAllergyChips = document.querySelectorAll('.profile-allergy-chip');
 
     // Check Auth State
     onAuthStateChanged(auth, async (user) => {
@@ -144,6 +163,37 @@ import MainLayout from "../layouts/MainLayout.astro";
     // Sign Out
     document.getElementById('signout-btn')?.addEventListener('click', () => signOut(auth));
 
+    // Interactive Allergy Chips in Dashboard
+    profileAllergyChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const allergyName = chip.getAttribute('data-allergy') || '';
+        chip.classList.toggle('bg-emerald-600');
+        chip.classList.toggle('text-white');
+        chip.classList.toggle('bg-stone-100');
+        chip.classList.toggle('text-stone-700');
+
+        let currentVal = profileAllergiesInput.value.split(',').map(s => s.trim()).filter(Boolean);
+        if (currentVal.includes(allergyName)) {
+          currentVal = currentVal.filter(s => s !== allergyName);
+        } else {
+          currentVal.push(allergyName);
+        }
+        profileAllergiesInput.value = currentVal.join(', ');
+      });
+    });
+
+    function syncAllergyChipsUI(allergiesStr: string) {
+      const currentList = allergiesStr.split(',').map(s => s.trim().toLowerCase());
+      profileAllergyChips.forEach(chip => {
+        const target = (chip.getAttribute('data-allergy') || '').toLowerCase();
+        if (currentList.includes(target)) {
+          chip.className = 'profile-allergy-chip px-2.5 py-1 rounded-xl text-[10px] font-bold bg-emerald-600 text-white transition-all cursor-pointer';
+        } else {
+          chip.className = 'profile-allergy-chip px-2.5 py-1 rounded-xl text-[10px] font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-all cursor-pointer';
+        }
+      });
+    }
+
     // Load User Profile Data from Firestore
     async function loadUserProfile(uid: string) {
       try {
@@ -155,7 +205,9 @@ import MainLayout from "../layouts/MainLayout.astro";
           (document.getElementById('profile-phone') as HTMLInputElement).value = data.phone || '';
           (document.getElementById('profile-address') as HTMLTextAreaElement).value = data.address || '';
           (document.getElementById('profile-pin') as HTMLInputElement).value = data.locationPin || '';
-          (document.getElementById('profile-allergies') as HTMLInputElement).value = data.allergies || '';
+          const savedAllergies = data.allergies || '';
+          profileAllergiesInput.value = savedAllergies;
+          syncAllergyChipsUI(savedAllergies);
         }
       } catch (e) {
         console.error('Error loading profile:', e);
@@ -179,7 +231,7 @@ import MainLayout from "../layouts/MainLayout.astro";
           phone: (document.getElementById('profile-phone') as HTMLInputElement).value.trim(),
           address: (document.getElementById('profile-address') as HTMLTextAreaElement).value.trim(),
           locationPin: (document.getElementById('profile-pin') as HTMLInputElement).value.trim(),
-          allergies: (document.getElementById('profile-allergies') as HTMLInputElement).value.trim(),
+          allergies: profileAllergiesInput.value.trim(),
           updatedAt: new Date().toISOString()
         };
 
@@ -194,7 +246,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       }
     });
 
-    // Load User Orders (Robust query avoiding index errors)
+    // Load User Orders
     async function loadUserOrders(uid: string) {
       const container = document.getElementById('orders-container')!;
       try {
@@ -218,7 +270,6 @@ import MainLayout from "../layouts/MainLayout.astro";
 
         container.innerHTML = '';
         
-        // Sort client-side by date if createdAt exists
         const orders: any[] = [];
         snap.forEach(d => {
           orders.push({ id: d.id, ...d.data() });
@@ -297,7 +348,7 @@ import MainLayout from "../layouts/MainLayout.astro";
           (pos) => {
             const lat = pos.coords.latitude.toFixed(6);
             const lng = pos.coords.longitude.toFixed(6);
-            pinInput.value = `https://www.google.com/maps?q=${lat},${lng}`;
+            pinInput.value = `https://maps.app.goo.gl/?q=${lat},${lng}`;
             geoBtn.textContent = '✓ GPS Pin Attached!';
             setTimeout(() => { geoBtn.textContent = '📍 Use My GPS Location'; }, 3000);
           },
