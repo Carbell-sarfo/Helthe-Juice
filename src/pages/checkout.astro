@@ -15,11 +15,12 @@ import MainLayout from "../layouts/MainLayout.astro";
       <!-- Page Header -->
       <div class="flex items-center justify-between border-b border-stone-200 pb-4">
         <div>
-          <h1 class="text-2xl font-black text-stone-950 tracking-tight">Review Order & Secure Checkout</h1>
-          <p class="text-xs text-stone-500 font-medium">Verify your bundle selection, delivery schedule, and complete payment securely.</p>
+          <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full">Secure Checkout / Paiement Sécurisé</span>
+          <h1 class="text-2xl font-black text-stone-950 tracking-tight mt-1">Review Order & Complete Payment</h1>
+          <p class="text-xs text-stone-500 font-medium">Verify your selection, delivery schedule, and pay securely via Paystack.</p>
         </div>
         <a href="/order" class="text-xs font-bold text-stone-500 hover:text-emerald-700 transition-colors cursor-pointer">
-          ← Edit Box Items
+          ← Edit Selections
         </a>
       </div>
 
@@ -31,8 +32,8 @@ import MainLayout from "../layouts/MainLayout.astro";
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-8 space-y-6">
             
             <div class="flex items-center justify-between border-b border-stone-100 pb-4">
-              <h2 class="text-sm font-black text-stone-900 uppercase tracking-wider">Your Juice Box Summary</h2>
-              <span id="summary-box-badge" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase">Bundle</span>
+              <h2 class="text-sm font-black text-stone-900 uppercase tracking-wider">Your Selection Summary</h2>
+              <span id="summary-box-badge" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase">Order</span>
             </div>
 
             <!-- Itemized List -->
@@ -43,7 +44,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <!-- Pricing Calculation Box -->
             <div class="bg-stone-50 rounded-2xl p-4 space-y-2 border border-stone-200/60">
               <div class="flex justify-between text-xs text-stone-500 font-medium">
-                <span>Single Box Base Cost</span>
+                <span>Base Cost / Subtotal</span>
                 <span id="summary-single-box-cost" class="font-bold text-stone-900">GHS 0.00</span>
               </div>
               <div id="frequency-multiplier-row" class="flex justify-between text-xs text-stone-500 font-medium hidden">
@@ -51,7 +52,7 @@ import MainLayout from "../layouts/MainLayout.astro";
                 <span id="summary-multiplier-text" class="font-bold text-emerald-800">4× dispatches</span>
               </div>
               <div class="flex justify-between text-xs text-stone-500 font-medium">
-                <span>Batch Production & Delivery</span>
+                <span>Batch Production & Cold-Chain Delivery</span>
                 <span class="font-bold text-emerald-700">Included</span>
               </div>
               <div class="border-t border-stone-200 pt-2 flex justify-between items-center text-sm">
@@ -63,7 +64,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <div class="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-4 flex items-start gap-3">
               <span class="text-emerald-600 font-black text-base">🛡️</span>
               <p class="text-[11px] text-emerald-900 font-medium leading-relaxed">
-                <strong>Secure Transaction:</strong> All payments are encrypted and verified instantly via Paystack. Supports MTN MoMo, Telecel Cash, AT Money, and Cards.
+                <strong>Secure Transaction:</strong> Encrypted and verified instantly via Paystack. Supports MTN MoMo, Telecel Cash, AT Money, and Cards.
               </p>
             </div>
 
@@ -71,7 +72,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <div class="bg-stone-50 rounded-2xl p-4 border border-stone-200/60 space-y-3">
               <label class="block text-[10px] font-black text-stone-700 uppercase tracking-wider">Choose Payment & Delivery Plan</label>
               <div class="grid grid-cols-2 gap-2">
-                <button type="button" id="type-onetime" class="py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer">
+                <button type="button" id="type-onetime" class="py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer shadow-xs">
                   One-Time Purchase
                 </button>
                 <button type="button" id="type-sub" class="py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer">
@@ -104,7 +105,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <form id="checkout-form" class="space-y-4">
               
               <div>
-                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name (Your Name) *</label>
+                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name *</label>
                 <input id="checkout-name" required placeholder="e.g. Kofi Mensah" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
               </div>
 
@@ -128,10 +129,10 @@ import MainLayout from "../layouts/MainLayout.astro";
               </div>
 
               <!-- Recipient Checkbox -->
-              <div class="pt-2 border-t border-stone-100 mb-8">
+              <div class="pt-2 border-t border-stone-100">
                 <label class="flex items-center gap-2 cursor-pointer select-none">
                   <input type="checkbox" id="different-recipient-checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-stone-300" />
-                  <span class="text-xs font-bold text-stone-800">I am not the person receiving this delivery</span>
+                  <span class="text-xs font-bold text-stone-800">Someone else is receiving this delivery</span>
                 </label>
               </div>
 
@@ -152,7 +153,7 @@ import MainLayout from "../layouts/MainLayout.astro";
               <div>
                 <div class="flex items-center justify-between mb-1">
                   <label class="block text-[10px] font-bold text-stone-600 uppercase">First Delivery Date *</label>
-                  <span class="text-[9px] text-stone-400 font-medium">Defaults to next week batch</span>
+                  <span class="text-[9px] text-stone-400 font-medium">Defaults to next batch cycle</span>
                 </div>
                 <input 
                   id="checkout-delivery-date" 
@@ -169,22 +170,50 @@ import MainLayout from "../layouts/MainLayout.astro";
 
               <div>
                 <div class="flex items-center justify-between mb-1">
-                  <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Pin Link</label>
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Pin Link *</label>
                   <button type="button" id="geo-location-btn" class="text-[10px] font-bold text-emerald-700 hover:underline cursor-pointer">
-                    📍 Share GPS
+                    📍 Use My GPS Location
                   </button>
                 </div>
-                <input id="checkout-location-pin" type="url" placeholder="https://maps.google.com/?q=..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+                <input 
+                  id="checkout-location-pin" 
+                  type="url" 
+                  required 
+                  placeholder="https://maps.app.goo.gl/... (or tap 'Use My GPS' above)" 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
+                />
               </div>
 
-              <div>
-                <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Allergies or Notes</label>
-                <input id="checkout-allergies" placeholder="e.g. Ginger sensitivity..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+              <!-- ALLERGIES & DIETARY SENSITIVITIES (NEW) -->
+              <div class="space-y-2 pt-2 border-t border-stone-100">
+                <label class="block text-[10px] font-bold text-stone-600 uppercase">Allergies & Dietary Sensitivities</label>
+                
+                <!-- Quick-Select Allergy Chips -->
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" class="allergy-chip px-3 py-1.5 rounded-xl text-[11px] font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-allergy="Lemon sensitive">
+                    🍋 Lemon Sensitive
+                  </button>
+                  <button type="button" class="allergy-chip px-3 py-1.5 rounded-xl text-[11px] font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-allergy="Pineapple allergy">
+                    🍍 Pineapple Allergy
+                  </button>
+                </div>
+
+                <input 
+                  id="checkout-allergies" 
+                  placeholder="Or type other notes (e.g. ginger sensitivity)..." 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
+                />
+                
+                <!-- Dynamic Allergy Warning Box -->
+                <div id="allergy-warning-box" class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] font-bold text-amber-900 hidden flex items-start gap-2">
+                  <span>⚠️</span>
+                  <span id="allergy-warning-text">Heads up! Your selection includes ingredients matching your sensitivity.</span>
+                </div>
               </div>
 
-              <div class="pt-2">
+              <div class="pt-4">
                 <button type="submit" id="submit-checkout-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 cursor-pointer">
-                  <span>💳 Pay Now Securely</span>
+                  <span>💳 Pay Now Securely (Paystack)</span>
                 </button>
               </div>
 
@@ -205,8 +234,8 @@ import MainLayout from "../layouts/MainLayout.astro";
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-black text-lg">✓</div>
           <div>
-            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">Payment Verified</span>
-            <h3 class="text-lg font-black text-stone-950 mt-0.5">Order Confirmed Successfully</h3>
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">Payment Confirmed</span>
+            <h3 class="text-lg font-black text-stone-950 mt-0.5">Order Placed Successfully</h3>
           </div>
         </div>
         <span id="modal-order-id" class="text-xs font-mono font-bold bg-stone-100 text-stone-800 px-3 py-1.5 rounded-xl">#W0001</span>
@@ -224,7 +253,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       </div>
 
       <p class="text-xs text-stone-500 font-medium leading-relaxed">
-        Thank you for choosing Helthe Juice! Your order is logged under ID <strong id="modal-order-id-text">#W0001</strong>. Track batch progress anytime in your dashboard.
+        Thank you for choosing Helthe Juice! Your order ID is <strong id="modal-order-id-text">#W0001</strong>. Track batch progress anytime in your dashboard.
       </p>
 
       <div class="space-y-3 pt-2">
@@ -266,12 +295,70 @@ import MainLayout from "../layouts/MainLayout.astro";
     const subFrequencyBox = document.getElementById('subscription-frequency-box') as HTMLElement;
     const subFrequencySelect = document.getElementById('sub-frequency-select') as HTMLSelectElement;
 
+    const allergyChips = document.querySelectorAll('.allergy-chip');
+    const allergiesInput = document.getElementById('checkout-allergies') as HTMLInputElement;
+    const allergyWarningBox = document.getElementById('allergy-warning-box')!;
+    const allergyWarningText = document.getElementById('allergy-warning-text')!;
+
     // Set Calendar Min Date (Next Week)
     const today = new Date();
     const nextWeekDate = new Date(today);
     nextWeekDate.setDate(today.getDate() + 7);
     deliveryDateInput.min = nextWeekDate.toISOString().split('T')[0];
     deliveryDateInput.value = nextWeekDate.toISOString().split('T')[0];
+
+    // Allergy Quick Chips Toggle & Check
+    allergyChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const allergyName = chip.getAttribute('data-allergy') || '';
+        chip.classList.toggle('bg-emerald-600');
+        chip.classList.toggle('text-white');
+        chip.classList.toggle('bg-stone-100');
+        chip.classList.toggle('text-stone-700');
+
+        let currentVal = allergiesInput.value.split(',').map(s => s.trim()).filter(Boolean);
+        if (currentVal.includes(allergyName)) {
+          currentVal = currentVal.filter(s => s !== allergyName);
+        } else {
+          currentVal.push(allergyName);
+        }
+        allergiesInput.value = currentVal.join(', ');
+        checkAllergyConflicts();
+      });
+    });
+
+    if (allergiesInput) {
+      allergiesInput.addEventListener('input', () => checkAllergyConflicts());
+    }
+
+    function checkAllergyConflicts() {
+      if (!currentConfig || !currentConfig.items) return;
+      const notes = allergiesInput.value.toLowerCase();
+      const hasLemon = notes.includes('lemon');
+      const hasPineapple = notes.includes('pineapple');
+
+      let conflictFound = false;
+      let conflictingItem = '';
+
+      currentConfig.items.forEach((item: any) => {
+        const name = item.name.toLowerCase();
+        if (hasLemon && (name.includes('lemon') || name.includes('citrus'))) {
+          conflictFound = true;
+          conflictingItem = item.name;
+        }
+        if (hasPineapple && name.includes('pineapple')) {
+          conflictFound = true;
+          conflictingItem = item.name;
+        }
+      });
+
+      if (conflictFound) {
+        allergyWarningText.textContent = `Heads up! "${conflictingItem}" in your box matches your dietary sensitivity.`;
+        allergyWarningBox.classList.remove('hidden');
+      } else {
+        allergyWarningBox.classList.add('hidden');
+      }
+    }
 
     // Recipient Toggle
     differentRecipientCheckbox.addEventListener('change', () => {
@@ -286,7 +373,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       }
     });
 
-    // Auth Check
+    // Auth & Profile Prefill Check
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         sessionStorage.setItem('helthe_auth_redirect', '/checkout');
@@ -305,13 +392,15 @@ import MainLayout from "../layouts/MainLayout.astro";
           const phoneInput = document.getElementById('checkout-phone') as HTMLInputElement;
           const addressInput = document.getElementById('checkout-address') as HTMLTextAreaElement;
           const pinInput = document.getElementById('checkout-location-pin') as HTMLInputElement;
-          const allergiesInput = document.getElementById('checkout-allergies') as HTMLInputElement;
 
           if (nameInput && !nameInput.value) nameInput.value = profile.name || '';
           if (phoneInput && !phoneInput.value) phoneInput.value = profile.phone || '';
           if (addressInput && !addressInput.value) addressInput.value = profile.address || '';
           if (pinInput && !pinInput.value) pinInput.value = profile.locationPin || '';
-          if (allergiesInput && !allergiesInput.value) allergiesInput.value = profile.allergies || '';
+          if (profile.allergies) {
+            allergiesInput.value = profile.allergies;
+            checkAllergyConflicts();
+          }
         }
       } catch (err) {
         console.error('Error fetching user profile:', err);
@@ -321,7 +410,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     // Load Box Config
     const rawConfig = sessionStorage.getItem('helthe_box_config');
     if (!rawConfig) {
-      alert('No juice box configuration found. Redirecting to box builder...');
+      alert('No selection found. Redirecting to order builder...');
       window.location.href = '/order';
     } else {
       currentConfig = JSON.parse(rawConfig);
@@ -333,51 +422,43 @@ import MainLayout from "../layouts/MainLayout.astro";
       }
     }
 
-    // Dynamic Math Engine: Single Box Cost x Frequency Count
+    // Dynamic Pricing Engine
     function calculateAndUpdatePricing() {
       if (!currentConfig) return;
 
-      let singleBoxPrice = 0;
-      currentConfig.items.forEach((item: any) => {
-        const nameLower = item.name.toLowerCase();
-        // Premium GHS 60 rule for ABC & Bitter-leaf
-        const isPremium = nameLower.includes('abc') || nameLower.includes('beetroot') || nameLower.includes('bitter-leaf');
-        const unitPrice = isPremium ? 60 : (item.price || (currentConfig.totalPrice / currentConfig.boxSize) || 45);
-        singleBoxPrice += unitPrice * item.qty;
-      });
-
-      summarySingleCostEl.textContent = `GHS ${singleBoxPrice.toFixed(2)}`;
+      let subtotal = currentConfig.totalPrice || 0;
+      summarySingleCostEl.textContent = `GHS ${subtotal.toFixed(2)}`;
 
       if (currentConfig.isSubscription) {
         let multiplier = 4;
         if (currentConfig.frequency === 'bi-weekly') multiplier = 2;
         if (currentConfig.frequency === 'monthly') multiplier = 1;
 
-        const monthlyBilledTotal = singleBoxPrice * multiplier;
+        const monthlyBilledTotal = subtotal * multiplier;
         currentConfig.totalPrice = monthlyBilledTotal;
 
-        const subKey = `${currentConfig.boxSize}_${currentConfig.frequency}`;
+        const subKey = `${currentConfig.boxSize || 'sub'}_${currentConfig.frequency}`;
         const planObj = SUBSCRIPTION_PLANS[subKey];
         if (planObj) currentConfig.planCode = planObj.planCode;
 
         summaryMultiplierRow.classList.remove('hidden');
         summaryMultiplierText.textContent = `${multiplier}× dispatches/month`;
-        summaryBoxBadge.textContent = `${currentConfig.boxSize}-Piece Sub (${currentConfig.frequency})`;
+        summaryBoxBadge.textContent = `Subscription (${currentConfig.frequency})`;
       } else {
         currentConfig.planCode = null;
-        currentConfig.totalPrice = singleBoxPrice;
         summaryMultiplierRow.classList.add('hidden');
-        summaryBoxBadge.textContent = `${currentConfig.boxSize}-Piece Bundle (One-Time)`;
+        summaryBoxBadge.textContent = currentConfig.category ? `Order (${currentConfig.category})` : 'One-Time Order';
       }
 
       summaryPriceEl.textContent = `GHS ${Number(currentConfig.totalPrice).toFixed(2)}`;
+      checkAllergyConflicts();
     }
 
     if (currentConfig) {
       summaryListEl.innerHTML = currentConfig.items.map((item: any) => `
         <li class="py-2 flex justify-between items-center">
           <span class="font-bold text-stone-900">${item.name}</span>
-          <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-black">${item.qty} bottles</span>
+          <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-black">${item.qty} units</span>
         </li>
       `).join('');
       calculateAndUpdatePricing();
@@ -385,7 +466,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
     btnOneTime.addEventListener('click', () => {
       currentConfig.isSubscription = false;
-      btnOneTime.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer";
+      btnOneTime.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer shadow-xs";
       btnSub.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer";
       subFrequencyBox.classList.add('hidden');
       calculateAndUpdatePricing();
@@ -393,7 +474,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
     btnSub.addEventListener('click', () => {
       currentConfig.isSubscription = true;
-      btnSub.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer";
+      btnSub.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer shadow-xs";
       btnOneTime.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer";
       subFrequencyBox.classList.remove('hidden');
       calculateAndUpdatePricing();
@@ -407,13 +488,17 @@ import MainLayout from "../layouts/MainLayout.astro";
     if (geoBtn && locationPinInput) {
       geoBtn.addEventListener('click', () => {
         if (!navigator.geolocation) return alert('Geolocation unsupported');
-        geoBtn.textContent = '⌛ Fetching location...';
+        geoBtn.textContent = '⌛ Getting GPS...';
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             locationPinInput.value = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-            geoBtn.textContent = '✓ GPS Saved';
+            geoBtn.textContent = '✓ Pin Captured!';
+            geoBtn.className = 'text-[10px] font-bold text-emerald-600';
           },
-          () => alert('Unable to retrieve GPS.')
+          () => {
+            alert('Unable to retrieve GPS. Please check location permissions.');
+            geoBtn.textContent = '📍 Use My GPS Location';
+          }
         );
       });
     }
@@ -462,7 +547,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       const email = (document.getElementById('checkout-email') as HTMLInputElement).value.trim();
       const address = (document.getElementById('checkout-address') as HTMLTextAreaElement).value.trim();
       const locationPin = locationPinInput.value.trim();
-      const allergies = (document.getElementById('checkout-allergies') as HTMLInputElement).value.trim();
+      const allergies = allergiesInput.value.trim();
       const scheduledDate = deliveryDateInput.value;
 
       const isDifferent = differentRecipientCheckbox.checked;
@@ -474,7 +559,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
       const orderDataPayload = {
         orderCode: customOrderCode,
-        orderType: currentConfig.isSubscription ? `Subscription (${currentConfig.frequency})` : `Box of ${currentConfig.boxSize}`,
+        orderType: currentConfig.isSubscription ? `Subscription (${currentConfig.frequency})` : `Order (${currentConfig.category || 'Standard'})`,
         isSubscription: Boolean(currentConfig.isSubscription),
         frequency: currentConfig.isSubscription ? currentConfig.frequency : null,
         planCode: currentConfig.planCode || null,
