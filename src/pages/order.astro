@@ -595,6 +595,7 @@ const shotItems = [
           selectedItems.push({ name: input.getAttribute('data-flavor') || 'Item', qty });
           const unitPrice = parseFloat(input.getAttribute('data-price') || '0');
           if (activeCategory === 'juices') finalPrice = fixedBundlePrice;
+          else if (activeCategory === 'pouches') finalPrice += (qty / 4) * unitPrice;
           else finalPrice += qty * unitPrice;
         }
       });

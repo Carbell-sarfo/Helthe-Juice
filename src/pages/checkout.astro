@@ -265,13 +265,14 @@ import MainLayout from "../layouts/MainLayout.astro";
   </div>
 
   <!-- Client Script -->
-  <script>
+<script>
     import { auth, db } from '../lib/firebase';
     import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
     import { onAuthStateChanged } from 'firebase/auth';
     import { getSubscriptionPlan } from '../data/subscriptionPlans';
 
     let currentConfig: any = null;
+    let baseUnitBundlePrice = 0; // Immutable single-dispatch price
     let currentUser: any = null;
 
     const PAYSTACK_PUBLIC_KEY = 'pk_test_8c2d9a51aaca2a886f4b223f6278cbe619edbfca'; 
@@ -414,36 +415,39 @@ import MainLayout from "../layouts/MainLayout.astro";
       window.location.href = '/order';
     } else {
       currentConfig = JSON.parse(rawConfig);
+      // Save base single-dispatch price once so toggling never compounds
+      baseUnitBundlePrice = Number(currentConfig.basePrice ?? currentConfig.totalPrice) || 0;
+      currentConfig.basePrice = baseUnitBundlePrice;
       currentConfig.isSubscription = currentConfig.isSubscription || false;
       currentConfig.frequency = currentConfig.frequency || 'weekly';
-
-      if (currentConfig.isSubscription) {
-        btnSub.click();
-      }
     }
 
-    // Dynamic Pricing Engine
+    // Dynamic Pricing Engine (Always calculates cleanly from baseUnitBundlePrice)
     function calculateAndUpdatePricing() {
       if (!currentConfig) return;
 
-      let subtotal = currentConfig.totalPrice || 0;
-      summarySingleCostEl.textContent = `GHS ${subtotal.toFixed(2)}`;
+      summarySingleCostEl.textContent = `GHS ${baseUnitBundlePrice.toFixed(2)}`;
 
       if (currentConfig.isSubscription) {
         let multiplier = 4;
         if (currentConfig.frequency === 'bi-weekly') multiplier = 2;
         if (currentConfig.frequency === 'monthly') multiplier = 1;
 
-        const monthlyBilledTotal = subtotal * multiplier;
+        const monthlyBilledTotal = baseUnitBundlePrice * multiplier;
         currentConfig.totalPrice = monthlyBilledTotal;
 
-        const planObj = getSubscriptionPlan(currentConfig.boxSize, currentConfig.frequency);
+        // Only attach Paystack Plan Code for standard Juice Bottle bundles
+        const isJuiceBottles = !currentConfig.category || currentConfig.category === 'juices';
+        const planObj = isJuiceBottles
+          ? getSubscriptionPlan(currentConfig.boxSize, currentConfig.frequency)
+          : null;
         currentConfig.planCode = planObj ? planObj.planCode : null;
 
         summaryMultiplierRow.classList.remove('hidden');
-        summaryMultiplierText.textContent = `${multiplier}× dispatches/month`;
+        summaryMultiplierText.textContent = `${multiplier}× ${multiplier === 1 ? 'dispatch' : 'dispatches'}/month`;
         summaryBoxBadge.textContent = `Subscription (${currentConfig.frequency})`;
       } else {
+        currentConfig.totalPrice = baseUnitBundlePrice;
         currentConfig.planCode = null;
         summaryMultiplierRow.classList.add('hidden');
         summaryBoxBadge.textContent = currentConfig.category ? `Order (${currentConfig.category})` : 'One-Time Order';
@@ -460,7 +464,12 @@ import MainLayout from "../layouts/MainLayout.astro";
           <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-black">${item.qty} units</span>
         </li>
       `).join('');
-      calculateAndUpdatePricing();
+
+      if (currentConfig.isSubscription) {
+        btnSub.click();
+      } else {
+        calculateAndUpdatePricing();
+      }
     }
 
     btnOneTime.addEventListener('click', () => {
@@ -559,7 +568,10 @@ import MainLayout from "../layouts/MainLayout.astro";
 
       const orderDataPayload = {
         orderCode: customOrderCode,
-        orderType: currentConfig.isSubscription ? `Subscription (${currentConfig.frequency})` : `Order (${currentConfig.category || 'Standard'})`,
+        orderType: currentConfig.isSubscription
+          ? `Subscription - ${currentConfig.category || 'juices'} (${currentConfig.frequency})`
+          : `Order (${currentConfig.category || 'Standard'})`,
+        category: currentConfig.category || 'juices',
         isSubscription: Boolean(currentConfig.isSubscription),
         frequency: currentConfig.isSubscription ? currentConfig.frequency : null,
         planCode: currentConfig.planCode || null,
