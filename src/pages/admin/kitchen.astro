@@ -1,0 +1,197 @@
+---
+// src/pages/admin/kitchen.astro
+export const prerender = false;
+import '../../styles/global.css';
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kitchen Display & Batch Production | Helthe Juice</title>
+  </head>
+  <body class="bg-stone-950 font-sans min-h-screen text-stone-100 selection:bg-emerald-500 selection:text-white pb-20">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-stone-900 border-b border-stone-800 sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="px-3 py-1 bg-emerald-600 text-white rounded-full text-[10px] font-black uppercase tracking-wider">Kitchen & Production</span>
+        <h1 class="text-lg font-black tracking-tight text-white">Helthe Juice Batch Station</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="live-clock" class="text-xs font-mono font-bold text-stone-400"></span>
+        <a href="/admin" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-xs font-bold transition-all">
+          ← Back to Admin Panel
+        </a>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      
+      <!-- Batch Summary Checklist Header -->
+      <section class="bg-stone-900 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-800 pb-4">
+          <div>
+            <h2 class="text-base sm:text-lg font-black text-white tracking-tight">Today's Production Batch Totals</h2>
+            <p class="text-xs text-stone-400">Total units required across all active, pending customer orders:</p>
+          </div>
+          <span id="total-units-badge" class="px-3 py-1 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-full text-xs font-black w-fit">0 Units Total</span>
+        </div>
+        <div id="kitchen-batch-totals" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-2">
+          <p class="text-xs text-stone-500 italic col-span-full">Calculating batch requirements...</p>
+        </div>
+      </section>
+
+      <!-- Active Kitchen Tickets Section -->
+      <section class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-black text-stone-400 uppercase tracking-wider">Active Kitchen Tickets (<span id="ticket-count" class="text-emerald-400">0</span>)</h2>
+        </div>
+
+        <div id="kitchen-tickets-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="text-center py-20 text-stone-600 text-xs font-bold col-span-full">
+            Loading active kitchen tickets...
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Kitchen Client Script -->
+    <script>
+      import { db } from '../../lib/firebase';
+      import { collection, query, where, orderBy, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+
+      // Live Clock
+      setInterval(() => {
+        const now = new Date();
+        document.getElementById('live-clock')!.textContent = now.toLocaleTimeString();
+      }, 1000);
+
+      const batchTotalsEl = document.getElementById('kitchen-batch-totals')!;
+      const ticketsGrid = document.getElementById('kitchen-tickets-grid')!;
+      const ticketCountEl = document.getElementById('ticket-count')!;
+      const totalUnitsBadge = document.getElementById('total-units-badge')!;
+
+      // Listen to active orders
+      const q = query(
+        collection(db, 'orders'), 
+        where('status', 'in', ['paid', 'processing', 'pending']),
+        orderBy('createdAt', 'desc')
+      );
+
+      onSnapshot(q, (snap) => {
+        ticketCountEl.textContent = String(snap.size);
+
+        if (snap.empty) {
+          ticketsGrid.innerHTML = `
+            <div class="col-span-full text-center py-20 bg-stone-900/50 rounded-3xl border border-stone-800 space-y-2">
+              <p class="text-xs text-stone-400 font-bold">No active orders in the kitchen queue right now.</p>
+              <p class="text-[10px] text-stone-600">New paid orders will appear here automatically.</p>
+            </div>
+          `;
+          batchTotalsEl.innerHTML = `<p class="text-xs text-stone-500 italic col-span-full">No active production items.</p>`;
+          totalUnitsBadge.textContent = '0 Units Total';
+          return;
+        }
+
+        const batchTotals: Record<string, number> = {};
+        let totalUnitsCount = 0;
+        let ticketsHTML = '';
+
+        snap.forEach((d) => {
+          const order = d.data();
+          const orderId = order.orderCode || d.id.slice(-6).toUpperCase();
+          const customerName = order.buyer?.name || order.customer?.name || 'Valued Customer';
+          const customerPhone = order.buyer?.phone || order.customer?.phone || '';
+          const scheduledDate = order.delivery?.scheduledDate || 'Next Batch';
+          const deliveryAddress = order.delivery?.address || 'Accra';
+          const notes = order.delivery?.notes || '';
+          
+          // Check for allergy keywords
+          const hasAllergyWarning = notes.toLowerCase().includes('sensitive') || notes.toLowerCase().includes('allergy') || notes.length > 0;
+
+          let itemsListHTML = '';
+          (order.items || []).forEach((item: any) => {
+            batchTotals[item.name] = (batchTotals[item.name] || 0) + item.qty;
+            totalUnitsCount += item.qty;
+            itemsListHTML += `
+              <li class="flex justify-between items-center py-1.5 border-b border-stone-800/60 text-xs">
+                <span class="font-bold text-stone-200">${item.name}</span>
+                <span class="px-2.5 py-0.5 bg-emerald-950 text-emerald-300 rounded-lg font-black">${item.qty}×</span>
+              </li>
+            `;
+          });
+
+          ticketsHTML += `
+            <div class="bg-stone-900 border ${hasAllergyWarning ? 'border-amber-500/80 shadow-amber-950/30' : 'border-stone-800'} rounded-3xl p-6 space-y-4 shadow-xl flex flex-col justify-between">
+              
+              <div class="space-y-3">
+                <div class="flex items-center justify-between border-b border-stone-800 pb-3">
+                  <div>
+                    <span class="font-mono font-black text-sm text-emerald-400">#${orderId}</span>
+                    <span class="text-[10px] text-stone-400 font-bold block">Scheduled: ${scheduledDate}</span>
+                  </div>
+                  <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-full text-[10px] font-black uppercase">
+                    ${order.status || 'Processing'}
+                  </span>
+                </div>
+
+                <div class="space-y-1 text-xs">
+                  <p class="font-black text-white">${customerName} <span class="text-stone-400 font-normal">(${customerPhone})</span></p>
+                  <p class="text-stone-400 text-[11px] truncate">📍 ${deliveryAddress}</p>
+                </div>
+
+                ${hasAllergyWarning ? `
+                  <div class="p-3 bg-amber-950/60 border border-amber-600/60 rounded-2xl text-amber-200 text-xs space-y-1">
+                    <span class="font-black flex items-center gap-1.5">⚠️ ALLERGY / SENSITIVITY ALERT</span>
+                    <p class="text-[11px] font-medium leading-relaxed">${notes}</p>
+                  </div>
+                ` : ''}
+
+                <div class="space-y-1 pt-1">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-stone-500 block">Box / Items Breakdown:</span>
+                  <ul class="divide-y divide-stone-800/40">
+                    ${itemsListHTML}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-stone-800 flex items-center gap-2">
+                <button type="button" class="fulfill-order-btn flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl text-xs transition-all shadow-md cursor-pointer" data-id="${d.id}">
+                  ✓ Mark Packed & Fulfilled
+                </button>
+              </div>
+
+            </div>
+          `;
+        });
+
+        ticketsGrid.innerHTML = ticketsHTML;
+        totalUnitsBadge.textContent = `${totalUnitsCount} Units Total`;
+
+        // Render Batch Totals
+        batchTotalsEl.innerHTML = Object.entries(batchTotals).map(([name, qty]) => `
+          <div class="bg-stone-950 border border-stone-800 p-3.5 rounded-2xl flex flex-col justify-between shadow-xs space-y-2">
+            <span class="font-bold text-stone-200 text-xs line-clamp-1">${name}</span>
+            <span class="px-2.5 py-1 bg-emerald-600 text-white rounded-xl font-black text-xs w-fit">${qty} units</span>
+          </div>
+        `).join('');
+
+        // Attach Fulfillment Click Handlers
+        document.querySelectorAll('.fulfill-order-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const docId = (e.currentTarget as HTMLElement).getAttribute('data-id');
+            if (!docId) return;
+            try {
+              await updateDoc(doc(db, 'orders', docId), { status: 'fulfilled' });
+            } catch (err) {
+              console.error('Error updating order status:', err);
+              alert('Failed to update order status.');
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
