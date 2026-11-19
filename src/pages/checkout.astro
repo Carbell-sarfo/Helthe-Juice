@@ -269,7 +269,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     import { auth, db } from '../lib/firebase';
     import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
     import { onAuthStateChanged } from 'firebase/auth';
-    import { SUBSCRIPTION_PLANS } from '../data/subscriptionPlans';
+    import { getSubscriptionPlan } from '../data/subscriptionPlans';
 
     let currentConfig: any = null;
     let currentUser: any = null;
@@ -437,9 +437,8 @@ import MainLayout from "../layouts/MainLayout.astro";
         const monthlyBilledTotal = subtotal * multiplier;
         currentConfig.totalPrice = monthlyBilledTotal;
 
-        const subKey = `${currentConfig.boxSize || 'sub'}_${currentConfig.frequency}`;
-        const planObj = SUBSCRIPTION_PLANS[subKey];
-        if (planObj) currentConfig.planCode = planObj.planCode;
+        const planObj = getSubscriptionPlan(currentConfig.boxSize, currentConfig.frequency);
+        currentConfig.planCode = planObj ? planObj.planCode : null;
 
         summaryMultiplierRow.classList.remove('hidden');
         summaryMultiplierText.textContent = `${multiplier}× dispatches/month`;
@@ -513,7 +512,8 @@ import MainLayout from "../layouts/MainLayout.astro";
         const msg = `Hi ${orderData.buyer.name}! Helthe Juice order ${orderData.orderCode} confirmed. Delivery: ${orderData.delivery.scheduledDate}. Total: GHS ${(orderData.total/100).toFixed(2)}.`;
         await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone, message: msg }) });
 
-        const ownerMsg = `🚨 New Paid Order (${orderData.orderCode})! Customer: ${orderData.buyer.name} (${phone}). Total: GHS ${(orderData.total/100).toFixed(2)}. Scheduled: ${orderData.delivery.scheduledDate}.`;
+        const allergyNote = orderData.delivery.notes ? ` | Allergies: ${orderData.delivery.notes}` : '';
+        const ownerMsg = `🚨 New Paid Order (${orderData.orderCode})! Customer: ${orderData.buyer.name} (${phone}). Total: GHS ${(orderData.total/100).toFixed(2)}. Scheduled: ${orderData.delivery.scheduledDate}${allergyNote}.`;
         await fetch('/api/send-sms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: '0547000817', message: ownerMsg }) });
       } catch (err) {
         console.error('SMS error:', err);

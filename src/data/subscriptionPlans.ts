@@ -4,7 +4,7 @@ export interface SubscriptionPlan {
   boxSize: number;
   frequency: 'weekly' | 'bi-weekly' | 'monthly';
   planCode: string;
-  monthlyPrice: number; // The total monthly billed amount in GHS
+  monthlyPrice: number;
   label: string;
 }
 
@@ -13,11 +13,11 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
   "6_weekly": {
     boxSize: 6,
     frequency: 'weekly',
-    planCode: "PLN_v0kwiibhdinr4ry", // Replace with your actual Paystack plan code
-    monthlyPrice: 360,          // Example price (adjust to your actual monthly math)
+    planCode: "PLN_v0kwiibhdinr4ry",
+    monthlyPrice: 360,
     label: "6-Piece Box - Weekly Delivery (Billed Monthly)"
   },
-  "6_biweekly": {
+  "6_bi-weekly": {
     boxSize: 6,
     frequency: 'bi-weekly',
     planCode: "PLN_dlxoaen9lb1rs8s",
@@ -40,7 +40,7 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
     monthlyPrice: 720,
     label: "15-Piece Box - Weekly Delivery (Billed Monthly)"
   },
-  "15_biweekly": {
+  "15_bi-weekly": {
     boxSize: 15,
     frequency: 'bi-weekly',
     planCode: "PLN_tor8inrj0mwivbe",
@@ -63,7 +63,7 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
     monthlyPrice: 960,
     label: "20-Piece Box - Weekly Delivery (Billed Monthly)"
   },
-  "20_biweekly": {
+  "20_bi-weekly": {
     boxSize: 20,
     frequency: 'bi-weekly',
     planCode: "PLN_bmv3i3fzhhlnk94",
@@ -86,7 +86,7 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
     monthlyPrice: 1440,
     label: "30-Piece Box - Weekly Delivery (Billed Monthly)"
   },
-  "30_biweekly": {
+  "30_bi-weekly": {
     boxSize: 30,
     frequency: 'bi-weekly',
     planCode: "PLN_1ozr1btykt7hfva",
@@ -102,12 +102,10 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
   }
 };
 
-
-
-
-
-// Helper function to look up a plan easily in your UI
-export function getSubscriptionPlan(boxSize: number, frequency: 'weekly' | 'bi-weekly' | 'monthly') {
+export function getSubscriptionPlan(
+  boxSize: number | string,
+  frequency: 'weekly' | 'bi-weekly' | 'monthly'
+): SubscriptionPlan | null {
   const key = `${boxSize}_${frequency}`;
   return SUBSCRIPTION_PLANS[key] || null;
 }
