@@ -1,5 +1,4 @@
 ---
-
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
 import Navigation from "../components/Navigation.astro";
@@ -11,23 +10,20 @@ interface Props {
 }
 
 const {
-	title = "Helthe Juice",
-	description = "Helthe Juice",
+	title = "Helthe Juice | Freshness Crafted Daily",
+	description = "Freshly pressed juices, pouches, smoothies, chia puddings, fresh fruits & wellness shots crafted with care.",
 	image = "/images/logo.png"
-} = Astro.props
+} = Astro.props;
 ---
-
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
 		<meta http-equiv="content-language" content="en" />
 		<meta property="og:site_name" content="Helthe Juice" />
 		<meta name="generator" content={Astro.generator} />
-		<!-- Sitemap -->
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		<title>{title}</title>
 		<meta name="description" content={description} />
@@ -39,42 +35,135 @@ const {
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={image} />
 
-
 		<!-- Fonts -->
-		 <link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
 
 		<!-- Favicon -->
-		 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-		<link rel="manifest" href="/site.webmanifest">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="manifest" href="/site.webmanifest" />
 
-		<!-- Fontawesome cdn  -->
+		<!-- Fontawesome cdn -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 		<!-- paystack -->
-		 <script src="https://js.paystack.co/v1/inline.js"></script>
-
+		<script src="https://js.paystack.co/v1/inline.js"></script>
 	</head>
 
+	<body class="bg-[#fdfaf5] text-stone-900 antialiased selection:bg-blue-700 selection:text-white overflow-x-hidden">
+		<!-- Blue Navigation Wrapper -->
+		<header id="helthe-blue-nav" class="fixed top-0 left-0 right-0 z-50 bg-blue-800/95 backdrop-blur-md text-white border-b border-blue-700/80 transition-all duration-300">
+			<div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+				<a href="/" class="font-black tracking-tight text-lg sm:text-xl text-white flex items-center gap-2 shrink-0">
+					<span>Helthe Juice</span>
+				</a>
 
+				<nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-blue-100">
+					<a href="#section-story" class="hover:text-amber-300 transition-colors">Our Story</a>
+					<a href="#section-flavors" class="hover:text-amber-300 transition-colors">Offerings</a>
+					<a href="#section-events" class="hover:text-amber-300 transition-colors">Events</a>
+					<a href="/juices" class="hover:text-amber-300 transition-colors">Menu</a>
+				</nav>
 
-	<body>
-		<!-- navigation -->
-		<Navigation />
+				<div class="flex items-center gap-2.5 shrink-0">
+					<a href="/dashboard" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-blue-100 hover:bg-blue-700/80 transition-all">
+						Account
+					</a>
+					<a href="/order" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-300 hover:bg-amber-200 text-stone-950 text-xs font-black transition-all shadow-sm hover:-translate-y-0.5 active:translate-y-0">
+						<span>Order Now</span>
+						<i class="fa-solid fa-arrow-right text-[10px]"></i>
+					</a>
+				</div>
+			</div>
+		</header>
 
-		<!-- So the main content goes here -->
+		<!-- Keep existing Navigation component available if needed without double-bar clash -->
+		<div class="sr-only">
+			<Navigation />
+		</div>
+
+		<main class="pt-16">
 			<slot />
-	
+		</main>
 
-		<!-- Footer -->
 		<Footer />
 
-
 		<script src="../js/main.js"></script>
+
+		<!-- Smooth Scroll Reveal & Nav Scroll Polish -->
+		<script is:inline>
+			document.addEventListener("DOMContentLoaded", () => {
+				const navEl = document.getElementById("helthe-blue-nav");
+				window.addEventListener("scroll", () => {
+					if (!navEl) return;
+					if (window.scrollY > 24) {
+						navEl.classList.add("shadow-lg", "bg-blue-900");
+						navEl.classList.remove("bg-blue-800/95");
+					} else {
+						navEl.classList.remove("shadow-lg", "bg-blue-900");
+						navEl.classList.add("bg-blue-800/95");
+					}
+				}, { passive: true });
+
+				const targets = document.querySelectorAll("[data-reveal]");
+				if ("IntersectionObserver" in window && targets.length) {
+					const observer = new IntersectionObserver((entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) {
+								entry.target.classList.add("is-visible");
+								observer.unobserve(entry.target);
+							}
+						});
+					}, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+
+					targets.forEach((el) => observer.observe(el));
+				} else {
+					targets.forEach((el) => el.classList.add("is-visible"));
+				}
+			});
+		</script>
+
+		<style is:global>
+			[data-reveal] {
+				opacity: 0;
+				transform: translateY(22px);
+				transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+			}
+			[data-reveal="left"] {
+				transform: translateX(-24px);
+			}
+			[data-reveal="right"] {
+				transform: translateX(24px);
+			}
+			[data-reveal].is-visible {
+				opacity: 1;
+				transform: translate(0, 0);
+			}
+			@keyframes gentleFloat {
+				0%, 100% { transform: translateY(0px) rotate(-2deg); }
+				50% { transform: translateY(-7px) rotate(-1deg); }
+			}
+			@keyframes gentleFloatAlt {
+				0%, 100% { transform: translateY(0px) rotate(3deg); }
+				50% { transform: translateY(-6px) rotate(4deg); }
+			}
+			.animate-float-card {
+				animation: gentleFloat 5.5s ease-in-out infinite;
+			}
+			.animate-float-card-alt {
+				animation: gentleFloatAlt 6.2s ease-in-out infinite;
+			}
+			@media (prefers-reduced-motion: reduce) {
+				[data-reveal], .animate-float-card, .animate-float-card-alt {
+					opacity: 1 !important;
+					transform: none !important;
+					animation: none !important;
+					transition: none !important;
+				}
+			}
+		</style>
 	</body>
 </html>
-
