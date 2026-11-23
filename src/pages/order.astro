@@ -21,7 +21,7 @@ import pineapple from '../assets/products/pineapple.png';
 import pineappleCucumberSpinach from '../assets/products/pineapple-cucumber-spinach.png';
 import pineappleCarrot from '../assets/products/pineapple-carrot.png';
 import pineappleCucumberMint from '../assets/products/pineapple-cucumber-mint.png';
-import pineappleDandelion   from '../assets/products/pineapple-dandelion.png';
+import pineappleDandelion from '../assets/products/pineapple-dandelion.png';
 import pineappleGinger from '../assets/products/pineapple-ginger.png';
 import pineappleMoringaGinger from '../assets/products/pineapple-moringa-ginger.png';
 import pineappleSpinachGinger from '../assets/products/pineapple-spinach-ginger.png';
@@ -31,9 +31,10 @@ import orange from '../assets/products/orange.png';
 import orangeCarrot from '../assets/products/orange-carrot.png';
 import orangeBitterleafGinger from '../assets/products/orange-bitterleaf-ginger.png';
 
-// Complete Alphabetically Sorted Juice Catalog with Bilingual French Names & Fruits
+const ABC_CUSTOM_PRICE = 60;
+
 const juiceCatalog = [
-  { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot (ABC)', frenchName: 'Pomme, Betterave & Carotte', fruits: ['apple', 'beetroot', 'carrot'], image: appleBeetrootCarrot },
+  { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot (ABC)', frenchName: 'Pomme, Betterave & Carotte', fruits: ['apple', 'beetroot', 'carrot'], image: appleBeetrootCarrot, customPrice: ABC_CUSTOM_PRICE },
   { id: 'apple-custom', name: 'Apple (Custom)', frenchName: 'Pomme du Verger', fruits: ['apple'], image: appleBeetrootCarrot },
   { id: 'carrot-custom', name: 'Carrot (Custom)', frenchName: 'Carotte Signature', fruits: ['carrot'], image: orangeCarrot },
   { id: 'cucumber-bittermelon', name: 'Cucumber Bittermelon', frenchName: 'Concombre & Margose', fruits: ['cucumber', 'bittermelon'], image: cucumberBittermelon },
@@ -62,100 +63,73 @@ const juiceCatalog = [
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
-
-const pouchItems = [
-  { id: 'p-pin-man', name: 'Pineapple Mango Pouch', frenchName: 'Pochon Ananas & Mangue', price: 150, image: pineappleMango },
-  { id: 'p-wat-red', name: 'Red Watermelon Pouch', frenchName: 'Pochon Pastèque Rouge', price: 150, image: watermelonRed },
-];
-
-const chiaItems = [
-  { id: 'chia-almond', name: 'Almond Chia Pudding', frenchName: 'Pudding d’Amande et Chia', price: 80, image: pineapple },
-  { id: 'chia-cashew', name: 'Cashew Nut Chia Pudding', frenchName: 'Pudding de noix de Cajou et Chia', price: 80, image: pineapple },
-];
-
-const shotItems = [
-  { id: 'shot-turmeric', name: 'Orange Pineapple Turmeric Black Pepper Ginger', frenchName: 'Shot Orange, Ananas, Curcuma & Poivre Noir', price: 20, image: pineappleGinger },
-  { id: 'shot-ginger', name: 'Extreme Ginger Shot', frenchName: 'Shot de Gingembre Pur', price: 20, image: pineappleGinger },
-  { id: 'shot-beetroot', name: 'Beetroot Mint Lime Shot', frenchName: 'Shot Betterave, Menthe & Citron Vert', price: 20, image: appleBeetrootCarrot },
-];
 ---
 
 <MainLayout title="Build Your Order — Helthe Juice">
-  <div class="min-h-screen bg-stone-50/80 py-10 px-3 sm:px-6 pt-32 pb-56 font-sans">
+  <div class="min-h-screen bg-[#fdfaf5] py-10 px-3 sm:px-6 pt-28 pb-56 font-sans">
     <div class="max-w-6xl mx-auto space-y-8">
-      
+
       <!-- Banner -->
-      <div class="bg-gradient-to-r from-emerald-900 to-stone-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="bg-[#c88a5b] rounded-3xl p-6 sm:p-8 text-[#fdfaf5] shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-2 text-center md:text-left">
-          <span class="px-3.5 py-1 bg-emerald-800/80 text-emerald-200 rounded-full text-[10px] font-black uppercase tracking-wider">
-            🌿 100% Natural · Artisanal & Bilingual
+          <span class="px-3.5 py-1 bg-[#fdfaf5] text-blue-900 rounded-full text-[10px] font-black uppercase tracking-wider">
+            100% Natural · Cold-Pressed Fresh
           </span>
-          <h1 class="text-2xl sm:text-3xl font-black tracking-tight">Select Your Wellness Offerings</h1>
-          <p class="text-xs text-stone-300 font-medium max-w-xl leading-relaxed">
-            Choose your category first, customize your items with our fruit filters, and review your selection instantly.
+          <h1 class="text-2xl sm:text-3xl font-black tracking-tight">Build Your Juice Bottle Bundle</h1>
+          <p class="text-xs sm:text-sm text-[#fdfaf5]/95 font-medium max-w-xl leading-relaxed">
+            Pick your 350ml bottle bundle size, filter by fruit or flavour, and head straight to checkout. Note: Custom Apple Beetroot Carrot (ABC) is GHS 60 per bottle.
           </p>
         </div>
-        <div class="bg-white/10 backdrop-blur-md border border-white/20 px-5 py-4 rounded-2xl flex items-center gap-4 text-center">
+        <div class="bg-[#fdfaf5] text-stone-950 px-5 py-4 rounded-2xl flex items-center gap-4 text-center shadow-md">
           <div>
-            <span class="text-[10px] font-bold text-stone-300 uppercase block">Selected Unit Count</span>
-            <span class="text-lg font-black text-emerald-400"><strong id="allocated-count">0</strong> Units</span>
+            <span class="text-[10px] font-bold text-stone-500 uppercase block">Selected Bottles</span>
+            <span class="text-lg font-black text-blue-800"><strong id="allocated-count">0</strong> Bottles</span>
           </div>
         </div>
       </div>
 
       <!-- Main Builder Card -->
       <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-4 sm:p-10 space-y-8">
-        
-        <!-- STEP 1: CATEGORY TABS -->
-        <div class="space-y-4">
-          <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">1. Choose Offering Category</label>
-          <div class="flex flex-wrap gap-2 bg-stone-100 p-2 rounded-2xl">
-            <button type="button" class="category-tab px-4 py-2.5 rounded-xl text-xs font-black bg-emerald-600 text-white transition-all cursor-pointer shadow-xs" data-category="juices">🧃 Juice Bottles</button>
-            <button type="button" class="category-tab px-4 py-2.5 rounded-xl text-xs font-bold text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-category="pouches">👝 Juice Pouches (4pcs)</button>
-            <button type="button" class="category-tab px-4 py-2.5 rounded-xl text-xs font-bold text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-category="chia">🍮 Chia Pudding (Min 4)</button>
-            <button type="button" class="category-tab px-4 py-2.5 rounded-xl text-xs font-bold text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-category="shots">⚡ Health Shots (Bundle of 12)</button>
-          </div>
-        </div>
 
-        <!-- STEP 2: BUNDLE SIZE (APPLIES ONLY TO JUICE BOTTLES) -->
-        <div id="bundle-selector-section" class="space-y-4 pt-4 border-t border-stone-100">
+        <!-- STEP 1: BUNDLE SIZE -->
+        <div id="bundle-selector-section" class="space-y-4">
           <div class="flex items-center justify-between">
-            <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">2. Choose Bottle Bundle Size</label>
+            <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">1. Choose Bottle Bundle Size</label>
             <div class="bg-stone-100 px-3 py-1 rounded-xl text-[10px] font-bold text-stone-700">
               Variety limit: <strong id="flavors-used-count">0</strong> / <span id="max-flavors-allowed">2</span> max
             </div>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-emerald-600 bg-emerald-50/40 cursor-pointer shadow-xs" data-size="6" data-price="240" data-step="3" data-maxflavors="2">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-blue-800 bg-blue-50/50 cursor-pointer shadow-xs" data-size="6" data-price="240" data-step="3" data-maxflavors="2">
               <span class="block font-black text-base text-stone-950">6 Pcs</span>
-              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 240</span>
+              <span class="block text-xs text-blue-800 font-bold mt-0.5">GHS 240</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 2 flavours (±3)</span>
             </button>
             <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="15" data-price="525" data-step="5" data-maxflavors="3">
               <span class="block font-black text-base text-stone-950">15 Pcs</span>
-              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 525</span>
+              <span class="block text-xs text-blue-800 font-bold mt-0.5">GHS 525</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 3 flavours (±5)</span>
             </button>
             <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="20" data-price="700" data-step="5" data-maxflavors="4">
               <span class="block font-black text-base text-stone-950">20 Pcs</span>
-              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 700</span>
+              <span class="block text-xs text-blue-800 font-bold mt-0.5">GHS 700</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 4 flavours (±5)</span>
             </button>
             <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="30" data-price="1050" data-step="5" data-maxflavors="5">
               <span class="block font-black text-base text-stone-950">30 Pcs</span>
-              <span class="block font-[10px] text-emerald-800 font-bold mt-0.5">GHS 1050</span>
+              <span class="block text-xs text-blue-800 font-bold mt-0.5">GHS 1050</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 5 flavours (±5)</span>
             </button>
           </div>
         </div>
 
-        <!-- SEARCH & FRUIT FILTER BAR (FOR JUICES) -->
+        <!-- SEARCH & FRUIT FILTER BAR -->
         <div id="filter-bar-section" class="space-y-3 pt-4 border-t border-stone-100">
-          <input 
-            type="text" 
-            id="boxSearchInput" 
-            placeholder="Search alphabetized juice flavours or French subtitle..." 
-            class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs font-bold focus:outline-none focus:border-emerald-500 shadow-xs"
+          <input
+            type="text"
+            id="boxSearchInput"
+            placeholder="Search juice flavours in English or French..."
+            class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs font-bold focus:outline-none focus:border-blue-700 shadow-xs"
           />
           <div id="fruit-chips-container" class="flex flex-wrap gap-1.5 pt-1">
             {allFruits.map(fruit => (
@@ -166,129 +140,63 @@ const shotItems = [
           </div>
         </div>
 
-        <!-- PRODUCT GRIDS -->
-
-        <!-- 1. JUICES GRID -->
+        <!-- JUICES GRID -->
         <div id="grid-juices" class="product-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 pt-2">
-          {juiceCatalog.map(item => (
-            <div 
-              class="flavor-card bg-stone-50/80 border border-stone-200/90 rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between gap-4 transition-all hover:shadow-lg hover:border-emerald-300"
-              data-name={item.name.toLowerCase()}
-              data-french={item.frenchName.toLowerCase()}
-              data-fruits={JSON.stringify(item.fruits)}
-            >
-              <div class="space-y-3">
-                <div class="w-full aspect-[4/5] rounded-2xl bg-white border border-stone-200/80 overflow-hidden relative flex items-center justify-center p-3 shadow-xs">
-                  <span class="absolute top-2 left-2 bg-stone-950/70 backdrop-blur-xs text-white text-[9px] font-black px-2.5 py-1 rounded-lg z-10">350ml Bottle</span>
-                  <Image src={item.image} alt={item.name} width={300} height={400} class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 hover:scale-105" />
+          {juiceCatalog.map(item => {
+            const isCustomAbc = Boolean(item.customPrice);
+            return (
+              <div
+                class={`flavor-card bg-[#fdfaf5] border rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between gap-4 transition-all hover:shadow-lg ${isCustomAbc ? 'border-amber-400/90 hover:border-amber-500' : 'border-stone-200/90 hover:border-blue-300'}`}
+                data-name={item.name.toLowerCase()}
+                data-french={item.frenchName.toLowerCase()}
+                data-fruits={JSON.stringify(item.fruits)}
+              >
+                <div class="space-y-3">
+                  <div class="w-full aspect-[4/5] rounded-2xl bg-white border border-stone-200/80 overflow-hidden relative flex items-center justify-center p-3 shadow-xs">
+                    <span class="absolute top-2 left-2 bg-stone-950/75 text-white text-[9px] font-black px-2.5 py-1 rounded-lg z-10">350ml Bottle</span>
+                    {isCustomAbc && (
+                      <span class="absolute top-2 right-2 bg-amber-300 text-stone-950 text-[9px] font-black px-2 py-1 rounded-lg z-10 shadow-2xs">
+                        Custom · GHS {item.customPrice}/ea
+                      </span>
+                    )}
+                    <Image src={item.image} alt={item.name} width={300} height={400} class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 hover:scale-105" />
+                  </div>
+                  <div class="space-y-0.5">
+                    <h3 class="font-black text-xs sm:text-sm text-stone-950 line-clamp-1">{item.name}</h3>
+                    <p class="text-[11px] font-medium italic text-stone-500 line-clamp-1">{item.frenchName}</p>
+                    {isCustomAbc && (
+                      <p class="text-[10px] font-extrabold text-amber-900 pt-0.5">
+                        Custom blend · GHS {item.customPrice} per bottle in mix
+                      </p>
+                    )}
+                    <div class="flex flex-wrap gap-1 pt-1.5">
+                      {item.fruits.map(f => <span class="text-[8px] bg-amber-100 text-stone-800 px-2 py-0.5 rounded font-bold uppercase tracking-wider">{f}</span>)}
+                    </div>
+                  </div>
                 </div>
-                <div class="space-y-1">
-                  <h3 class="font-black text-xs sm:text-sm text-stone-950 line-clamp-1">{item.name}</h3>
-                  <p class="text-[11px] font-extrabold text-emerald-800 italic">{item.frenchName}</p>
-                  <div class="flex flex-wrap gap-1 pt-1">
-                    {item.fruits.map(f => <span class="text-[8px] bg-emerald-100/90 text-emerald-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider">{f}</span>)}
+
+                <div class="bg-white border border-stone-200 rounded-2xl p-2 flex items-center justify-between shadow-xs">
+                  <span class="text-[9px] font-black uppercase text-stone-400 pl-1 hidden sm:inline">Qty</span>
+                  <div class="flex items-center gap-1.5 w-full justify-between sm:w-auto">
+                    <button type="button" class="qty-sub w-8 h-8 rounded-xl bg-stone-100 border border-stone-200 text-stone-800 font-black text-xs hover:bg-stone-200 transition-all cursor-pointer flex items-center justify-center">-</button>
+                    <input
+                      type="number"
+                      value="0"
+                      readonly
+                      data-flavor={item.name}
+                      data-french={item.frenchName}
+                      data-custom-price={item.customPrice ? String(item.customPrice) : ''}
+                      class="box-qty-input w-8 text-center bg-transparent text-xs font-black text-stone-950 focus:outline-none"
+                    />
+                    <button type="button" class="qty-add w-8 h-8 rounded-xl bg-blue-800 text-white font-black text-xs hover:bg-blue-900 transition-all cursor-pointer flex items-center justify-center shadow-xs">+</button>
                   </div>
                 </div>
               </div>
-
-              <div class="bg-white border border-stone-200 rounded-2xl p-2 flex items-center justify-between shadow-xs">
-                <span class="text-[9px] font-black uppercase text-stone-400 pl-1 hidden sm:inline">Qty</span>
-                <div class="flex items-center gap-1.5 w-full justify-between sm:w-auto">
-                  <button type="button" class="qty-sub w-8 h-8 rounded-xl bg-stone-100 border border-stone-200 text-stone-800 font-black text-xs hover:bg-stone-200 transition-all cursor-pointer flex items-center justify-center">-</button>
-                  <input type="number" value="0" readonly data-flavor={item.name} data-price="40" class="box-qty-input w-8 text-center bg-transparent text-xs font-black text-stone-950 focus:outline-none" />
-                  <button type="button" class="qty-add w-8 h-8 rounded-xl bg-emerald-600 text-white font-black text-xs hover:bg-emerald-700 transition-all cursor-pointer flex items-center justify-center shadow-xs">+</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <!-- 2. POUCHES GRID -->
-        <div id="grid-pouches" class="product-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 pt-2 hidden">
-          {pouchItems.map(item => (
-            <div class="flavor-card bg-stone-50/80 border border-stone-200/90 rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between gap-4 transition-all hover:shadow-lg">
-              <div class="space-y-3">
-                <div class="w-full aspect-[4/5] rounded-2xl bg-white border border-stone-200/80 overflow-hidden relative flex items-center justify-center p-3 shadow-xs">
-                  <span class="absolute top-2 left-2 bg-stone-950/70 backdrop-blur-xs text-white text-[9px] font-black px-2.5 py-1 rounded-lg z-10">4pcs Pouch Pack</span>
-                  <Image src={item.image} alt={item.name} width={300} height={400} class="w-full h-full object-contain object-center rounded-xl" />
-                </div>
-                <div class="space-y-1">
-                  <h3 class="font-black text-xs sm:text-sm text-stone-950 line-clamp-1">{item.name}</h3>
-                  <p class="text-[11px] font-extrabold text-emerald-800 italic">{item.frenchName}</p>
-                  <p class="text-[10px] font-bold text-stone-500">GHS {item.price} / 4pcs pack</p>
-                </div>
-              </div>
-
-              <div class="bg-white border border-stone-200 rounded-2xl p-2 flex items-center justify-between shadow-xs">
-                <span class="text-[9px] font-black uppercase text-stone-400 pl-1">Packs</span>
-                <div class="flex items-center gap-1.5">
-                  <button type="button" class="qty-sub w-8 h-8 rounded-xl bg-stone-100 border border-stone-200 text-stone-800 font-black text-xs cursor-pointer flex items-center justify-center">-</button>
-                  <input type="number" value="0" readonly data-flavor={item.name} data-price={item.price} class="box-qty-input w-8 text-center bg-transparent text-xs font-black text-stone-950 focus:outline-none" />
-                  <button type="button" class="qty-add w-8 h-8 rounded-xl bg-emerald-600 text-white font-black text-xs cursor-pointer flex items-center justify-center shadow-xs">+</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <!-- 3. CHIA PUDDING GRID -->
-        <div id="grid-chia" class="product-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 pt-2 hidden">
-          {chiaItems.map(item => (
-            <div class="flavor-card bg-stone-50/80 border border-stone-200/90 rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between gap-4 transition-all hover:shadow-lg">
-              <div class="space-y-3">
-                <div class="w-full aspect-[4/5] rounded-2xl bg-white border border-stone-200/80 overflow-hidden relative flex items-center justify-center p-3 shadow-xs">
-                  <span class="absolute top-2 left-2 bg-stone-950/70 backdrop-blur-xs text-white text-[9px] font-black px-2.5 py-1 rounded-lg z-10">Jar (Min 4)</span>
-                  <Image src={item.image} alt={item.name} width={300} height={400} class="w-full h-full object-contain object-center rounded-xl" />
-                </div>
-                <div class="space-y-1">
-                  <h3 class="font-black text-xs sm:text-sm text-stone-950 line-clamp-1">{item.name}</h3>
-                  <p class="text-[11px] font-extrabold text-emerald-800 italic">{item.frenchName}</p>
-                  <p class="text-[10px] font-bold text-stone-500">GHS {item.price} each</p>
-                </div>
-              </div>
-
-              <div class="bg-white border border-stone-200 rounded-2xl p-2 flex items-center justify-between shadow-xs">
-                <span class="text-[9px] font-black uppercase text-stone-400 pl-1">Qty</span>
-                <div class="flex items-center gap-1.5">
-                  <button type="button" class="qty-sub w-8 h-8 rounded-xl bg-stone-100 border border-stone-200 text-stone-800 font-black text-xs cursor-pointer flex items-center justify-center">-</button>
-                  <input type="number" value="0" readonly data-flavor={item.name} data-price={item.price} class="box-qty-input w-8 text-center bg-transparent text-xs font-black text-stone-950 focus:outline-none" />
-                  <button type="button" class="qty-add w-8 h-8 rounded-xl bg-emerald-600 text-white font-black text-xs cursor-pointer flex items-center justify-center shadow-xs">+</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <!-- 4. HEALTH SHOTS GRID (BUNDLE OF 12 REQUIRED) -->
-        <div id="grid-shots" class="product-grid grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 pt-2 hidden">
-          {shotItems.map(item => (
-            <div class="flavor-card bg-stone-50/80 border border-stone-200/90 rounded-3xl p-4 sm:p-6 flex flex-col justify-between gap-4 transition-all hover:shadow-lg">
-              <div class="space-y-3">
-                <div class="w-full aspect-[16/9] rounded-2xl bg-white border border-stone-200/80 overflow-hidden relative flex items-center justify-center p-3 shadow-xs">
-                  <span class="absolute top-2 left-2 bg-stone-950/70 backdrop-blur-xs text-white text-[9px] font-black px-2.5 py-1 rounded-lg z-10">60ml Shot (Bundle of 12)</span>
-                  <Image src={item.image} alt={item.name} width={200} height={150} class="w-full h-full object-contain object-center rounded-xl" />
-                </div>
-                <div class="space-y-1">
-                  <h3 class="font-black text-xs sm:text-sm text-stone-950">{item.name}</h3>
-                  <p class="text-[11px] font-extrabold text-emerald-800 italic">{item.frenchName}</p>
-                  <p class="text-[10px] font-bold text-stone-500">GHS 20 each (Pack of 12 = GHS 240)</p>
-                </div>
-              </div>
-
-              <div class="bg-white border border-stone-200 rounded-2xl p-2.5 flex items-center justify-between shadow-xs">
-                <span class="text-[9px] font-black uppercase text-stone-400 pl-1">Shots Qty</span>
-                <div class="flex items-center gap-2">
-                  <button type="button" class="qty-sub w-8 h-8 rounded-xl bg-stone-100 border border-stone-200 text-stone-800 font-black text-xs cursor-pointer flex items-center justify-center">-</button>
-                  <input type="number" value="0" readonly data-flavor={item.name} data-price="20" class="box-qty-input w-10 text-center bg-transparent text-xs font-black text-stone-950 focus:outline-none" />
-                  <button type="button" class="qty-add w-8 h-8 rounded-xl bg-emerald-600 text-white font-black text-xs cursor-pointer flex items-center justify-center shadow-xs">+</button>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>
-
     </div>
   </div>
 
@@ -296,7 +204,7 @@ const shotItems = [
   <div id="sticky-checkout-bar" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-2xl p-4 sm:p-6 z-40 transition-all transform translate-y-full">
     <div class="max-w-6xl mx-auto space-y-3">
       <div id="sticky-items-preview" class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold text-stone-700 no-scrollbar">
-        <span class="text-stone-400 italic text-xs">No items selected yet.</span>
+        <span class="text-stone-400 italic text-xs">No bottles selected yet.</span>
       </div>
 
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-stone-100 pt-3">
@@ -308,22 +216,22 @@ const shotItems = [
           <div class="h-8 w-px bg-stone-200 hidden sm:block"></div>
           <div>
             <span class="text-[10px] font-black text-stone-400 uppercase tracking-wider block">Total Price</span>
-            <span id="drawer-total-price" class="text-lg font-black text-emerald-800">GHS 240.00</span>
+            <span id="drawer-total-price" class="text-lg font-black text-blue-800">GHS 240.00</span>
           </div>
           <div class="hidden md:block">
-            <span id="drawer-status-text" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Ready to checkout
+            <span id="drawer-status-text" class="text-xs font-bold text-blue-900 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+              Need 6 bottles (Max 2 flavours)
             </span>
           </div>
         </div>
 
-        <button 
-          type="button" 
-          id="proceed-to-checkout-btn" 
+        <button
+          type="button"
+          id="proceed-to-checkout-btn"
           disabled
-          class="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-stone-300 disabled:cursor-not-allowed text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/30 cursor-pointer flex items-center justify-center gap-2"
+          class="w-full sm:w-auto px-8 py-4 bg-blue-800 hover:bg-blue-900 disabled:bg-stone-300 disabled:cursor-not-allowed text-white font-black rounded-2xl text-xs transition-all shadow-lg cursor-pointer flex items-center justify-center gap-2"
         >
-          <span>Proceed to Secure Checkout →</span>
+          <span>Proceed to Checkout →</span>
         </button>
       </div>
     </div>
@@ -331,83 +239,36 @@ const shotItems = [
 
   <!-- Script Logic -->
   <script>
-    let activeCategory = 'juices';
     let targetBundleSize = 6;
     let fixedBundlePrice = 240;
     let stepSize = 3;
     let maxFlavorsAllowed = 2;
 
-    const categoryTabs = document.querySelectorAll('.category-tab');
-    const bundleSelectorSection = document.getElementById('bundle-selector-section')!;
-    const filterBarSection = document.getElementById('filter-bar-section')!;
     const sizeBtns = document.querySelectorAll('.bundle-size-btn');
-    
     const gridJuices = document.getElementById('grid-juices')!;
-    const gridPouches = document.getElementById('grid-pouches')!;
-    const gridChia = document.getElementById('grid-chia')!;
-    const gridShots = document.getElementById('grid-shots')!;
 
     const flavorsUsedCountEl = document.getElementById('flavors-used-count')!;
     const maxFlavorsAllowedEl = document.getElementById('max-flavors-allowed')!;
-    
+
     const allocatedCountEl = document.getElementById('allocated-count')!;
     const stickyBar = document.getElementById('sticky-checkout-bar')!;
     const drawerBoxTitle = document.getElementById('drawer-box-title')!;
     const drawerTotalPrice = document.getElementById('drawer-total-price')!;
     const drawerStatusText = document.getElementById('drawer-status-text')!;
     const stickyItemsPreview = document.getElementById('sticky-items-preview')!;
-    const proceedBtn = document.getElementById('proceed-to-checkout-btn') as HTMLFormElement;
-    
+    const proceedBtn = document.getElementById('proceed-to-checkout-btn') as HTMLButtonElement;
+
     const searchInput = document.getElementById('boxSearchInput') as HTMLInputElement;
     const fruitFilterBtns = document.querySelectorAll('.box-fruit-filter');
     let activeFruitFilter = '';
 
-    // Category Switching
-    categoryTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        categoryTabs.forEach(t => {
-          t.classList.remove('bg-emerald-600', 'text-white', 'shadow-xs');
-          t.classList.add('text-stone-700', 'hover:bg-stone-200');
-        });
-        tab.classList.remove('text-stone-700', 'hover:bg-stone-200');
-        tab.classList.add('bg-emerald-600', 'text-white', 'shadow-xs');
-
-        activeCategory = tab.getAttribute('data-category') || 'juices';
-
-        // Visibility toggles
-        [gridJuices, gridPouches, gridChia, gridShots].forEach(g => g.classList.add('hidden'));
-
-        if (activeCategory === 'juices') {
-          gridJuices.classList.remove('hidden');
-          bundleSelectorSection.classList.remove('hidden');
-          filterBarSection.classList.remove('hidden');
-        } else if (activeCategory === 'pouches') {
-          gridPouches.classList.remove('hidden');
-          bundleSelectorSection.classList.add('hidden');
-          filterBarSection.classList.add('hidden');
-        } else if (activeCategory === 'chia') {
-          gridChia.classList.remove('hidden');
-          bundleSelectorSection.classList.add('hidden');
-          filterBarSection.classList.add('hidden');
-        } else if (activeCategory === 'shots') {
-          gridShots.classList.remove('hidden');
-          bundleSelectorSection.classList.add('hidden');
-          filterBarSection.classList.add('hidden');
-        }
-
-        resetAllInputs();
-        updateState();
-      });
-    });
-
-    // Bundle Size selection for Juice Bottles
     sizeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         sizeBtns.forEach(b => {
-          b.classList.remove('border-emerald-600', 'bg-emerald-50/40');
+          b.classList.remove('border-blue-800', 'bg-blue-50/50');
           b.classList.add('border-stone-200', 'bg-stone-50/50');
         });
-        btn.classList.add('border-emerald-600', 'bg-emerald-50/40');
+        btn.classList.add('border-blue-800', 'bg-blue-50/50');
         btn.classList.remove('border-stone-200', 'bg-stone-50/50');
 
         targetBundleSize = parseInt(btn.getAttribute('data-size') || '6');
@@ -425,7 +286,6 @@ const shotItems = [
       document.querySelectorAll('.box-qty-input').forEach((i: any) => i.value = '0');
     }
 
-    // Fruit Filter & Search Logic for Juice Bottles
     if (searchInput) {
       searchInput.addEventListener('input', () => applyJuiceFilters());
     }
@@ -435,23 +295,22 @@ const shotItems = [
         const fruit = btn.getAttribute('data-fruit') || '';
         if (activeFruitFilter === fruit) {
           activeFruitFilter = '';
-          btn.classList.remove('bg-emerald-600', 'text-white');
+          btn.classList.remove('bg-blue-800', 'text-white');
           btn.classList.add('bg-stone-100', 'text-stone-600');
         } else {
           activeFruitFilter = fruit;
           fruitFilterBtns.forEach(b => {
-            b.classList.remove('bg-emerald-600', 'text-white');
+            b.classList.remove('bg-blue-800', 'text-white');
             b.classList.add('bg-stone-100', 'text-stone-600');
           });
           btn.classList.remove('bg-stone-100', 'text-stone-600');
-          btn.classList.add('bg-emerald-600', 'text-white');
+          btn.classList.add('bg-blue-800', 'text-white');
         }
         applyJuiceFilters();
       });
     });
 
     function applyJuiceFilters() {
-      if (activeCategory !== 'juices') return;
       const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
       const cards = gridJuices.querySelectorAll('.flavor-card');
 
@@ -459,7 +318,7 @@ const shotItems = [
         const name = card.getAttribute('data-name') || '';
         const french = card.getAttribute('data-french') || '';
         let fruits: string[] = [];
-        try { fruits = JSON.parse(card.getAttribute('data-fruits') || '[]'); } catch(e){}
+        try { fruits = JSON.parse(card.getAttribute('data-fruits') || '[]'); } catch (e) {}
 
         const matchesSearch = name.includes(query) || french.includes(query);
         const matchesFruit = activeFruitFilter === '' || fruits.includes(activeFruitFilter);
@@ -468,7 +327,6 @@ const shotItems = [
       });
     }
 
-    // Steppers across all active grids
     document.querySelectorAll('.flavor-card').forEach(card => {
       const subBtn = card.querySelector('.qty-sub')!;
       const addBtn = card.querySelector('.qty-add')!;
@@ -476,39 +334,35 @@ const shotItems = [
 
       subBtn.addEventListener('click', () => {
         let val = parseInt(input.value) || 0;
-        const step = activeCategory === 'juices' ? stepSize : activeCategory === 'pouches' ? 4 : 1;
-        if (val >= step) {
-          input.value = String(val - step);
+        if (val >= stepSize) {
+          input.value = String(val - stepSize);
           updateState();
         }
       });
 
       addBtn.addEventListener('click', () => {
         let val = parseInt(input.value) || 0;
-        const step = activeCategory === 'juices' ? stepSize : activeCategory === 'pouches' ? 4 : 1;
+        const currentTotal = getActiveGridTotal();
 
-        if (activeCategory === 'juices') {
-          const currentTotal = getActiveGridTotal();
-          if (currentTotal + step > targetBundleSize) {
-            alert(`Adding ${step} bottles exceeds your ${targetBundleSize}-piece box limit!`);
-            return;
-          }
-          const usedFlavors = getUsedFlavorsCount();
-          if (val === 0 && usedFlavors >= maxFlavorsAllowed) {
-            alert(`Maximum flavor limit reached (${maxFlavorsAllowed} flavors for this box size).`);
-            return;
-          }
+        if (currentTotal + stepSize > targetBundleSize) {
+          alert(`Adding ${stepSize} bottles exceeds your ${targetBundleSize}-piece box limit!`);
+          return;
         }
 
-        input.value = String(val + step);
+        const usedFlavors = getUsedFlavorsCount();
+        if (val === 0 && usedFlavors >= maxFlavorsAllowed) {
+          alert(`Maximum flavour limit reached (${maxFlavorsAllowed} flavours for this box size).`);
+          return;
+        }
+
+        input.value = String(val + stepSize);
         updateState();
       });
     });
 
     function getActiveGridTotal() {
       let total = 0;
-      const activeGrid = activeCategory === 'juices' ? gridJuices : activeCategory === 'pouches' ? gridPouches : activeCategory === 'chia' ? gridChia : gridShots;
-      activeGrid.querySelectorAll('.box-qty-input').forEach((i: any) => total += parseInt(i.value) || 0);
+      gridJuices.querySelectorAll('.box-qty-input').forEach((i: any) => total += parseInt(i.value) || 0);
       return total;
     }
 
@@ -520,43 +374,63 @@ const shotItems = [
       return count;
     }
 
+    function calculateBundleTotal() {
+      let standardQty = 0;
+      let customTotal = 0;
+
+      gridJuices.querySelectorAll('.box-qty-input').forEach((input: any) => {
+        const qty = parseInt(input.value) || 0;
+        if (qty > 0) {
+          const customPrice = parseFloat(input.getAttribute('data-custom-price') || '');
+          if (!Number.isNaN(customPrice) && customPrice > 0) {
+            customTotal += qty * customPrice;
+          } else {
+            standardQty += qty;
+          }
+        }
+      });
+
+      const standardPortionTotal = targetBundleSize > 0
+        ? fixedBundlePrice * (standardQty / targetBundleSize)
+        : 0;
+
+      return Number((standardPortionTotal + customTotal).toFixed(2));
+    }
+
     function updateState() {
-      let totalUnits = getActiveGridTotal();
-      let calculatedPrice = 0;
+      const totalUnits = getActiveGridTotal();
+      const totalPrice = calculateBundleTotal();
       let previewHTML = '';
+      let hasCustomAbc = false;
 
-      const activeGrid = activeCategory === 'juices' ? gridJuices : activeCategory === 'pouches' ? gridPouches : activeCategory === 'chia' ? gridChia : gridShots;
-
-      activeGrid.querySelectorAll('.box-qty-input').forEach((input: any) => {
+      gridJuices.querySelectorAll('.box-qty-input').forEach((input: any) => {
         const qty = parseInt(input.value) || 0;
         if (qty > 0) {
           const name = input.getAttribute('data-flavor') || '';
-          const unitPrice = parseFloat(input.getAttribute('data-price') || '0');
+          const frenchName = input.getAttribute('data-french') || '';
+          const customPrice = parseFloat(input.getAttribute('data-custom-price') || '');
+          const isCustom = !Number.isNaN(customPrice) && customPrice > 0;
+          if (isCustom) hasCustomAbc = true;
 
-          if (activeCategory === 'juices') {
-            calculatedPrice = fixedBundlePrice;
-            drawerBoxTitle.textContent = `Juice Bottles (${targetBundleSize}-Pack)`;
-          } else if (activeCategory === 'pouches') {
-            calculatedPrice += (qty / 4) * unitPrice;
-            drawerBoxTitle.textContent = `Juice Pouches (4pcs Pack)`;
-          } else if (activeCategory === 'chia') {
-            calculatedPrice += qty * unitPrice;
-            drawerBoxTitle.textContent = `Chia Pudding Jars`;
-          } else if (activeCategory === 'shots') {
-            calculatedPrice += qty * unitPrice;
-            drawerBoxTitle.textContent = `Health Shots (Bundle of 12)`;
-          }
+          const noteTag = isCustom
+            ? ` <span class="px-1.5 py-0.5 rounded bg-amber-200 text-stone-950 text-[10px] font-black">Custom · GHS ${customPrice}/ea</span>`
+            : '';
 
-          previewHTML += `<span class="bg-emerald-50 border border-emerald-200 text-emerald-900 px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap flex items-center gap-1.5">
-            ${qty}× ${name}
+          previewHTML += `<span class="bg-blue-50 border border-blue-200 text-blue-950 px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap flex items-center gap-1.5">
+            ${qty}× ${name}${frenchName ? ` <em class="font-medium text-stone-500 not-italic">(${frenchName})</em>` : ''}${noteTag}
           </span>`;
         }
       });
 
+      drawerBoxTitle.textContent = hasCustomAbc
+        ? `Juice Bottles (${targetBundleSize}-Pack · Includes Custom ABC)`
+        : `Juice Bottles (${targetBundleSize}-Pack)`;
       allocatedCountEl.textContent = String(totalUnits);
       flavorsUsedCountEl.textContent = String(getUsedFlavorsCount());
-      stickyItemsPreview.innerHTML = previewHTML === '' ? `<span class="text-stone-400 italic text-xs">No items selected yet. Pick your items above!</span>` : previewHTML;
-      drawerTotalPrice.textContent = `GHS ${calculatedPrice.toFixed(2)}`;
+      stickyItemsPreview.innerHTML = previewHTML === ''
+        ? `<span class="text-stone-400 italic text-xs">No bottles selected yet. Pick your flavours above!</span>`
+        : previewHTML;
+      drawerTotalPrice.textContent = `GHS ${totalPrice.toFixed(2)}`;
 
       if (totalUnits > 0) {
         stickyBar.classList.remove('translate-y-full');
@@ -564,46 +438,40 @@ const shotItems = [
         stickyBar.classList.add('translate-y-full');
       }
 
-      // Validation Rules
-      let isValid = false;
-      if (activeCategory === 'juices') {
-        isValid = (totalUnits === targetBundleSize && getUsedFlavorsCount() <= maxFlavorsAllowed);
-        drawerStatusText.textContent = isValid ? 'Box complete!' : `Need exactly ${targetBundleSize} bottles (Max ${maxFlavorsAllowed} flavours)`;
-      } else if (activeCategory === 'pouches') {
-        isValid = (totalUnits >= 4);
-        drawerStatusText.textContent = isValid ? 'Ready!' : 'Minimum 4 pouches required';
-      } else if (activeCategory === 'chia') {
-        isValid = (totalUnits >= 4);
-        drawerStatusText.textContent = isValid ? 'Ready!' : 'Minimum 4 puddings required';
-      } else if (activeCategory === 'shots') {
-        isValid = (totalUnits === 12);
-        drawerStatusText.textContent = isValid ? 'Shot Bundle Complete (12 pcs)!' : `Select exactly 12 shots (currently ${totalUnits})`;
-      }
+      const isValid = (totalUnits === targetBundleSize && getUsedFlavorsCount() <= maxFlavorsAllowed);
+      drawerStatusText.textContent = isValid
+        ? 'Box complete!'
+        : `Need ${targetBundleSize} bottles (Max ${maxFlavorsAllowed} flavours)`;
 
       proceedBtn.disabled = !isValid;
     }
 
     proceedBtn.addEventListener('click', () => {
-      const selectedItems: Array<{ name: string; qty: number }> = [];
-      let finalPrice = 0;
+      const selectedItems: Array<{ name: string; frenchName: string; qty: number; customUnitPrice?: number }> = [];
 
-      const activeGrid = activeCategory === 'juices' ? gridJuices : activeCategory === 'pouches' ? gridPouches : activeCategory === 'chia' ? gridChia : gridShots;
-
-      activeGrid.querySelectorAll('.box-qty-input').forEach((input: any) => {
+      gridJuices.querySelectorAll('.box-qty-input').forEach((input: any) => {
         const qty = parseInt(input.value) || 0;
         if (qty > 0) {
-          selectedItems.push({ name: input.getAttribute('data-flavor') || 'Item', qty });
-          const unitPrice = parseFloat(input.getAttribute('data-price') || '0');
-          if (activeCategory === 'juices') finalPrice = fixedBundlePrice;
-          else if (activeCategory === 'pouches') finalPrice += (qty / 4) * unitPrice;
-          else finalPrice += qty * unitPrice;
+          const customPrice = parseFloat(input.getAttribute('data-custom-price') || '');
+          const item: { name: string; frenchName: string; qty: number; customUnitPrice?: number } = {
+            name: input.getAttribute('data-flavor') || 'Juice Bottle',
+            frenchName: input.getAttribute('data-french') || '',
+            qty
+          };
+          if (!Number.isNaN(customPrice) && customPrice > 0) {
+            item.customUnitPrice = customPrice;
+          }
+          selectedItems.push(item);
         }
       });
 
+      const finalPrice = calculateBundleTotal();
+
       const config = {
-        category: activeCategory,
-        boxSize: activeCategory === 'juices' ? targetBundleSize : selectedItems.reduce((a, b) => a + b.qty, 0),
+        category: 'juices',
+        boxSize: targetBundleSize,
         totalPrice: finalPrice,
+        basePrice: finalPrice,
         items: selectedItems
       };
 

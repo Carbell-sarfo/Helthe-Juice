@@ -6,20 +6,19 @@ import MainLayout from "../layouts/MainLayout.astro";
 ---
 
 <MainLayout title="Checkout & Secure Payment — Helthe Juice">
-  <!-- Paystack Inline JS SDK -->
   <script src="https://js.paystack.co/v1/inline.js" is:inline></script>
 
-  <div class="min-h-screen bg-stone-50 py-10 px-4 sm:px-6 pt-32 pb-40 font-sans">
+  <div class="min-h-screen bg-[#fdfaf5] py-10 px-4 sm:px-6 pt-28 pb-40 font-sans">
     <div class="max-w-6xl mx-auto space-y-8">
       
       <!-- Page Header -->
       <div class="flex items-center justify-between border-b border-stone-200 pb-4">
         <div>
-          <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full">Secure Checkout / Paiement Sécurisé</span>
+          <span class="text-[10px] font-black uppercase tracking-wider text-blue-900 bg-blue-100 px-3 py-1 rounded-full">Secure Checkout</span>
           <h1 class="text-2xl font-black text-stone-950 tracking-tight mt-1">Review Order & Complete Payment</h1>
-          <p class="text-xs text-stone-500 font-medium">Verify your selection, delivery schedule, and pay securely via Paystack.</p>
+          <p class="text-xs text-stone-500 font-medium">Verify your selection, delivery date, and pay securely via Paystack.</p>
         </div>
-        <a href="/order" class="text-xs font-bold text-stone-500 hover:text-emerald-700 transition-colors cursor-pointer">
+        <a href="/order" class="text-xs font-bold text-stone-600 hover:text-blue-800 transition-colors cursor-pointer">
           ← Edit Selections
         </a>
       </div>
@@ -27,13 +26,13 @@ import MainLayout from "../layouts/MainLayout.astro";
       <!-- Two-Column Split Layout -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- LEFT COLUMN: Order Summary & Itemized Breakdown (7 Cols) -->
+        <!-- LEFT COLUMN: Order Summary -->
         <div class="lg:col-span-7 space-y-6">
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-8 space-y-6">
             
             <div class="flex items-center justify-between border-b border-stone-100 pb-4">
               <h2 class="text-sm font-black text-stone-900 uppercase tracking-wider">Your Selection Summary</h2>
-              <span id="summary-box-badge" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase">Order</span>
+              <span id="summary-box-badge" class="px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-[10px] font-black uppercase">One-Time Order</span>
             </div>
 
             <!-- Itemized List -->
@@ -44,12 +43,12 @@ import MainLayout from "../layouts/MainLayout.astro";
             <!-- Pricing Calculation Box -->
             <div class="bg-stone-50 rounded-2xl p-4 space-y-2 border border-stone-200/60">
               <div class="flex justify-between text-xs text-stone-500 font-medium">
-                <span>Base Cost / Subtotal</span>
+                <span>Order Subtotal</span>
                 <span id="summary-single-box-cost" class="font-bold text-stone-900">GHS 0.00</span>
               </div>
-              <div id="frequency-multiplier-row" class="flex justify-between text-xs text-stone-500 font-medium hidden">
-                <span>Deliveries per Month</span>
-                <span id="summary-multiplier-text" class="font-bold text-emerald-800">4× dispatches</span>
+              <div class="flex justify-between text-xs text-stone-500 font-medium">
+                <span>Payment Type</span>
+                <span class="font-bold text-stone-800">One-Time Payment</span>
               </div>
               <div class="flex justify-between text-xs text-stone-500 font-medium">
                 <span>Batch Production & Cold-Chain Delivery</span>
@@ -57,44 +56,21 @@ import MainLayout from "../layouts/MainLayout.astro";
               </div>
               <div class="border-t border-stone-200 pt-2 flex justify-between items-center text-sm">
                 <span class="font-black text-stone-950">Total Billed Today</span>
-                <span id="summary-total-price" class="text-lg font-black text-emerald-800">GHS 0.00</span>
+                <span id="summary-total-price" class="text-lg font-black text-blue-800">GHS 0.00</span>
               </div>
             </div>
 
-            <div class="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-4 flex items-start gap-3">
-              <span class="text-emerald-600 font-black text-base">🛡️</span>
-              <p class="text-[11px] text-emerald-900 font-medium leading-relaxed">
+            <div class="bg-blue-50 border border-blue-200/70 rounded-2xl p-4 flex items-start gap-3">
+              <span class="text-blue-700 font-black text-base">🛡️</span>
+              <p class="text-[11px] text-blue-950 font-medium leading-relaxed">
                 <strong>Secure Transaction:</strong> Encrypted and verified instantly via Paystack. Supports MTN MoMo, Telecel Cash, AT Money, and Cards.
               </p>
-            </div>
-
-            <!-- Subscription Frequency Toggle Selector -->
-            <div class="bg-stone-50 rounded-2xl p-4 border border-stone-200/60 space-y-3">
-              <label class="block text-[10px] font-black text-stone-700 uppercase tracking-wider">Choose Payment & Delivery Plan</label>
-              <div class="grid grid-cols-2 gap-2">
-                <button type="button" id="type-onetime" class="py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer shadow-xs">
-                  One-Time Purchase
-                </button>
-                <button type="button" id="type-sub" class="py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer">
-                  Monthly Subscription
-                </button>
-              </div>
-
-              <!-- Frequency Options -->
-              <div id="subscription-frequency-box" class="space-y-2 pt-2 border-t border-stone-200/60 hidden">
-                <label class="block text-[10px] font-bold text-stone-600 uppercase">Delivery Frequency (Billed Monthly)</label>
-                <select id="sub-frequency-select" class="w-full px-3 py-2 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500">
-                  <option value="weekly">Weekly Deliveries (4 dispatches / month)</option>
-                  <option value="bi-weekly">Bi-Weekly Deliveries (2 dispatches / month)</option>
-                  <option value="monthly">Monthly Delivery (1 dispatch / month)</option>
-                </select>
-              </div>
             </div>
 
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: Customer Details & Payment Form (5 Cols) -->
+        <!-- RIGHT COLUMN: Customer Details & Payment Form -->
         <div class="lg:col-span-5 space-y-6">
           <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-6 sm:p-8 space-y-6">
             
@@ -106,7 +82,7 @@ import MainLayout from "../layouts/MainLayout.astro";
               
               <div>
                 <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Full Name *</label>
-                <input id="checkout-name" required placeholder="e.g. Kofi Mensah" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+                <input id="checkout-name" required placeholder="e.g. Kofi Mensah" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all" />
               </div>
 
               <div>
@@ -119,59 +95,59 @@ import MainLayout from "../layouts/MainLayout.astro";
                   maxlength="10" 
                   pattern="[0-9]{10}" 
                   placeholder="024XXXXXXX" 
-                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all" 
                 />
               </div>
 
               <div>
                 <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Email Address (For receipt) *</label>
-                <input id="checkout-email" type="email" required placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+                <input id="checkout-email" type="email" required placeholder="kofi@gmail.com" class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all" />
               </div>
 
               <!-- Recipient Checkbox -->
               <div class="pt-2 border-t border-stone-100">
                 <label class="flex items-center gap-2 cursor-pointer select-none">
-                  <input type="checkbox" id="different-recipient-checkbox" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-stone-300" />
+                  <input type="checkbox" id="different-recipient-checkbox" class="w-4 h-4 rounded text-blue-700 focus:ring-blue-600 border-stone-300" />
                   <span class="text-xs font-bold text-stone-800">Someone else is receiving this delivery</span>
                 </label>
               </div>
 
               <!-- Recipient Drawer -->
               <div id="recipient-section" class="space-y-4 p-4 bg-stone-50 rounded-2xl border border-stone-200/60 hidden">
-                <span class="text-[10px] font-black text-emerald-800 uppercase tracking-wider block">Recipient Contact Details</span>
+                <span class="text-[10px] font-black text-blue-900 uppercase tracking-wider block">Recipient Contact Details</span>
                 <div>
                   <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Recipient Full Name *</label>
-                  <input id="recipient-name" placeholder="e.g. Ama Serwaa" class="w-full px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+                  <input id="recipient-name" placeholder="e.g. Ama Serwaa" class="w-full px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all" />
                 </div>
                 <div>
                   <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Recipient Phone (10 digits) *</label>
-                  <input id="recipient-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="027XXXXXXX" class="w-full px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" />
+                  <input id="recipient-phone" type="tel" inputmode="numeric" maxlength="10" placeholder="027XXXXXXX" class="w-full px-3.5 py-2.5 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all" />
                 </div>
               </div>
 
               <!-- Delivery Schedule & Calendar -->
               <div>
                 <div class="flex items-center justify-between mb-1">
-                  <label class="block text-[10px] font-bold text-stone-600 uppercase">First Delivery Date *</label>
+                  <label class="block text-[10px] font-bold text-stone-600 uppercase">Delivery Date *</label>
                   <span class="text-[9px] text-stone-400 font-medium">Defaults to next batch cycle</span>
                 </div>
                 <input 
                   id="checkout-delivery-date" 
                   type="date" 
                   required 
-                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all cursor-pointer" 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all cursor-pointer" 
                 />
               </div>
 
               <div>
                 <label class="block text-[10px] font-bold text-stone-600 uppercase mb-1">Delivery Address / Landmark *</label>
-                <textarea id="checkout-address" required rows="2" placeholder="e.g. East Legon, near ANC Mall..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 resize-none transition-all"></textarea>
+                <textarea id="checkout-address" required rows="2" placeholder="e.g. East Legon, near ANC Mall..." class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 resize-none transition-all"></textarea>
               </div>
 
               <div>
                 <div class="flex items-center justify-between mb-1">
                   <label class="block text-[10px] font-bold text-stone-600 uppercase">Google Maps Pin Link *</label>
-                  <button type="button" id="geo-location-btn" class="text-[10px] font-bold text-emerald-700 hover:underline cursor-pointer">
+                  <button type="button" id="geo-location-btn" class="text-[10px] font-bold text-blue-800 hover:underline cursor-pointer">
                     📍 Use My GPS Location
                   </button>
                 </div>
@@ -180,15 +156,14 @@ import MainLayout from "../layouts/MainLayout.astro";
                   type="url" 
                   required 
                   placeholder="https://maps.app.goo.gl/... (or tap 'Use My GPS' above)" 
-                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all" 
                 />
               </div>
 
-              <!-- ALLERGIES & DIETARY SENSITIVITIES (NEW) -->
+              <!-- ALLERGIES & DIETARY SENSITIVITIES -->
               <div class="space-y-2 pt-2 border-t border-stone-100">
                 <label class="block text-[10px] font-bold text-stone-600 uppercase">Allergies & Dietary Sensitivities</label>
                 
-                <!-- Quick-Select Allergy Chips -->
                 <div class="flex flex-wrap gap-2">
                   <button type="button" class="allergy-chip px-3 py-1.5 rounded-xl text-[11px] font-bold bg-stone-100 text-stone-700 hover:bg-stone-200 transition-all cursor-pointer" data-allergy="Lemon sensitive">
                     🍋 Lemon Sensitive
@@ -201,10 +176,9 @@ import MainLayout from "../layouts/MainLayout.astro";
                 <input 
                   id="checkout-allergies" 
                   placeholder="Or type other notes (e.g. ginger sensitivity)..." 
-                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-emerald-500 transition-all" 
+                  class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-bold text-stone-900 focus:outline-none focus:border-blue-700 transition-all" 
                 />
                 
-                <!-- Dynamic Allergy Warning Box -->
                 <div id="allergy-warning-box" class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] font-bold text-amber-900 hidden flex items-start gap-2">
                   <span>⚠️</span>
                   <span id="allergy-warning-text">Heads up! Your selection includes ingredients matching your sensitivity.</span>
@@ -212,7 +186,7 @@ import MainLayout from "../layouts/MainLayout.astro";
               </div>
 
               <div class="pt-4">
-                <button type="submit" id="submit-checkout-btn" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 cursor-pointer">
+                <button type="submit" id="submit-checkout-btn" class="w-full py-4 bg-blue-800 hover:bg-blue-900 text-white font-black rounded-2xl text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer">
                   <span>💳 Pay Now Securely (Paystack)</span>
                 </button>
               </div>
@@ -244,7 +218,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       <div class="bg-stone-50 rounded-2xl p-4 space-y-2.5 text-xs text-stone-600 border border-stone-200/60 font-medium">
         <div class="flex justify-between">
           <span class="text-stone-400">Payment Gateway:</span>
-          <span class="font-bold text-stone-900">Paystack (Secure)</span>
+          <span class="font-bold text-stone-900">Paystack (One-Time Payment)</span>
         </div>
         <div class="flex justify-between">
           <span class="text-stone-400">Transaction Reference:</span>
@@ -257,7 +231,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       </p>
 
       <div class="space-y-3 pt-2">
-        <a href="/dashboard" class="w-full py-3.5 bg-stone-950 hover:bg-stone-900 text-white font-black rounded-2xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+        <a href="/dashboard" class="w-full py-3.5 bg-blue-800 hover:bg-blue-900 text-white font-black rounded-2xl text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
           <span>View Order in Dashboard →</span>
         </a>
       </div>
@@ -265,22 +239,18 @@ import MainLayout from "../layouts/MainLayout.astro";
   </div>
 
   <!-- Client Script -->
-<script>
+  <script>
     import { auth, db } from '../lib/firebase';
     import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
     import { onAuthStateChanged } from 'firebase/auth';
-    import { getSubscriptionPlan } from '../data/subscriptionPlans';
 
     let currentConfig: any = null;
-    let baseUnitBundlePrice = 0; // Immutable single-dispatch price
     let currentUser: any = null;
 
     const PAYSTACK_PUBLIC_KEY = 'pk_test_8c2d9a51aaca2a886f4b223f6278cbe619edbfca'; 
 
     const summaryBoxBadge = document.getElementById('summary-box-badge')!;
     const summarySingleCostEl = document.getElementById('summary-single-box-cost')!;
-    const summaryMultiplierRow = document.getElementById('frequency-multiplier-row')!;
-    const summaryMultiplierText = document.getElementById('summary-multiplier-text')!;
     const summaryPriceEl = document.getElementById('summary-total-price')!;
     const summaryListEl = document.getElementById('summary-items-list')!;
     const checkoutForm = document.getElementById('checkout-form') as HTMLFormElement;
@@ -290,11 +260,6 @@ import MainLayout from "../layouts/MainLayout.astro";
     const differentRecipientCheckbox = document.getElementById('different-recipient-checkbox') as HTMLInputElement;
     const recipientSection = document.getElementById('recipient-section') as HTMLElement;
     const deliveryDateInput = document.getElementById('checkout-delivery-date') as HTMLInputElement;
-
-    const btnOneTime = document.getElementById('type-onetime') as HTMLButtonElement;
-    const btnSub = document.getElementById('type-sub') as HTMLButtonElement;
-    const subFrequencyBox = document.getElementById('subscription-frequency-box') as HTMLElement;
-    const subFrequencySelect = document.getElementById('sub-frequency-select') as HTMLSelectElement;
 
     const allergyChips = document.querySelectorAll('.allergy-chip');
     const allergiesInput = document.getElementById('checkout-allergies') as HTMLInputElement;
@@ -312,7 +277,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     allergyChips.forEach(chip => {
       chip.addEventListener('click', () => {
         const allergyName = chip.getAttribute('data-allergy') || '';
-        chip.classList.toggle('bg-emerald-600');
+        chip.classList.toggle('bg-blue-800');
         chip.classList.toggle('text-white');
         chip.classList.toggle('bg-stone-100');
         chip.classList.toggle('text-stone-700');
@@ -342,12 +307,12 @@ import MainLayout from "../layouts/MainLayout.astro";
       let conflictingItem = '';
 
       currentConfig.items.forEach((item: any) => {
-        const name = item.name.toLowerCase();
-        if (hasLemon && (name.includes('lemon') || name.includes('citrus'))) {
+        const combinedName = `${item.name || ''} ${item.englishName || ''}`.toLowerCase();
+        if (hasLemon && (combinedName.includes('lemon') || combinedName.includes('citrus'))) {
           conflictFound = true;
           conflictingItem = item.name;
         }
-        if (hasPineapple && name.includes('pineapple')) {
+        if (hasPineapple && (combinedName.includes('pineapple') || combinedName.includes('ananas'))) {
           conflictFound = true;
           conflictingItem = item.name;
         }
@@ -361,7 +326,6 @@ import MainLayout from "../layouts/MainLayout.astro";
       }
     }
 
-    // Recipient Toggle
     differentRecipientCheckbox.addEventListener('change', () => {
       if (differentRecipientCheckbox.checked) {
         recipientSection.classList.remove('hidden');
@@ -374,7 +338,6 @@ import MainLayout from "../layouts/MainLayout.astro";
       }
     });
 
-    // Auth & Profile Prefill Check
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         sessionStorage.setItem('helthe_auth_redirect', '/checkout');
@@ -408,90 +371,34 @@ import MainLayout from "../layouts/MainLayout.astro";
       }
     });
 
-    // Load Box Config
+    // Load Box Config (Bottles or Pouches only)
     const rawConfig = sessionStorage.getItem('helthe_box_config');
     if (!rawConfig) {
       alert('No selection found. Redirecting to order builder...');
       window.location.href = '/order';
     } else {
       currentConfig = JSON.parse(rawConfig);
-      // Save base single-dispatch price once so toggling never compounds
-      baseUnitBundlePrice = Number(currentConfig.basePrice ?? currentConfig.totalPrice) || 0;
-      currentConfig.basePrice = baseUnitBundlePrice;
-      currentConfig.isSubscription = currentConfig.isSubscription || false;
-      currentConfig.frequency = currentConfig.frequency || 'weekly';
-    }
-
-    // Dynamic Pricing Engine (Always calculates cleanly from baseUnitBundlePrice)
-    function calculateAndUpdatePricing() {
-      if (!currentConfig) return;
-
-      summarySingleCostEl.textContent = `GHS ${baseUnitBundlePrice.toFixed(2)}`;
-
-      if (currentConfig.isSubscription) {
-        let multiplier = 4;
-        if (currentConfig.frequency === 'bi-weekly') multiplier = 2;
-        if (currentConfig.frequency === 'monthly') multiplier = 1;
-
-        const monthlyBilledTotal = baseUnitBundlePrice * multiplier;
-        currentConfig.totalPrice = monthlyBilledTotal;
-
-        // Only attach Paystack Plan Code for standard Juice Bottle bundles
-        const isJuiceBottles = !currentConfig.category || currentConfig.category === 'juices';
-        const planObj = isJuiceBottles
-          ? getSubscriptionPlan(currentConfig.boxSize, currentConfig.frequency)
-          : null;
-        currentConfig.planCode = planObj ? planObj.planCode : null;
-
-        summaryMultiplierRow.classList.remove('hidden');
-        summaryMultiplierText.textContent = `${multiplier}× ${multiplier === 1 ? 'dispatch' : 'dispatches'}/month`;
-        summaryBoxBadge.textContent = `Subscription (${currentConfig.frequency})`;
-      } else {
-        currentConfig.totalPrice = baseUnitBundlePrice;
-        currentConfig.planCode = null;
-        summaryMultiplierRow.classList.add('hidden');
-        summaryBoxBadge.textContent = currentConfig.category ? `Order (${currentConfig.category})` : 'One-Time Order';
+      if (currentConfig.category && currentConfig.category !== 'juices' && currentConfig.category !== 'pouches') {
+        sessionStorage.removeItem('helthe_box_config');
+        window.location.href = '/order';
       }
 
-      summaryPriceEl.textContent = `GHS ${Number(currentConfig.totalPrice).toFixed(2)}`;
-      checkAllergyConflicts();
-    }
+      const orderAmount = Number(currentConfig.basePrice ?? currentConfig.totalPrice) || 0;
+      currentConfig.totalPrice = orderAmount;
 
-    if (currentConfig) {
+      summarySingleCostEl.textContent = `GHS ${orderAmount.toFixed(2)}`;
+      summaryPriceEl.textContent = `GHS ${orderAmount.toFixed(2)}`;
+      summaryBoxBadge.textContent = currentConfig.category === 'pouches' ? 'Juice Pouches (One-Time)' : 'Juice Bottles (One-Time)';
+
       summaryListEl.innerHTML = currentConfig.items.map((item: any) => `
         <li class="py-2 flex justify-between items-center">
           <span class="font-bold text-stone-900">${item.name}</span>
-          <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-black">${item.qty} units</span>
+          <span class="px-2.5 py-1 bg-blue-50 text-blue-900 rounded-lg text-xs font-black">${item.qty} units</span>
         </li>
       `).join('');
 
-      if (currentConfig.isSubscription) {
-        btnSub.click();
-      } else {
-        calculateAndUpdatePricing();
-      }
+      checkAllergyConflicts();
     }
-
-    btnOneTime.addEventListener('click', () => {
-      currentConfig.isSubscription = false;
-      btnOneTime.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer shadow-xs";
-      btnSub.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer";
-      subFrequencyBox.classList.add('hidden');
-      calculateAndUpdatePricing();
-    });
-
-    btnSub.addEventListener('click', () => {
-      currentConfig.isSubscription = true;
-      btnSub.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-emerald-600 bg-emerald-600 text-white transition-all cursor-pointer shadow-xs";
-      btnOneTime.className = "py-2.5 px-3 rounded-xl text-xs font-bold border border-stone-200 bg-white text-stone-700 hover:border-emerald-500 transition-all cursor-pointer";
-      subFrequencyBox.classList.remove('hidden');
-      calculateAndUpdatePricing();
-    });
-
-    subFrequencySelect.addEventListener('change', (e: any) => {
-      currentConfig.frequency = e.target.value;
-      calculateAndUpdatePricing();
-    });
 
     if (geoBtn && locationPinInput) {
       geoBtn.addEventListener('click', () => {
@@ -501,7 +408,7 @@ import MainLayout from "../layouts/MainLayout.astro";
           (pos) => {
             locationPinInput.value = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
             geoBtn.textContent = '✓ Pin Captured!';
-            geoBtn.className = 'text-[10px] font-bold text-emerald-600';
+            geoBtn.className = 'text-[10px] font-bold text-emerald-700';
           },
           () => {
             alert('Unable to retrieve GPS. Please check location permissions.');
@@ -568,13 +475,11 @@ import MainLayout from "../layouts/MainLayout.astro";
 
       const orderDataPayload = {
         orderCode: customOrderCode,
-        orderType: currentConfig.isSubscription
-          ? `Subscription - ${currentConfig.category || 'juices'} (${currentConfig.frequency})`
-          : `Order (${currentConfig.category || 'Standard'})`,
+        orderType: `Order (${currentConfig.category === 'pouches' ? 'Juice Pouches' : 'Juice Bottles'})`,
         category: currentConfig.category || 'juices',
-        isSubscription: Boolean(currentConfig.isSubscription),
-        frequency: currentConfig.isSubscription ? currentConfig.frequency : null,
-        planCode: currentConfig.planCode || null,
+        isSubscription: false,
+        frequency: null,
+        planCode: null,
         userId: currentUser?.uid || null,
         buyer: { name: buyerName, phone: buyerPhone, email },
         recipient: { isDifferentPerson: isDifferent, name: recipientName, phone: recipientPhone },
@@ -609,10 +514,6 @@ import MainLayout from "../layouts/MainLayout.astro";
           handlePaystackSuccess(response, orderDataPayload);
         }
       };
-
-      if (currentConfig.isSubscription && currentConfig.planCode) {
-        paystackConfig.plan = currentConfig.planCode;
-      }
 
       const paystackHandler = (window as any).PaystackPop.setup(paystackConfig);
       paystackHandler.openIframe();
