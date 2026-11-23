@@ -391,11 +391,15 @@ import MainLayout from "../layouts/MainLayout.astro";
       summaryBoxBadge.textContent = currentConfig.category === 'pouches' ? 'Juice Pouches (One-Time)' : 'Juice Bottles (One-Time)';
 
       summaryListEl.innerHTML = currentConfig.items.map((item: any) => `
-        <li class="py-2 flex justify-between items-center">
+      <li class="py-2 flex justify-between items-center gap-2">
+        <div>
           <span class="font-bold text-stone-900">${item.name}</span>
-          <span class="px-2.5 py-1 bg-blue-50 text-blue-900 rounded-lg text-xs font-black">${item.qty} units</span>
-        </li>
-      `).join('');
+          ${item.customUnitPrice ? `<span class="ml-2 px-2 py-0.5 rounded bg-amber-100 text-amber-950 text-[10px] font-black">Custom · GHS ${item.customUnitPrice}/bottle</span>` : ''}
+        </div>
+        <span class="px-2.5 py-1 bg-blue-50 text-blue-900 rounded-lg text-xs font-black shrink-0">${item.qty} units</span>
+      </li>
+    `).join('');
+    
 
       checkAllergyConflicts();
     }
