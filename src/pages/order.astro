@@ -33,7 +33,7 @@ import orangeBitterleafGinger from '../assets/products/orange-bitterleaf-ginger.
 
 const ABC_CUSTOM_PRICE = 60;
 const POUCH_PACK_SIZE = 4;
-const POUCH_UNIT_PRICE = 1.5;
+const POUCH_UNIT_PRICE = 150;
 
 const juiceCatalog = [
   { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot (ABC)', frenchName: 'Pomme, Betterave & Carotte', fruits: ['apple', 'beetroot', 'carrot'], image: appleBeetrootCarrot, customPrice: ABC_CUSTOM_PRICE },
@@ -131,7 +131,7 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
                 </span>
                 <span class="block font-black text-base sm:text-lg text-stone-950">Juice Pouches</span>
                 <span class="block text-xs text-stone-600 font-medium mt-0.5">
-                  4 pouches @ GHS 1.50 each · Pick your flavours
+                  4 pouches @ GHS 150 each · Pick your flavours
                 </span>
               </div>
               <i class="fa-solid fa-bag-shopping text-xl text-[#FF5E1A]"></i>
@@ -184,7 +184,7 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
                 Select 4 Juice Pouches (1.5L Each)
               </h2>
               <p class="text-xs text-stone-600 font-medium">
-                4 pouches @ GHS 1.50 each (GHS 6.00 bundle). Add or remove flavours below, then proceed to checkout.
+                4 pouches @ GHS 150 each (GHS 600 bundle). Add or remove flavours below, then proceed to checkout.
               </p>
             </div>
             <div class="bg-white rounded-2xl px-4 py-3 border border-amber-200 text-right shrink-0">
@@ -313,7 +313,7 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
   <!-- Script Logic -->
   <script>
     const POUCH_PACK_SIZE = 4;
-    const POUCH_UNIT_PRICE = 1.5;
+    const POUCH_UNIT_PRICE = 150;
 
     let currentMode: 'bottles' | 'pouches' = 'bottles';
     let targetBundleSize = 6;
