@@ -1,186 +1,220 @@
 ---
 import Faq from '../components/Faq.astro';
 import MainLayout from '../layouts/MainLayout.astro';
-import Hwave from "../assets/h-wave.png";
 import { Image } from 'astro:assets';
 import NanaWelcome from "../assets/nana-owusua-helthe.png";
-import EventImage from "../assets/event-catering.png";
 
-// products
+// New real event & bottle photos
+import RainbowLineup from "../assets/rainbow-lineup.jpg";
+import IcedCartWide from "../assets/iced-cart-wide.jpg";
+import IcedBottleMacro from "../assets/iced-bottle-macro.jpg";
+import FreshJuicesCart from "../assets/fresh-juices-cart.jpg";
+
+// Products
 import Cucpinmint from "../assets/products/cucumber-pineapple-mint.jpg";
-import Cucpinspin from "../assets/products/cucumber-pineapple-spinach.png";
+import AppleBeetCarrot from "../assets/products/apple-beetroot-carrot.png";
 import OrangeCarrot from "../assets/products/orange-carrot.png";
 import Watermelon from "../assets/products/watermelon.png";
 import MangoMelon from "../assets/products/watermelon-mango.png";
 import BeetMelon from "../assets/products/watermelon-beetroot.png";
 import nana from "../assets/Mask group.png";
 import thankyou from "../assets/Mask group-1.png";
-import watermelon from "../assets/Mask group-2.png";
 
-// French names only for the juices & product items
-const signatureProducts = [
+const signatureBlends = [
 	{
+		name: "Pineapple Cucumber Mint",
 		frenchName: "Ananas, Concombre & Menthe",
-		category: "Bottle · 350ml",
+		tag: "Crisp & Cooling",
+		cardBg: "bg-emerald-50/90",
 		badgeTone: "bg-emerald-600 text-white",
-		image: Cucpinmint,
-		alt: "Ananas, Concombre & Menthe"
+		image: Cucpinmint
 	},
 	{
+		name: "Red Watermelon",
 		frenchName: "Pastèque Rouge Fraîche",
-		category: "Bottle · 350ml",
-		badgeTone: "bg-rose-600 text-white",
-		image: Watermelon,
-		alt: "Pastèque Rouge Fraîche"
+		tag: "Pure Hydration",
+		cardBg: "bg-rose-50/90",
+		badgeTone: "bg-[#FF2E55] text-white",
+		image: Watermelon
 	},
 	{
+		name: "Orange Carrot",
+		frenchName: "Orange & Carotte",
+		tag: "Citrus Glow",
+		cardBg: "bg-orange-50/90",
+		badgeTone: "bg-[#FF5E1A] text-white",
+		image: OrangeCarrot
+	},
+	{
+		name: "Apple Beetroot Carrot (ABC)",
+		frenchName: "Pomme, Betterave & Carotte",
+		tag: "Custom · GHS 60",
+		cardBg: "bg-amber-50/95",
+		badgeTone: "bg-[#FFD21E] text-stone-950",
+		image: AppleBeetCarrot
+	},
+	{
+		name: "Beetroot Watermelon",
 		frenchName: "Pastèque & Betterave",
-		category: "Bottle · 350ml",
+		tag: "Deep Ruby Boost",
+		cardBg: "bg-fuchsia-50/90",
+		badgeTone: "bg-rose-700 text-white",
+		image: BeetMelon
+	},
+	{
+		name: "Mango Watermelon",
+		frenchName: "Pastèque & Mangue",
+		tag: "Tropical Sun",
+		cardBg: "bg-yellow-50/95",
 		badgeTone: "bg-amber-500 text-stone-950",
-		image: BeetMelon,
-		alt: "Pastèque & Betterave"
-	},
-	{
-		frenchName: "Jus d’Orange & Carotte",
-		category: "Bottle · 350ml",
-		badgeTone: "bg-orange-500 text-white",
-		image: OrangeCarrot,
-		alt: "Jus d’Orange & Carotte"
-	},
-	{
-		frenchName: "Pochon Ananas & Mangue",
-		category: "Pouch · 4pcs",
-		badgeTone: "bg-blue-700 text-white",
-		image: MangoMelon,
-		alt: "Pochon Ananas & Mangue"
-	},
-	{
-		frenchName: "Pochon Pastèque Rouge",
-		category: "Pouch · 4pcs",
-		badgeTone: "bg-teal-600 text-white",
-		image: Cucpinspin,
-		alt: "Pochon Pastèque Rouge"
+		image: MangoMelon
 	}
-];
-
-const extraOfferings = [
-	{ frenchName: "Pudding d’Amande et Chia", tag: "Chia Pudding" },
-	{ frenchName: "Pudding de Noix de Cajou et Chia", tag: "Chia Pudding" },
-	{ frenchName: "Pochon Ananas & Mangue", tag: "Pouch Pack" },
-	{ frenchName: "Shot de Gingembre Pur", tag: "Wellness Shot" },
-	{ frenchName: "Shot Betterave, Menthe & Citron Vert", tag: "Wellness Shot" },
-	{ frenchName: "Corbeille de Fruits Frais", tag: "Fresh Fruits" }
 ];
 ---
 
-<MainLayout title="Helthe Juice | Freshness Crafted Daily">
+<MainLayout title="Helthe Juice | Cold-Pressed Freshness Crafted Daily">
 
-	<!-- Editorial Collage Hero -->
-	<section class="relative overflow-hidden bg-[#c88a5b] text-stone-950 pt-10 pb-28 md:pt-14 md:pb-36" id="section-hero">
+	<!-- VIBRANT CITRUS HERO -->
+	<section class="relative overflow-hidden bg-gradient-to-br from-[#FF5E1A] via-[#FF7426] to-[#FF962E] text-white pt-12 pb-28 md:pt-16 md:pb-36" id="section-hero">
+		<!-- Subtle Real Bottle Texture Behind Hero -->
+		<Image
+			src={IcedBottleMacro}
+			alt=""
+			aria-hidden="true"
+			class="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-multiply"
+		/>
+		<!-- Ambient Glow Orbs -->
+		<div class="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#FFD21E]/30 blur-3xl"></div>
+		<div class="pointer-events-none absolute -bottom-24 right-0 w-[28rem] h-[28rem] rounded-full bg-[#FF2E55]/25 blur-3xl"></div>
+
 		<div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 				<!-- Left Editorial Copy -->
-				<div class="lg:col-span-6 space-y-5 text-center lg:text-left" data-reveal="left">
-					<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fdfaf5] text-blue-900 text-xs font-extrabold tracking-wide shadow-sm">
-						<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-						<span>100% Real Fruit · Made Fresh Daily</span>
+				<div class="lg:col-span-6 space-y-6 text-center lg:text-left" data-aos="fade-right">
+					<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-stone-950 text-xs font-black tracking-wide shadow-md">
+						<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+						<span>100% Real Fruit · Cold-Pressed Fresh</span>
 					</div>
 
-					<h1 class="font-black tracking-tight leading-[0.98] text-5xl sm:text-6xl lg:text-7xl text-[#fdfaf5] drop-shadow-xs">
+					<h1 class="font-black tracking-tight leading-[0.96] text-5xl sm:text-6xl lg:text-7xl text-white">
 						refresh<br />
 						every sip.<br />
-						feel <span class="inline-block px-3 py-0.5 rounded-xl bg-amber-300 text-stone-950 -rotate-1">pure</span><br />
+						feel <span class="inline-block px-3.5 py-0.5 rounded-2xl bg-[#FFD21E] text-stone-950 -rotate-2 shadow-md">pure</span><br />
 						every day.
 					</h1>
 
-					<p class="text-sm sm:text-base font-medium text-[#fdfaf5]/95 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-						Cold-pressed bottles, handy pouches, creamy chia puddings, fresh fruits, and wellness shots crafted for how you live.
+					<p class="text-sm sm:text-base font-semibold text-white/95 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+						Vibrant 350ml cold-pressed juice bottles made from real fruits and veggies—no added sugar, no concentrates, and zero preservatives.
 					</p>
 
-					<div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
-						<a href="/order" class="px-6 py-3.5 rounded-full bg-blue-800 hover:bg-blue-900 text-white text-xs sm:text-sm font-black tracking-wide transition-all shadow-lg hover:-translate-y-0.5 active:translate-y-0">
-							Order Now
+					<div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
+						<a href="/order" class="px-7 py-4 rounded-full bg-[#1849D6] hover:bg-[#1238A8] text-white text-xs sm:text-sm font-black tracking-wide transition-all shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+							Build Your Box →
 						</a>
-						<a href="/juices" class="px-6 py-3.5 rounded-full bg-[#fdfaf5] hover:bg-amber-100 text-stone-950 text-xs sm:text-sm font-extrabold tracking-wide transition-all shadow-md hover:-translate-y-0.5 active:translate-y-0">
-							Explore Menu
+						<a href="#section-flavors" class="px-7 py-4 rounded-full bg-white hover:bg-[#FFD21E] text-stone-950 text-xs sm:text-sm font-black tracking-wide transition-all shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+							Explore Blends
 						</a>
 					</div>
 				</div>
 
-				<!-- Right Tilted Photo Collage & French Product Pill -->
-				<div class="lg:col-span-6 relative flex items-center justify-center min-h-[360px] sm:min-h-[430px]" data-reveal="right">
-					<div class="relative w-64 sm:w-72 rounded-3xl overflow-hidden bg-[#fdfaf5] p-2.5 shadow-2xl border-2 border-white/80 animate-float-card z-10">
-						<Image src={OrangeCarrot} alt="Jus d’Orange & Carotte" class="w-full h-64 sm:h-72 object-contain rounded-2xl bg-amber-50 p-3" />
-						<div class="pt-2.5 pb-1 px-2 flex items-center justify-between gap-2">
-							<span class="text-xs font-black text-stone-900 truncate">Jus d’Orange &amp; Carotte</span>
-							<span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-900 text-[10px] font-extrabold shrink-0">Fresh</span>
+				<!-- Right Tilted Photo Collage -->
+				<div class="lg:col-span-6 relative flex items-center justify-center min-h-[370px] sm:min-h-[440px]" data-aos="fade-left" data-aos-delay="120">
+					<div class="relative w-64 sm:w-72 rounded-3xl overflow-hidden bg-white p-3 shadow-2xl border-4 border-white animate-float-card z-10">
+						<div class="rounded-2xl bg-gradient-to-b from-orange-100 to-amber-50 p-3">
+							<Image src={OrangeCarrot} alt="Orange Carrot" class="w-full h-64 sm:h-72 object-contain" />
+						</div>
+						<div class="pt-3 pb-1 px-1.5 flex items-center justify-between gap-2">
+							<div class="min-w-0">
+								<span class="block text-xs font-black text-stone-950 truncate">Orange Carrot</span>
+								<span class="block text-[10px] italic text-stone-500 truncate">Orange &amp; Carotte</span>
+							</div>
+							<span class="px-2.5 py-1 rounded-full bg-[#FF5E1A] text-white text-[10px] font-black shrink-0">350ml</span>
 						</div>
 					</div>
 
-					<div class="hidden sm:block absolute -right-2 top-6 w-44 rounded-2xl overflow-hidden bg-white p-2 shadow-xl border border-amber-200 animate-float-card-alt z-20">
-						<Image src={Cucpinmint} alt="Ananas, Concombre & Menthe" class="w-full h-32 object-contain rounded-xl bg-emerald-50/70 p-2" />
-						<span class="mt-1.5 block text-[11px] font-black text-emerald-900 text-center bg-amber-200/90 py-1 rounded-lg">
-							Ananas &amp; Menthe
-						</span>
+					<div class="hidden sm:block absolute -right-1 top-5 w-48 rounded-3xl overflow-hidden bg-white p-2.5 shadow-2xl border-2 border-[#FFD21E] animate-float-card-alt z-20">
+						<div class="rounded-2xl bg-emerald-50 p-2">
+							<Image src={Cucpinmint} alt="Pineapple Cucumber Mint" class="w-full h-32 object-contain" />
+						</div>
+						<div class="mt-2 text-center bg-[#FFD21E] py-1.5 px-2 rounded-xl">
+							<span class="block text-[11px] font-black text-stone-950 leading-tight">Pineapple Cucumber Mint</span>
+							<span class="block text-[9px] italic text-stone-800">Ananas, Concombre &amp; Menthe</span>
+						</div>
 					</div>
 
-					<div class="hidden sm:block absolute -left-2 bottom-4 w-44 rounded-2xl overflow-hidden bg-rose-600 text-white p-2.5 shadow-xl rotate-[-4deg] hover:rotate-0 transition-transform duration-300 z-20">
-						<Image src={Watermelon} alt="Pastèque Rouge Fraîche" class="w-full h-28 object-contain rounded-xl bg-white/95 p-2" />
+					<div class="hidden sm:block absolute -left-1 bottom-3 w-48 rounded-3xl overflow-hidden bg-[#FF2E55] text-white p-2.5 shadow-2xl rotate-[-4deg] hover:rotate-0 transition-transform duration-300 z-20">
+						<div class="rounded-2xl bg-white p-2">
+							<Image src={Watermelon} alt="Red Watermelon" class="w-full h-28 object-contain" />
+						</div>
 						<div class="mt-2 text-center">
-							<span class="block text-[11px] font-black tracking-tight">Pastèque Rouge Fraîche</span>
-							<span class="text-[9px] uppercase tracking-wider text-rose-100 font-bold">Zero Additives</span>
+							<span class="block text-[11px] font-black tracking-tight">Red Watermelon</span>
+							<span class="block text-[9px] italic text-rose-100">Pastèque Rouge Fraîche</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<Image src={Hwave} alt="Helthe Juice wave divider" class="w-full h-24 md:h-40 absolute left-0 bottom-0 pointer-events-none object-cover" />
+		<!-- Crisp SVG Wave Divider -->
+		<svg viewBox="0 0 1440 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-16 sm:h-24 absolute left-0 bottom-0 pointer-events-none" preserveAspectRatio="none">
+			<path d="M0 38C240 105 480 -10 720 45C960 100 1200 15 1440 52V110H0V38Z" fill="#FFFDF9"/>
+		</svg>
 	</section>
 
-	<!-- Warm Welcome & Story Section -->
-	<section class="py-20 md:py-24 bg-[#fdfaf5]" id="section-story">
-		<div class="max-w-6xl mx-auto px-4 sm:px-6">
+	<!-- WARM WELCOME & STORY SECTION (WITH SUBTLE BACKGROUND PHOTO TEXTURE UNDER HERO) -->
+	<section class="relative overflow-hidden py-20 md:py-24 bg-[#FFFDF9]" id="section-story">
+		<!-- Subtle Background Photo Under Hero -->
+		<div class="pointer-events-none absolute inset-0 z-0">
+			<Image
+				src={IcedBottleMacro}
+				alt=""
+				aria-hidden="true"
+				class="w-full h-full object-cover opacity-[0.07]"
+			/>
+			<div class="absolute inset-0 bg-gradient-to-b from-[#FFFDF9] via-transparent to-[#FFFDF9]"></div>
+		</div>
+
+		<div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-				<div class="lg:col-span-6 space-y-6" data-reveal="left">
-					<span class="inline-block px-3.5 py-1 rounded-full bg-blue-100 text-blue-900 text-xs font-extrabold uppercase tracking-wider">
+				<div class="lg:col-span-6 space-y-6">
+					<span data-aos="fade-up" class="inline-block px-3.5 py-1 rounded-full bg-orange-100 text-[#FF5E1A] text-xs font-black uppercase tracking-wider">
 						Welcome to Helthe Juice
 					</span>
 
-					<h2 class="text-3xl sm:text-4xl font-black tracking-tight text-stone-950 leading-tight">
-						Real ingredients, honest craft, and a warm welcome in every bottle.
+					<h2 data-aos="fade-up" data-aos-delay="80" class="text-3xl sm:text-4xl font-black tracking-tight text-stone-950 leading-tight">
+						Real ingredients, honest craft, and vibrant energy in every bottle.
 					</h2>
 
-					<p class="text-sm sm:text-base text-stone-700 leading-relaxed">
-						Helthe Juice began with a simple belief: what you put into your body should feel wholesome, refreshing, and full of life. Founded by Nana Owusua, Helthe celebrates vibrant harvests with blends crafted to brighten busy mornings, workouts, and everyday moments.
+					<p data-aos="fade-up" data-aos-delay="140" class="text-sm sm:text-base text-stone-700 leading-relaxed">
+						Helthe Juice began with a simple belief: what you put into your body should taste alive, refreshing, and genuinely wholesome. Founded by Nana Owusua, Helthe celebrates fresh harvests pressed in small batches for busy mornings, workouts, and everyday moments.
 					</p>
 
-					<p class="text-sm sm:text-base text-stone-700 leading-relaxed">
-						No artificial colours, no preservatives, and no shortcuts—just crisp juices, easy-carry pouches, smoothies, chia puddings, fresh fruits, and energizing shots made with care.
+					<p data-aos="fade-up" data-aos-delay="200" class="text-sm sm:text-base text-stone-700 leading-relaxed">
+						No artificial colours, no refined sugar, and no shortcuts—just pure, cold-pressed juice boxes delivered chilled to your door.
 					</p>
 
 					<div class="grid grid-cols-3 gap-4 pt-2">
-						<div class="rounded-2xl overflow-hidden bg-white p-1.5 shadow-sm border border-stone-200/80 hover:-translate-y-1 transition-transform">
+						<div data-aos="zoom-in" data-aos-delay="100" class="rounded-2xl overflow-hidden bg-white p-1.5 shadow-md border border-orange-100 hover:-translate-y-1 transition-transform">
 							<Image src={nana} alt="Nana Owusua holding Helthe Juice" class="w-full h-28 sm:h-32 object-cover rounded-xl" />
 						</div>
-						<div class="rounded-2xl overflow-hidden bg-white p-1.5 shadow-sm border border-stone-200/80 hover:-translate-y-1 transition-transform">
+						<div data-aos="zoom-in" data-aos-delay="200" class="rounded-2xl overflow-hidden bg-white p-1.5 shadow-md border border-orange-100 hover:-translate-y-1 transition-transform">
 							<Image src={thankyou} alt="Helthe Juice care pack" class="w-full h-28 sm:h-32 object-cover rounded-xl" />
 						</div>
-						<div class="rounded-2xl overflow-hidden bg-white p-1.5 shadow-sm border border-stone-200/80 hover:-translate-y-1 transition-transform">
-							<Image src={watermelon} alt="Fresh watermelon blend" class="w-full h-28 sm:h-32 object-cover rounded-xl" />
+						<div data-aos="zoom-in" data-aos-delay="300" class="rounded-2xl overflow-hidden bg-white p-1.5 shadow-md border border-orange-100 hover:-translate-y-1 transition-transform">
+							<Image src={RainbowLineup} alt="Full rainbow lineup of Helthe Juice bottles" class="w-full h-28 sm:h-32 object-cover rounded-xl" />
 						</div>
 					</div>
 				</div>
 
-				<div class="lg:col-span-6" data-reveal="right">
-					<div class="relative rounded-3xl bg-amber-100/80 p-4 sm:p-6 border border-amber-200/80 shadow-lg">
+				<div class="lg:col-span-6" data-aos="fade-left" data-aos-delay="150">
+					<div class="relative rounded-3xl bg-gradient-to-br from-orange-100 via-amber-100 to-yellow-100 p-4 sm:p-6 border border-orange-200/80 shadow-xl">
 						<Image src={NanaWelcome} alt="Nana Owusua smiling with Helthe Juice" class="w-full rounded-2xl object-cover shadow-md" />
-						<div class="mt-4 flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-xs border border-stone-100">
+						<div class="mt-4 flex items-center justify-between bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-stone-100">
 							<div>
-								<p class="text-xs font-black text-stone-900">Handcrafted in Small Batches</p>
-								<p class="text-[11px] text-stone-500">Freshly prepared &amp; chilled for delivery</p>
+								<p class="text-xs font-black text-stone-950">Pressed Fresh in Small Batches</p>
+								<p class="text-[11px] text-stone-500">Chilled &amp; packed for scheduled delivery</p>
 							</div>
-							<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-extrabold">
+							<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-black">
 								100% Natural
 							</span>
 						</div>
@@ -190,58 +224,94 @@ const extraOfferings = [
 		</div>
 	</section>
 
-	<!-- Warm Caramel Card Showcase (French Product Names Only) -->
-	<section class="py-20 md:py-24 bg-[#c88a5b] text-stone-950 relative" id="section-flavors">
+	<!-- FULL-BLEED RAINBOW SPECTRUM SHOWCASE (DSC02146) -->
+	<section class="relative overflow-hidden py-24 sm:py-32 text-white" id="section-spectrum">
+		<Image
+			src={RainbowLineup}
+			alt="Rainbow lineup of 350ml Helthe Juice bottles"
+			class="absolute inset-0 w-full h-full object-cover object-center"
+		/>
+		<div class="absolute inset-0 bg-gradient-to-r from-stone-950/85 via-stone-950/65 to-stone-950/40"></div>
+
+		<div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+			<div class="max-w-xl space-y-5" data-aos="fade-up">
+				<span class="inline-block px-3.5 py-1 rounded-full bg-[#FFD21E] text-stone-950 text-xs font-black uppercase tracking-wider">
+					Every Colour Is Real Fruit
+				</span>
+				<h2 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+					From vibrant greens to ruby beetroot &amp; golden pineapple.
+				</h2>
+				<p class="text-sm sm:text-base text-white/90 leading-relaxed font-medium">
+					Every 350ml bottle gets its colour straight from fresh produce—never dyes, concentrates, or artificial flavours.
+				</p>
+				<div class="pt-2">
+					<a href="/order" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#FF5E1A] hover:bg-[#ff7426] text-white text-xs sm:text-sm font-black transition-all shadow-xl hover:-translate-y-0.5">
+						<span>Mix Your Own Box</span>
+						<i class="fa-solid fa-arrow-right text-xs"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- SIGNATURE BLENDS SHOWCASE -->
+	<section class="py-20 md:py-24 bg-[#FFF4E8] border-y border-orange-200/70" id="section-flavors">
 		<div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
-			<div class="flex flex-col md:flex-row md:items-end justify-between gap-4" data-reveal>
+			<div class="flex flex-col md:flex-row md:items-end justify-between gap-4" data-aos="fade-up">
 				<div class="space-y-2">
-					<span class="inline-block px-3.5 py-1 rounded-full bg-[#fdfaf5] text-blue-900 text-xs font-extrabold uppercase tracking-wider">
-						Signature Lineup
+					<span class="inline-block px-3.5 py-1 rounded-full bg-[#FF5E1A] text-white text-xs font-black uppercase tracking-wider">
+						350ml Cold-Pressed Bottles
 					</span>
-					<h2 class="text-3xl sm:text-5xl font-black tracking-tight text-[#fdfaf5]">
-						Explore Our Taste
+					<h2 class="text-3xl sm:text-5xl font-black tracking-tight text-stone-950">
+						Vibrant Flavours, Made Fresh
 					</h2>
 				</div>
-				<p class="text-xs sm:text-sm font-semibold text-[#fdfaf5]/90 max-w-md">
-					Pick your favourite blends, pouches, chia puddings, or shots and customize your bundle in seconds.
-				</p>
+				<a href="/order" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1849D6] hover:bg-[#1238A8] text-white text-xs font-black transition-all shadow-md self-start md:self-auto">
+					<span>See All 26 Blends</span>
+					<i class="fa-solid fa-arrow-right text-[10px]"></i>
+				</a>
 			</div>
 
-			<!-- 6 Signature Cards on Warm Caramel Backdrop -->
+			<!-- 6 Signature Cards -->
 			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-				{signatureProducts.map((item, idx) => (
+				{signatureBlends.map((item, idx) => (
 					<div
-						class="group bg-[#fdfaf5] rounded-3xl p-5 shadow-lg border border-white/70 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-						data-reveal
-						style={`transition-delay: ${idx * 65}ms;`}
+						data-aos="fade-up"
+						data-aos-delay={idx * 80}
+						class="group bg-white rounded-3xl p-5 shadow-md border border-stone-200/80 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-[#FF5E1A]"
 					>
 						<div>
 							<div class="flex items-center justify-between gap-2 mb-3">
 								<span class="text-[11px] font-extrabold uppercase tracking-wider text-stone-500">
-									{item.category}
+									350ml Bottle
 								</span>
 								<span class={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${item.badgeTone}`}>
-									Fresh
+									{item.tag}
 								</span>
 							</div>
 
-							<div class="h-52 rounded-2xl bg-amber-50/80 border border-amber-200/50 flex items-center justify-center p-4 overflow-hidden">
+							<div class={`h-52 rounded-2xl ${item.cardBg} flex items-center justify-center p-4 overflow-hidden`}>
 								<Image
 									src={item.image}
-									alt={item.frenchName}
+									alt={item.name}
 									class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
 								/>
 							</div>
 						</div>
 
-						<div class="pt-4 mt-4 border-t border-stone-200/70 flex items-center justify-between gap-3">
-							<h3 class="font-black text-base sm:text-lg text-stone-950 leading-snug">
-								{item.frenchName}
-							</h3>
+						<div class="pt-4 mt-4 border-t border-stone-100 flex items-center justify-between gap-3">
+							<div class="min-w-0">
+								<h3 class="font-black text-base text-stone-950 leading-snug truncate">
+									{item.name}
+								</h3>
+								<p class="text-xs italic font-medium text-stone-500 truncate">
+									{item.frenchName}
+								</p>
+							</div>
 							<a
 								href="/order"
-								class="w-9 h-9 rounded-full bg-blue-800 hover:bg-blue-900 text-white flex items-center justify-center shrink-0 transition-transform group-hover:translate-x-0.5"
-								aria-label={`Order ${item.frenchName}`}
+								class="w-10 h-10 rounded-full bg-[#1849D6] hover:bg-[#FF5E1A] text-white flex items-center justify-center shrink-0 transition-colors shadow-xs"
+								aria-label={`Order ${item.name}`}
 							>
 								<i class="fa-solid fa-plus text-xs"></i>
 							</a>
@@ -249,70 +319,54 @@ const extraOfferings = [
 					</div>
 				))}
 			</div>
-
-			<!-- More Offerings Strip (French Names for Items) -->
-			<div class="bg-[#fdfaf5] rounded-3xl p-6 sm:p-8 shadow-xl border border-white/80 space-y-5" data-reveal>
-				<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200/80 pb-4">
-					<div>
-						<h3 class="text-lg sm:text-xl font-black text-stone-950">
-							More Offerings · Pouches, Chia Pudding &amp; Shots
-						</h3>
-						<p class="text-xs text-stone-600 font-medium">
-							Also available across our multi-category order builder and subscriptions.
-						</p>
-					</div>
-					<a href="/order" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-800 hover:bg-blue-900 text-white text-xs font-black transition-all self-start sm:self-auto">
-						<span>Build Custom Order</span>
-						<i class="fa-solid fa-arrow-right text-[10px]"></i>
-					</a>
-				</div>
-
-				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-					{extraOfferings.map((extra) => (
-						<a
-							href="/order"
-							class="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-amber-50/80 hover:bg-amber-100 border border-amber-200/70 transition-all group"
-						>
-							<span class="font-bold text-xs sm:text-sm text-stone-900">
-								{extra.frenchName}
-							</span>
-							<span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-white text-blue-900 border border-blue-100 shrink-0 group-hover:bg-blue-800 group-hover:text-white transition-colors">
-								{extra.tag}
-							</span>
-						</a>
-					))}
-				</div>
-			</div>
 		</div>
 	</section>
 
-	<!-- Event & Wellness Section -->
-	<section class="py-20 md:py-24 bg-[#fdfaf5]" id="section-events">
+	<!-- EVENT & WELLNESS SECTION (FEATURING REAL EVENT WHEELBARROW PHOTOS) -->
+	<section class="py-20 md:py-24 bg-[#FFFDF9]" id="section-events">
 		<div class="max-w-6xl mx-auto px-4 sm:px-6">
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-				<div class="lg:col-span-6" data-reveal="left">
-					<div class="rounded-3xl overflow-hidden shadow-xl border border-stone-200/80 bg-white p-3">
-						<Image src={EventImage} alt="Helthe Juice serving at an event" class="w-full rounded-2xl object-cover" />
+				<!-- Two-Photo Event Collage -->
+				<div class="lg:col-span-6 grid grid-cols-12 gap-4 items-center">
+					<div data-aos="fade-right" class="col-span-7 rounded-3xl overflow-hidden shadow-xl border border-orange-100 bg-white p-2.5">
+						<Image
+							src={IcedCartWide}
+							alt="Helthe Juice bottles on ice with fresh citrus slices at an event"
+							class="w-full h-80 sm:h-96 object-cover rounded-2xl"
+						/>
+					</div>
+					<div data-aos="fade-up" data-aos-delay="140" class="col-span-5 space-y-4">
+						<div class="rounded-3xl overflow-hidden shadow-xl border border-orange-100 bg-white p-2">
+							<Image
+								src={FreshJuicesCart}
+								alt="Fresh Juices floral event display by Helthe Juice"
+								class="w-full h-56 sm:h-64 object-cover rounded-2xl"
+							/>
+						</div>
+						<div class="rounded-2xl bg-[#FFD21E] text-stone-950 p-4 shadow-md">
+							<p class="text-xs font-black uppercase tracking-wider">Chilled On Ice</p>
+							<p class="text-[11px] font-semibold mt-0.5">Styled &amp; served fresh for your guests.</p>
+						</div>
 					</div>
 				</div>
 
-				<div class="lg:col-span-6 space-y-5" data-reveal="right">
-					<span class="inline-block px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold uppercase tracking-wider">
+				<div class="lg:col-span-6 space-y-5" data-aos="fade-left" data-aos-delay="100">
+					<span class="inline-block px-3.5 py-1 rounded-full bg-[#FFD21E] text-stone-950 text-xs font-black uppercase tracking-wider">
 						Events &amp; Gatherings
 					</span>
 					<h2 class="text-3xl sm:text-4xl font-black tracking-tight text-stone-950">
-						Sip your way to wellness at every gathering.
+						Bring vibrant, cold-pressed refreshment to every gathering.
 					</h2>
 					<p class="text-sm sm:text-base text-stone-700 leading-relaxed">
-						From office wellness days and brunches to celebrations and pop-ups, bring fresh, crowd-pleasing drinks and treats your guests will genuinely enjoy.
+						From weddings, brunches, and pop-ups to corporate wellness days, we serve ice-cold 350ml bottles styled with fresh fruit and florals that guests love.
 					</p>
-					<p class="text-sm sm:text-base text-stone-700 leading-relaxed">
-						Healthy choices feel effortless when they taste this good—ready for one-time orders or recurring deliveries.
-					</p>
-					<div class="pt-2">
-						<a href="/order" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-blue-800 hover:bg-blue-900 text-white text-xs sm:text-sm font-black transition-all shadow-md hover:-translate-y-0.5">
-							<span>Order Now</span>
+					<div class="pt-2 flex flex-wrap gap-3">
+						<a href="/order" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#1849D6] hover:bg-[#1238A8] text-white text-xs sm:text-sm font-black transition-all shadow-md hover:-translate-y-0.5">
+							<span>Order Bottle Box</span>
 							<i class="fa-solid fa-arrow-right text-xs"></i>
+						</a>
+						<a href="/contact" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-orange-100 hover:bg-orange-200 text-[#FF5E1A] text-xs sm:text-sm font-black transition-all">
+							<span>Inquire for Events</span>
 						</a>
 					</div>
 				</div>
@@ -320,29 +374,37 @@ const extraOfferings = [
 		</div>
 	</section>
 
-	<!-- Warm Closing Callout -->
-	<section class="py-20 md:py-28 bg-amber-100/75 border-y border-amber-200/80">
-		<div class="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6" data-reveal>
-			<span class="inline-block px-4 py-1 rounded-full bg-white text-blue-900 text-xs font-black uppercase tracking-wider shadow-2xs">
-				Fresh · Friendly · Delivered
+	<!-- VIBRANT CALLOUT BANNER -->
+	<section class="relative overflow-hidden py-20 md:py-24 bg-gradient-to-r from-[#FF5E1A] to-[#FF2E55] text-white">
+		<Image
+			src={IcedCartWide}
+			alt=""
+			aria-hidden="true"
+			class="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-multiply"
+		/>
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6 relative z-10" data-aos="zoom-in">
+			<span class="inline-block px-4 py-1 rounded-full bg-[#FFD21E] text-stone-950 text-xs font-black uppercase tracking-wider shadow-xs">
+				6, 15, 20, or 30 Bottles
 			</span>
-			<h2 class="text-3xl sm:text-5xl font-black tracking-tight text-stone-950">
-				Ready to go down the Helthe path?
+			<h2 class="text-3xl sm:text-5xl font-black tracking-tight">
+				Ready to stock your fridge with real fruit?
 			</h2>
-			<p class="text-sm sm:text-base text-stone-700 max-w-xl mx-auto leading-relaxed">
-				No refined sugar, no preservatives, and no compromise—just real fruit goodness and fresh energy made to order.
+			<p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto leading-relaxed font-medium">
+				Mix and match your favourite flavours—including our custom Apple Beetroot Carrot (ABC)—and checkout in seconds.
 			</p>
-			<div class="pt-2 flex flex-wrap items-center justify-center gap-3">
-				<a href="/order" class="px-7 py-4 rounded-full bg-blue-800 hover:bg-blue-900 text-white text-xs sm:text-sm font-black transition-all shadow-lg hover:-translate-y-0.5">
-					Start Your Order
+			<div class="pt-2 flex flex-wrap items-center justify-center gap-3.5">
+				<a href="/order" class="px-8 py-4 rounded-full bg-[#1849D6] hover:bg-[#1238A8] text-white text-xs sm:text-sm font-black transition-all shadow-xl hover:-translate-y-0.5">
+					Start Your Order →
 				</a>
-				<a href="/juices" class="px-7 py-4 rounded-full bg-white hover:bg-stone-50 text-stone-950 border border-stone-300 text-xs sm:text-sm font-extrabold transition-all">
-					View Full Menu
+				<a href="/contact" class="px-8 py-4 rounded-full bg-white hover:bg-[#FFD21E] text-stone-950 text-xs sm:text-sm font-black transition-all shadow-md">
+					Ask a Question
 				</a>
 			</div>
 		</div>
 	</section>
 
 	<!-- FAQ -->
-	<Faq />
+	<div data-aos="fade-up">
+		<Faq />
+	</div>
 </MainLayout>

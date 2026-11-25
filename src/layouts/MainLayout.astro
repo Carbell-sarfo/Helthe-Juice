@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
+import "aos/dist/aos.css";
 import Footer from "../components/Footer.astro";
-import Navigation from "../components/Navigation.astro";
 
 interface Props {
 	title?: string;
@@ -10,8 +10,8 @@ interface Props {
 }
 
 const {
-	title = "Helthe Juice | Freshness Crafted Daily",
-	description = "Freshly pressed juices, pouches, smoothies, chia puddings, fresh fruits & wellness shots crafted with care.",
+	title = "Helthe Juice | Cold-Pressed Freshness Crafted Daily",
+	description = "Vibrant cold-pressed fruit & vegetable juices crafted fresh in small batches. Build your 350ml juice bottle box today.",
 	image = "/images/logo.png"
 } = Astro.props;
 ---
@@ -38,7 +38,7 @@ const {
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
 
 		<!-- Favicon -->
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -49,41 +49,77 @@ const {
 		<!-- Fontawesome cdn -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-		<!-- paystack -->
+		<!-- Paystack -->
 		<script src="https://js.paystack.co/v1/inline.js"></script>
 	</head>
 
-	<body class="bg-[#fdfaf5] text-stone-900 antialiased selection:bg-blue-700 selection:text-white overflow-x-hidden">
-		<!-- Blue Navigation Wrapper -->
-		<header id="helthe-blue-nav" class="fixed top-0 left-0 right-0 z-50 bg-blue-800/95 backdrop-blur-md text-white border-b border-blue-700/80 transition-all duration-300">
-			<div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+	<body class="bg-[#FFFDF9] text-stone-900 antialiased selection:bg-[#FF5E1A] selection:text-white overflow-x-hidden font-sans">
+		<!-- Vibrant Cobalt Navigation Bar -->
+		<header id="helthe-blue-nav" class="fixed top-0 left-0 right-0 z-50 bg-[#1849D6]/95 backdrop-blur-md text-white border-b border-blue-500/40 transition-all duration-300">
+			<div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
 				<a href="/" class="font-black tracking-tight text-lg sm:text-xl text-white flex items-center gap-2 shrink-0">
+					<span class="w-2.5 h-2.5 rounded-full bg-[#FFD21E] inline-block"></span>
 					<span>Helthe Juice</span>
 				</a>
 
-				<nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-blue-100">
-					<a href="#section-flavors" class="hover:text-amber-300 transition-colors">Offerings</a>
-					<a href="#section-events" class="hover:text-amber-300 transition-colors">Events</a>
-					<a href="/juices" class="hover:text-amber-300 transition-colors">Menu</a>
-					<a href="/contact" class="hover:text-amber-300 transition-colors">Contact Us</a>
+				<!-- Desktop Navigation -->
+				<nav class="hidden md:flex items-center gap-7 text-xs font-extrabold uppercase tracking-wider text-blue-100">
+					<a href="/#section-story" class="hover:text-[#FFD21E] transition-colors">Our Story</a>
+					<a href="/#section-flavors" class="hover:text-[#FFD21E] transition-colors">Blends</a>
+					<a href="/#section-events" class="hover:text-[#FFD21E] transition-colors">Events</a>
+					<a href="/contact" class="hover:text-[#FFD21E] transition-colors">Contact</a>
 				</nav>
 
+				<!-- Right Actions + Mobile Hamburger -->
 				<div class="flex items-center gap-2.5 shrink-0">
-					<a href="/dashboard" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-blue-100 hover:bg-blue-700/80 transition-all">
+					<a href="/dashboard" class="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold text-white/90 hover:bg-white/15 transition-all">
 						Account
 					</a>
-					<a href="/order" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-300 hover:bg-amber-200 text-stone-950 text-xs font-black transition-all shadow-sm hover:-translate-y-0.5 active:translate-y-0">
-						<span>Order Now</span>
+					<a href="/order" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FFD21E] hover:bg-[#ffe055] text-stone-950 text-xs font-black transition-all shadow-sm hover:-translate-y-0.5 active:translate-y-0">
+						<span>Order Box</span>
 						<i class="fa-solid fa-arrow-right text-[10px]"></i>
+					</a>
+
+					<button
+						type="button"
+						id="mobile-menu-toggle"
+						aria-label="Toggle navigation menu"
+						aria-expanded="false"
+						aria-controls="mobile-nav-drawer"
+						class="md:hidden w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors cursor-pointer"
+					>
+						<i id="mobile-menu-icon" class="fa-solid fa-bars text-sm"></i>
+					</button>
+				</div>
+			</div>
+
+			<!-- Mobile Dropdown Drawer -->
+			<div
+				id="mobile-nav-drawer"
+				class="md:hidden hidden bg-[#1238A8] border-t border-blue-400/30 px-4 pt-3 pb-5 space-y-2 shadow-2xl"
+			>
+				<a href="/#section-story" class="mobile-nav-link block px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
+					Our Story
+				</a>
+				<a href="/#section-flavors" class="mobile-nav-link block px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
+					Blends
+				</a>
+				<a href="/#section-events" class="mobile-nav-link block px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
+					Events
+				</a>
+				<a href="/contact" class="mobile-nav-link block px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:bg-white/10 transition-colors">
+					Contact
+				</a>
+				<div class="pt-2 border-t border-white/15 flex items-center gap-2">
+					<a href="/dashboard" class="mobile-nav-link flex-1 text-center px-4 py-2.5 rounded-xl text-xs font-extrabold bg-white/15 hover:bg-white/25 text-white transition-colors">
+						My Account
+					</a>
+					<a href="/order" class="mobile-nav-link flex-1 text-center px-4 py-2.5 rounded-xl text-xs font-black bg-[#FFD21E] hover:bg-[#ffe055] text-stone-950 transition-colors">
+						Order Box
 					</a>
 				</div>
 			</div>
 		</header>
-
-		<!-- Keep existing Navigation component available if needed without double-bar clash -->
-		<div class="sr-only">
-			<Navigation />
-		</div>
 
 		<main class="pt-16">
 			<slot />
@@ -93,76 +129,78 @@ const {
 
 		<script src="../js/main.js"></script>
 
-		<!-- Smooth Scroll Reveal & Nav Scroll Polish -->
-		<script is:inline>
+		<script>
+			import AOS from "aos";
+
 			document.addEventListener("DOMContentLoaded", () => {
+				AOS.init({
+					duration: 750,
+					easing: "ease-out-cubic",
+					once: true,
+					offset: 60,
+				});
+
 				const navEl = document.getElementById("helthe-blue-nav");
+				const toggleBtn = document.getElementById("mobile-menu-toggle");
+				const drawer = document.getElementById("mobile-nav-drawer");
+				const icon = document.getElementById("mobile-menu-icon");
+
+				function closeMobileMenu() {
+					if (!drawer || !toggleBtn || !icon) return;
+					drawer.classList.add("hidden");
+					toggleBtn.setAttribute("aria-expanded", "false");
+					icon.classList.remove("fa-xmark");
+					icon.classList.add("fa-bars");
+				}
+
+				if (toggleBtn && drawer && icon) {
+					toggleBtn.addEventListener("click", () => {
+						const isOpen = !drawer.classList.contains("hidden");
+						if (isOpen) {
+							closeMobileMenu();
+						} else {
+							drawer.classList.remove("hidden");
+							toggleBtn.setAttribute("aria-expanded", "true");
+							icon.classList.remove("fa-bars");
+							icon.classList.add("fa-xmark");
+						}
+					});
+
+					document.querySelectorAll(".mobile-nav-link").forEach((link) => {
+						link.addEventListener("click", () => closeMobileMenu());
+					});
+				}
+
 				window.addEventListener("scroll", () => {
 					if (!navEl) return;
 					if (window.scrollY > 24) {
-						navEl.classList.add("shadow-lg", "bg-blue-900");
-						navEl.classList.remove("bg-blue-800/95");
+						navEl.classList.add("shadow-lg", "bg-[#1238A8]");
+						navEl.classList.remove("bg-[#1849D6]/95");
 					} else {
-						navEl.classList.remove("shadow-lg", "bg-blue-900");
-						navEl.classList.add("bg-blue-800/95");
+						navEl.classList.remove("shadow-lg", "bg-[#1238A8]");
+						navEl.classList.add("bg-[#1849D6]/95");
 					}
 				}, { passive: true });
-
-				const targets = document.querySelectorAll("[data-reveal]");
-				if ("IntersectionObserver" in window && targets.length) {
-					const observer = new IntersectionObserver((entries) => {
-						entries.forEach((entry) => {
-							if (entry.isIntersecting) {
-								entry.target.classList.add("is-visible");
-								observer.unobserve(entry.target);
-							}
-						});
-					}, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
-
-					targets.forEach((el) => observer.observe(el));
-				} else {
-					targets.forEach((el) => el.classList.add("is-visible"));
-				}
 			});
 		</script>
 
 		<style is:global>
-			[data-reveal] {
-				opacity: 0;
-				transform: translateY(22px);
-				transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-			}
-			[data-reveal="left"] {
-				transform: translateX(-24px);
-			}
-			[data-reveal="right"] {
-				transform: translateX(24px);
-			}
-			[data-reveal].is-visible {
-				opacity: 1;
-				transform: translate(0, 0);
+			html {
+				scroll-behavior: smooth;
 			}
 			@keyframes gentleFloat {
 				0%, 100% { transform: translateY(0px) rotate(-2deg); }
-				50% { transform: translateY(-7px) rotate(-1deg); }
+				50% { transform: translateY(-8px) rotate(-1deg); }
 			}
 			@keyframes gentleFloatAlt {
 				0%, 100% { transform: translateY(0px) rotate(3deg); }
-				50% { transform: translateY(-6px) rotate(4deg); }
+				50% { transform: translateY(-7px) rotate(4deg); }
 			}
 			.animate-float-card {
-				animation: gentleFloat 5.5s ease-in-out infinite;
+				animation: gentleFloat 5s ease-in-out infinite;
 			}
 			.animate-float-card-alt {
-				animation: gentleFloatAlt 6.2s ease-in-out infinite;
-			}
-			@media (prefers-reduced-motion: reduce) {
-				[data-reveal], .animate-float-card, .animate-float-card-alt {
-					opacity: 1 !important;
-					transform: none !important;
-					animation: none !important;
-					transition: none !important;
-				}
+				animation: gentleFloatAlt 5.8s ease-in-out infinite;
 			}
 		</style>
 	</body>

@@ -10,7 +10,9 @@ import path from "path";
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: netlify(),
+  adapter: netlify({
+    edgeMiddleware: false,
+  }),
   site: "https://helthejuice.netlify.app/",
   integrations: [
     sitemap(),
