@@ -32,6 +32,8 @@ import orangeCarrot from '../assets/products/orange-carrot.png';
 import orangeBitterleafGinger from '../assets/products/orange-bitterleaf-ginger.png';
 
 const ABC_CUSTOM_PRICE = 60;
+const POUCH_PACK_SIZE = 4;
+const POUCH_UNIT_PRICE = 1.5;
 
 const juiceCatalog = [
   { id: 'apple-beetroot-carrot', name: 'Apple Beetroot Carrot (ABC)', frenchName: 'Pomme, Betterave & Carotte', fruits: ['apple', 'beetroot', 'carrot'], image: appleBeetrootCarrot, customPrice: ABC_CUSTOM_PRICE },
@@ -70,20 +72,22 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
     <div class="max-w-6xl mx-auto space-y-8">
 
       <!-- Banner -->
-      <div data-reveal class="bg-gradient-to-r from-[#FF5E1A] via-[#FF7426] to-[#FF962E] rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div data-aos="fade-up" class="bg-gradient-to-r from-[#FF5E1A] via-[#FF7426] to-[#FF962E] rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-2 text-center md:text-left">
           <span class="px-3.5 py-1 bg-white text-[#1849D6] rounded-full text-[10px] font-black uppercase tracking-wider shadow-2xs">
             100% Natural · Cold-Pressed Fresh
           </span>
-          <h1 class="text-2xl sm:text-3xl font-black tracking-tight">Build Your Juice Bottle Bundle</h1>
+          <h1 class="text-2xl sm:text-3xl font-black tracking-tight">Build Your Helthe Juice Order</h1>
           <p class="text-xs sm:text-sm text-white/95 font-medium max-w-xl leading-relaxed">
-            Pick your 350ml bottle bundle size, filter by fruit or flavour, and head straight to checkout. Note: Custom Apple Beetroot Carrot (ABC) is GHS 60 per bottle.
+            Start by choosing 350ml Juice Bottles or 1.5L Juice Pouches, customize your flavours, and head straight to checkout.
           </p>
         </div>
         <div class="bg-white text-stone-950 px-5 py-4 rounded-2xl flex items-center gap-4 text-center shadow-md">
           <div>
-            <span class="text-[10px] font-bold text-stone-500 uppercase block">Selected Bottles</span>
-            <span class="text-lg font-black text-[#1849D6]"><strong id="allocated-count">0</strong> Bottles</span>
+            <span class="text-[10px] font-bold text-stone-500 uppercase block">Selected Items</span>
+            <span class="text-lg font-black text-[#1849D6]">
+              <strong id="allocated-count">0</strong> <span id="allocated-unit-label">Bottles</span>
+            </span>
           </div>
         </div>
       </div>
@@ -91,31 +95,77 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
       <!-- Main Builder Card -->
       <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-4 sm:p-10 space-y-8">
 
-        <!-- STEP 1: BUNDLE SIZE -->
-        <div id="bundle-selector-section" class="space-y-4" data-reveal>
+        <!-- STEP 0: OFFERING TYPE (BOTTLES VS POUCHES) -->
+        <div class="space-y-3" data-aos="fade-up">
+          <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">
+            Choose Offering Format
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <button
+              type="button"
+              id="mode-bottles-btn"
+              data-mode="bottles"
+              class="offering-mode-btn border-2 rounded-2xl p-4 sm:p-5 text-left transition-all border-[#1849D6] bg-blue-50/70 cursor-pointer flex items-center justify-between gap-4 shadow-xs"
+            >
+              <div>
+                <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#1849D6] text-white text-[9px] font-black uppercase tracking-wider mb-1.5">
+                  350ml Bottles
+                </span>
+                <span class="block font-black text-base sm:text-lg text-stone-950">Juice Bottles</span>
+                <span class="block text-xs text-stone-600 font-medium mt-0.5">
+                  Select bundle box (6, 15, 20, or 30 pcs) &amp; mix flavours
+                </span>
+              </div>
+              <i class="fa-solid fa-bottle-water text-xl text-[#1849D6]"></i>
+            </button>
+
+            <button
+              type="button"
+              id="mode-pouches-btn"
+              data-mode="pouches"
+              class="offering-mode-btn border-2 rounded-2xl p-4 sm:p-5 text-left transition-all border-stone-200 bg-stone-50/60 hover:border-stone-300 cursor-pointer flex items-center justify-between gap-4 shadow-xs"
+            >
+              <div>
+                <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#FFD21E] text-stone-950 text-[9px] font-black uppercase tracking-wider mb-1.5">
+                  1.5 Litres · 4 Pcs
+                </span>
+                <span class="block font-black text-base sm:text-lg text-stone-950">Juice Pouches</span>
+                <span class="block text-xs text-stone-600 font-medium mt-0.5">
+                  4 pouches @ GHS 1.50 each · Pick your flavours
+                </span>
+              </div>
+              <i class="fa-solid fa-bag-shopping text-xl text-[#FF5E1A]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 1A: BOTTLE BUNDLE SIZE (Shown when Bottles mode is active) -->
+        <div id="bundle-selector-section" class="space-y-4 pt-4 border-t border-stone-100">
           <div class="flex items-center justify-between">
-            <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">1. Choose Bottle Bundle Size</label>
+            <label class="block text-[11px] font-black text-stone-700 uppercase tracking-wider">
+              Select Bottle Box Size
+            </label>
             <div class="bg-stone-100 px-3 py-1 rounded-xl text-[10px] font-bold text-stone-700">
               Variety limit: <strong id="flavors-used-count">0</strong> / <span id="max-flavors-allowed">2</span> max
             </div>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" data-stagger="60">
-            <button type="button" data-reveal="scale" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-[#1849D6] bg-blue-50/50 cursor-pointer shadow-xs" data-size="6" data-price="240" data-step="3" data-maxflavors="2">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-[#1849D6] bg-blue-50/50 cursor-pointer shadow-xs" data-size="6" data-price="240" data-step="3" data-maxflavors="2">
               <span class="block font-black text-base text-stone-950">6 Pcs</span>
               <span class="block text-xs text-[#1849D6] font-bold mt-0.5">GHS 240</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 2 flavours (±3)</span>
             </button>
-            <button type="button" data-reveal="scale" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="15" data-price="525" data-step="5" data-maxflavors="3">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="15" data-price="525" data-step="5" data-maxflavors="3">
               <span class="block font-black text-base text-stone-950">15 Pcs</span>
               <span class="block text-xs text-[#1849D6] font-bold mt-0.5">GHS 525</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 3 flavours (±5)</span>
             </button>
-            <button type="button" data-reveal="scale" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="20" data-price="700" data-step="5" data-maxflavors="4">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="20" data-price="700" data-step="5" data-maxflavors="4">
               <span class="block font-black text-base text-stone-950">20 Pcs</span>
               <span class="block text-xs text-[#1849D6] font-bold mt-0.5">GHS 700</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 4 flavours (±5)</span>
             </button>
-            <button type="button" data-reveal="scale" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="30" data-price="1050" data-step="5" data-maxflavors="5">
+            <button type="button" class="bundle-size-btn border-2 rounded-2xl p-4 text-center transition-all border-stone-200 bg-stone-50/50 hover:border-stone-300 cursor-pointer shadow-xs" data-size="30" data-price="1050" data-step="5" data-maxflavors="5">
               <span class="block font-black text-base text-stone-950">30 Pcs</span>
               <span class="block text-xs text-[#1849D6] font-bold mt-0.5">GHS 1050</span>
               <span class="block text-[9px] text-stone-500 font-semibold">Max 5 flavours (±5)</span>
@@ -123,8 +173,31 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
           </div>
         </div>
 
+        <!-- STEP 1B: POUCH BUNDLE SUMMARY (Shown when Pouches mode is active) -->
+        <div id="pouch-info-section" class="hidden pt-4 border-t border-stone-100">
+          <div class="rounded-2xl bg-amber-50/80 border border-amber-200/90 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#FFD21E] text-stone-950 text-[10px] font-black uppercase tracking-wider">
+                1.5 Litres · Pouches (4 pcs)
+              </span>
+              <h2 class="text-base sm:text-lg font-black text-stone-950">
+                Select 4 Juice Pouches (1.5L Each)
+              </h2>
+              <p class="text-xs text-stone-600 font-medium">
+                4 pouches @ GHS 1.50 each (GHS 6.00 bundle). Add or remove flavours below, then proceed to checkout.
+              </p>
+            </div>
+            <div class="bg-white rounded-2xl px-4 py-3 border border-amber-200 text-right shrink-0">
+              <span class="text-[10px] font-bold uppercase text-stone-500 block">Pouches Selected</span>
+              <span class="text-base font-black text-[#1849D6]">
+                <strong id="pouch-allocated-count">0</strong> / 4
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- SEARCH & FRUIT FILTER BAR -->
-        <div id="filter-bar-section" class="space-y-3 pt-4 border-t border-stone-100" data-reveal>
+        <div id="filter-bar-section" class="space-y-3 pt-4 border-t border-stone-100">
           <input
             type="text"
             id="boxSearchInput"
@@ -146,7 +219,7 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
             const isCustomAbc = Boolean(item.customPrice);
             return (
               <div
-                data-reveal="scale"
+                data-aos="fade-up"
                 class={`flavor-card bg-[#FFFDF9] border rounded-3xl p-3.5 sm:p-5 flex flex-col justify-between gap-4 transition-all hover:shadow-lg ${isCustomAbc ? 'border-amber-400/90 hover:border-amber-500' : 'border-stone-200/90 hover:border-[#FF5E1A]'}`}
                 data-name={item.name.toLowerCase()}
                 data-french={item.frenchName.toLowerCase()}
@@ -154,9 +227,11 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
               >
                 <div class="space-y-3">
                   <div class="w-full aspect-[4/5] rounded-2xl bg-white border border-stone-200/80 overflow-hidden relative flex items-center justify-center p-3 shadow-xs">
-                    <span class="absolute top-2 left-2 bg-stone-950/75 text-white text-[9px] font-black px-2.5 py-1 rounded-lg z-10">350ml Bottle</span>
+                    <span class="format-badge absolute top-2 left-2 bg-stone-950/75 text-white text-[9px] font-black px-2.5 py-1 rounded-lg z-10">
+                      350ml Bottle
+                    </span>
                     {isCustomAbc && (
-                      <span class="absolute top-2 right-2 bg-[#FFD21E] text-stone-950 text-[9px] font-black px-2 py-1 rounded-lg z-10 shadow-2xs">
+                      <span class="abc-custom-badge absolute top-2 right-2 bg-[#FFD21E] text-stone-950 text-[9px] font-black px-2 py-1 rounded-lg z-10 shadow-2xs">
                         Custom · GHS {item.customPrice}/ea
                       </span>
                     )}
@@ -165,11 +240,6 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
                   <div class="space-y-0.5">
                     <h3 class="font-black text-xs sm:text-sm text-stone-950 line-clamp-1">{item.name}</h3>
                     <p class="text-[11px] font-medium italic text-stone-500 line-clamp-1">{item.frenchName}</p>
-                    {isCustomAbc && (
-                      <p class="text-[10px] font-extrabold text-amber-900 pt-0.5">
-                        Custom blend · GHS {item.customPrice} per bottle in mix
-                      </p>
-                    )}
                     <div class="flex flex-wrap gap-1 pt-1.5">
                       {item.fruits.map(f => <span class="text-[8px] bg-orange-100 text-stone-800 px-2 py-0.5 rounded font-bold uppercase tracking-wider">{f}</span>)}
                     </div>
@@ -204,8 +274,10 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
   <!-- STICKY BOTTOM DRAWER -->
   <div id="sticky-checkout-bar" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-2xl p-4 sm:p-6 z-40 transition-all transform translate-y-full">
     <div class="max-w-6xl mx-auto space-y-3">
-      <div id="sticky-items-preview" class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold text-stone-700 no-scrollbar">
-        <span class="text-stone-400 italic text-xs">No bottles selected yet.</span>
+      <div class="flex items-center justify-between gap-2">
+        <div id="sticky-items-preview" class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold text-stone-700 no-scrollbar flex-1">
+          <span class="text-stone-400 italic text-xs">No items selected yet.</span>
+        </div>
       </div>
 
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-stone-100 pt-3">
@@ -240,10 +312,20 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
 
   <!-- Script Logic -->
   <script>
+    const POUCH_PACK_SIZE = 4;
+    const POUCH_UNIT_PRICE = 1.5;
+
+    let currentMode: 'bottles' | 'pouches' = 'bottles';
     let targetBundleSize = 6;
     let fixedBundlePrice = 240;
     let stepSize = 3;
     let maxFlavorsAllowed = 2;
+
+    const modeBtns = document.querySelectorAll('.offering-mode-btn');
+    const bundleSelectorSection = document.getElementById('bundle-selector-section')!;
+    const pouchInfoSection = document.getElementById('pouch-info-section')!;
+    const pouchAllocatedCountEl = document.getElementById('pouch-allocated-count')!;
+    const allocatedUnitLabelEl = document.getElementById('allocated-unit-label')!;
 
     const sizeBtns = document.querySelectorAll('.bundle-size-btn');
     const gridJuices = document.getElementById('grid-juices')!;
@@ -262,6 +344,51 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
     const searchInput = document.getElementById('boxSearchInput') as HTMLInputElement;
     const fruitFilterBtns = document.querySelectorAll('.box-fruit-filter');
     let activeFruitFilter = '';
+
+    function getRequiredTotalUnits() {
+      return currentMode === 'pouches' ? POUCH_PACK_SIZE : targetBundleSize;
+    }
+
+    function getCurrentStepSize() {
+      return currentMode === 'pouches' ? 1 : stepSize;
+    }
+
+    function syncCardBadgesForMode() {
+      document.querySelectorAll('.flavor-card').forEach(card => {
+        const formatBadge = card.querySelector('.format-badge');
+        const abcBadge = card.querySelector('.abc-custom-badge');
+        if (formatBadge) {
+          formatBadge.textContent = currentMode === 'pouches' ? '1.5L Pouch' : '350ml Bottle';
+        }
+        if (abcBadge) {
+          abcBadge.classList.toggle('hidden', currentMode === 'pouches');
+        }
+      });
+    }
+
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nextMode = (btn.getAttribute('data-mode') === 'pouches') ? 'pouches' : 'bottles';
+        if (nextMode === currentMode) return;
+
+        currentMode = nextMode;
+        modeBtns.forEach(b => {
+          const isSelected = b.getAttribute('data-mode') === currentMode;
+          b.classList.toggle('border-[#1849D6]', isSelected);
+          b.classList.toggle('bg-blue-50/70', isSelected);
+          b.classList.toggle('border-stone-200', !isSelected);
+          b.classList.toggle('bg-stone-50/60', !isSelected);
+        });
+
+        bundleSelectorSection.classList.toggle('hidden', currentMode !== 'bottles');
+        pouchInfoSection.classList.toggle('hidden', currentMode !== 'pouches');
+        allocatedUnitLabelEl.textContent = currentMode === 'pouches' ? 'Pouches' : 'Bottles';
+
+        syncCardBadgesForMode();
+        resetAllInputs();
+        updateState();
+      });
+    });
 
     sizeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -334,29 +461,38 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
       const input = card.querySelector('.box-qty-input') as HTMLInputElement;
 
       subBtn.addEventListener('click', () => {
+        const activeStep = getCurrentStepSize();
         let val = parseInt(input.value) || 0;
-        if (val >= stepSize) {
-          input.value = String(val - stepSize);
+        if (val >= activeStep) {
+          input.value = String(val - activeStep);
+          updateState();
+        } else if (val > 0) {
+          input.value = '0';
           updateState();
         }
       });
 
       addBtn.addEventListener('click', () => {
+        const activeStep = getCurrentStepSize();
+        const requiredTotal = getRequiredTotalUnits();
         let val = parseInt(input.value) || 0;
         const currentTotal = getActiveGridTotal();
 
-        if (currentTotal + stepSize > targetBundleSize) {
-          alert(`Adding ${stepSize} bottles exceeds your ${targetBundleSize}-piece box limit!`);
+        if (currentTotal + activeStep > requiredTotal) {
+          const unitNoun = currentMode === 'pouches' ? 'pouches' : 'bottles';
+          alert(`Adding ${activeStep} ${unitNoun} exceeds your ${requiredTotal}-piece ${currentMode === 'pouches' ? 'pouch pack' : 'box'} limit!`);
           return;
         }
 
-        const usedFlavors = getUsedFlavorsCount();
-        if (val === 0 && usedFlavors >= maxFlavorsAllowed) {
-          alert(`Maximum flavour limit reached (${maxFlavorsAllowed} flavours for this box size).`);
-          return;
+        if (currentMode === 'bottles') {
+          const usedFlavors = getUsedFlavorsCount();
+          if (val === 0 && usedFlavors >= maxFlavorsAllowed) {
+            alert(`Maximum flavour limit reached (${maxFlavorsAllowed} flavours for this box size).`);
+            return;
+          }
         }
 
-        input.value = String(val + stepSize);
+        input.value = String(val + activeStep);
         updateState();
       });
     });
@@ -376,6 +512,11 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
     }
 
     function calculateBundleTotal() {
+      const totalUnits = getActiveGridTotal();
+      if (currentMode === 'pouches') {
+        return Number((totalUnits * POUCH_UNIT_PRICE).toFixed(2));
+      }
+
       let standardQty = 0;
       let customTotal = 0;
 
@@ -401,36 +542,70 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
     function updateState() {
       const totalUnits = getActiveGridTotal();
       const totalPrice = calculateBundleTotal();
+      const requiredTotal = getRequiredTotalUnits();
       let previewHTML = '';
       let hasCustomAbc = false;
 
-      gridJuices.querySelectorAll('.box-qty-input').forEach((input: any) => {
+      gridJuices.querySelectorAll('.box-qty-input').forEach((input: any, idx: number) => {
         const qty = parseInt(input.value) || 0;
         if (qty > 0) {
           const name = input.getAttribute('data-flavor') || '';
           const frenchName = input.getAttribute('data-french') || '';
           const customPrice = parseFloat(input.getAttribute('data-custom-price') || '');
-          const isCustom = !Number.isNaN(customPrice) && customPrice > 0;
+          const isCustom = currentMode === 'bottles' && !Number.isNaN(customPrice) && customPrice > 0;
           if (isCustom) hasCustomAbc = true;
 
           const noteTag = isCustom
             ? ` <span class="px-1.5 py-0.5 rounded bg-[#FFD21E] text-stone-950 text-[10px] font-black">Custom · GHS ${customPrice}/ea</span>`
             : '';
 
-          previewHTML += `<span class="bg-blue-50 border border-blue-200 text-blue-950 px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap flex items-center gap-1.5">
-            ${qty}× ${name}${frenchName ? ` <em class="font-medium text-stone-500 not-italic">(${frenchName})</em>` : ''}${noteTag}
-          </span>`;
+          previewHTML += `
+            <button
+              type="button"
+              data-remove-index="${idx}"
+              title="Click to remove ${name}"
+              class="remove-drawer-item bg-blue-50 hover:bg-rose-50 border border-blue-200 hover:border-rose-300 text-blue-950 hover:text-rose-900 px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <span>${qty}× ${name}${frenchName ? ` <em class="font-medium text-stone-500 not-italic">(${frenchName})</em>` : ''}${noteTag}</span>
+              <span class="ml-1 w-4 h-4 rounded-full bg-blue-900/10 hover:bg-rose-600 hover:text-white inline-flex items-center justify-center text-[10px] font-black">×</span>
+            </button>
+          `;
         }
       });
 
-      drawerBoxTitle.textContent = hasCustomAbc
-        ? `Juice Bottles (${targetBundleSize}-Pack · Includes Custom ABC)`
-        : `Juice Bottles (${targetBundleSize}-Pack)`;
+      if (currentMode === 'pouches') {
+        drawerBoxTitle.textContent = `Juice Pouches (1.5L · ${POUCH_PACK_SIZE} Pcs @ GHS ${POUCH_UNIT_PRICE.toFixed(2)} ea)`;
+        pouchAllocatedCountEl.textContent = String(totalUnits);
+      } else {
+        drawerBoxTitle.textContent = hasCustomAbc
+          ? `Juice Bottles (${targetBundleSize}-Pack · Includes Custom ABC)`
+          : `Juice Bottles (${targetBundleSize}-Pack)`;
+      }
+
       allocatedCountEl.textContent = String(totalUnits);
       flavorsUsedCountEl.textContent = String(getUsedFlavorsCount());
+
+      const emptyLabel = currentMode === 'pouches'
+        ? 'No pouches selected yet. Pick your flavours above!'
+        : 'No bottles selected yet. Pick your flavours above!';
+
       stickyItemsPreview.innerHTML = previewHTML === ''
-        ? `<span class="text-stone-400 italic text-xs">No bottles selected yet. Pick your flavours above!</span>`
+        ? `<span class="text-stone-400 italic text-xs">${emptyLabel}</span>`
         : previewHTML;
+
+      // Wire click-to-remove on each chip in the bottom drawer
+      stickyItemsPreview.querySelectorAll('.remove-drawer-item').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const idx = Number(chip.getAttribute('data-remove-index'));
+          const inputs = gridJuices.querySelectorAll('.box-qty-input');
+          const targetInput = inputs[idx] as HTMLInputElement | undefined;
+          if (targetInput) {
+            targetInput.value = '0';
+            updateState();
+          }
+        });
+      });
+
       drawerTotalPrice.textContent = `GHS ${totalPrice.toFixed(2)}`;
 
       if (totalUnits > 0) {
@@ -439,10 +614,19 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
         stickyBar.classList.add('translate-y-full');
       }
 
-      const isValid = (totalUnits === targetBundleSize && getUsedFlavorsCount() <= maxFlavorsAllowed);
-      drawerStatusText.textContent = isValid
-        ? 'Box complete!'
-        : `Need ${targetBundleSize} bottles (Max ${maxFlavorsAllowed} flavours)`;
+      const isValid = currentMode === 'pouches'
+        ? totalUnits === POUCH_PACK_SIZE
+        : (totalUnits === targetBundleSize && getUsedFlavorsCount() <= maxFlavorsAllowed);
+
+      if (currentMode === 'pouches') {
+        drawerStatusText.textContent = isValid
+          ? '4-pouch pack complete!'
+          : `Need ${POUCH_PACK_SIZE} pouches (1.5L each)`;
+      } else {
+        drawerStatusText.textContent = isValid
+          ? 'Box complete!'
+          : `Need ${requiredTotal} bottles (Max ${maxFlavorsAllowed} flavours)`;
+      }
 
       proceedBtn.disabled = !isValid;
     }
@@ -455,11 +639,11 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
         if (qty > 0) {
           const customPrice = parseFloat(input.getAttribute('data-custom-price') || '');
           const item: { name: string; frenchName: string; qty: number; customUnitPrice?: number } = {
-            name: input.getAttribute('data-flavor') || 'Juice Bottle',
+            name: input.getAttribute('data-flavor') || (currentMode === 'pouches' ? 'Juice Pouch (1.5L)' : 'Juice Bottle'),
             frenchName: input.getAttribute('data-french') || '',
             qty
           };
-          if (!Number.isNaN(customPrice) && customPrice > 0) {
+          if (currentMode === 'bottles' && !Number.isNaN(customPrice) && customPrice > 0) {
             item.customUnitPrice = customPrice;
           }
           selectedItems.push(item);
@@ -468,13 +652,24 @@ const allFruits = Array.from(new Set(juiceCatalog.flatMap(j => j.fruits)));
 
       const finalPrice = calculateBundleTotal();
 
-      const config = {
-        category: 'juices',
-        boxSize: targetBundleSize,
-        totalPrice: finalPrice,
-        basePrice: finalPrice,
-        items: selectedItems
-      };
+      const config = currentMode === 'pouches'
+        ? {
+            category: 'pouches',
+            volume: '1.5L',
+            boxSize: POUCH_PACK_SIZE,
+            unitPrice: POUCH_UNIT_PRICE,
+            totalPrice: finalPrice,
+            basePrice: finalPrice,
+            items: selectedItems
+          }
+        : {
+            category: 'juices',
+            volume: '350ml',
+            boxSize: targetBundleSize,
+            totalPrice: finalPrice,
+            basePrice: finalPrice,
+            items: selectedItems
+          };
 
       sessionStorage.setItem('helthe_box_config', JSON.stringify(config));
       window.location.href = '/checkout';
